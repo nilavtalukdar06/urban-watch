@@ -4,11 +4,11 @@ export default {
   providers: [
     {
       domain: process.env.CLERK_JWT_ISSUER_DOMAIN_WEB!,
-      applicationID: "convex_web",
+      applicationID: "convex",
     },
     {
       domain: process.env.CLERK_JWT_ISSUER_DOMAIN_ADMIN!,
-      applicationID: "convex_admin",
+      applicationID: "convex",
     },
   ],
 } satisfies AuthConfig;
