@@ -18,5 +18,12 @@
   "packageManager": "pnpm@10.4.1",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "react-hook-form": "^7.71.1"
+  },
+  "overrides": {
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
   }
 }

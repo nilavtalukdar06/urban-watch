@@ -6,6 +6,10 @@ settings:
 
 importers:
   .:
+    dependencies:
+      react-hook-form:
+        specifier: ^7.71.1
+        version: 7.71.1(react@19.2.1)
     devDependencies:
       "@workspace/eslint-config":
         specifier: workspace:*
@@ -116,9 +120,6 @@ importers:
       react-dom:
         specifier: ^19.2.1
         version: 19.2.1(react@19.2.1)
-      react-hook-form:
-        specifier: ^7.71.1
-        version: 7.71.1(react@19.2.1)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -237,9 +238,6 @@ importers:
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
-      react-hook-form:
-        specifier: ^7.71.1
-        version: 7.71.1(react@19.1.1)
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.3.1
