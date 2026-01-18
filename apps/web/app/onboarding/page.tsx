@@ -2,17 +2,19 @@ import { AuthGuard } from "@/modules/auth/components/auth-guard";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-interface Props {
-  children: React.ReactNode;
-}
-
-export default async function Layout({ children }: Props) {
+export default async function Onboarding() {
   const user = await currentUser();
   if (user) {
     const hasOnboarded = user.publicMetadata?.hasOnboarded;
-    if (!hasOnboarded) {
-      redirect("/onboarding");
+    if (hasOnboarded) {
+      redirect("/");
     }
   }
-  return <AuthGuard>{children}</AuthGuard>;
+  return (
+    <AuthGuard>
+      <div className="p-4">
+        <p className="text-muted-foreground font-light">Onboarding</p>
+      </div>
+    </AuthGuard>
+  );
 }
