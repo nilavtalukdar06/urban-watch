@@ -83,6 +83,15 @@ importers:
       "@clerk/nextjs":
         specifier: ^6.36.8
         version: 6.36.8(next@16.0.10(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      "@hookform/resolvers":
+        specifier: ^5.2.2
+        version: 5.2.2(react-hook-form@7.71.1(react@19.2.1))
+      "@radix-ui/react-label":
+        specifier: ^2.1.8
+        version: 2.1.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      "@radix-ui/react-slot":
+        specifier: ^1.2.3
+        version: 1.2.4(@types/react@19.2.7)(react@19.2.1)
       "@workspace/backend":
         specifier: workspace:*
         version: link:../../packages/backend
@@ -107,6 +116,12 @@ importers:
       react-dom:
         specifier: ^19.2.1
         version: 19.2.1(react@19.2.1)
+      react-hook-form:
+        specifier: ^7.71.1
+        version: 7.71.1(react@19.2.1)
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       "@tailwindcss/postcss":
         specifier: ^4.1.17
@@ -5281,6 +5296,11 @@ snapshots:
       "@standard-schema/utils": 0.3.0
       react-hook-form: 7.71.1(react@19.1.1)
 
+  "@hookform/resolvers@5.2.2(react-hook-form@7.71.1(react@19.2.1))":
+    dependencies:
+      "@standard-schema/utils": 0.3.0
+      react-hook-form: 7.71.1(react@19.2.1)
+
   "@humanfs/core@0.19.1": {}
 
   "@humanfs/node@0.16.6":
@@ -5484,6 +5504,12 @@ snapshots:
     optionalDependencies:
       "@types/react": 19.1.9
 
+  "@radix-ui/react-compose-refs@1.1.2(@types/react@19.2.7)(react@19.2.1)":
+    dependencies:
+      react: 19.2.1
+    optionalDependencies:
+      "@types/react": 19.2.7
+
   "@radix-ui/react-label@2.1.8(@types/react-dom@19.1.7(@types/react@19.1.9))(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)":
     dependencies:
       "@radix-ui/react-primitive": 2.1.4(@types/react-dom@19.1.7(@types/react@19.1.9))(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -5493,6 +5519,15 @@ snapshots:
       "@types/react": 19.1.9
       "@types/react-dom": 19.1.7(@types/react@19.1.9)
 
+  "@radix-ui/react-label@2.1.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)":
+    dependencies:
+      "@radix-ui/react-primitive": 2.1.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react: 19.2.1
+      react-dom: 19.2.1(react@19.2.1)
+    optionalDependencies:
+      "@types/react": 19.2.7
+      "@types/react-dom": 19.2.3(@types/react@19.2.7)
+
   "@radix-ui/react-primitive@2.1.4(@types/react-dom@19.1.7(@types/react@19.1.9))(@types/react@19.1.9)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)":
     dependencies:
       "@radix-ui/react-slot": 1.2.4(@types/react@19.1.9)(react@19.1.1)
@@ -5501,6 +5536,15 @@ snapshots:
     optionalDependencies:
       "@types/react": 19.1.9
       "@types/react-dom": 19.1.7(@types/react@19.1.9)
+
+  "@radix-ui/react-primitive@2.1.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)":
+    dependencies:
+      "@radix-ui/react-slot": 1.2.4(@types/react@19.2.7)(react@19.2.1)
+      react: 19.2.1
+      react-dom: 19.2.1(react@19.2.1)
+    optionalDependencies:
+      "@types/react": 19.2.7
+      "@types/react-dom": 19.2.3(@types/react@19.2.7)
 
   "@radix-ui/react-slot@1.2.3(@types/react@19.1.9)(react@19.1.1)":
     dependencies:
@@ -5515,6 +5559,13 @@ snapshots:
       react: 19.1.1
     optionalDependencies:
       "@types/react": 19.1.9
+
+  "@radix-ui/react-slot@1.2.4(@types/react@19.2.7)(react@19.2.1)":
+    dependencies:
+      "@radix-ui/react-compose-refs": 1.1.2(@types/react@19.2.7)(react@19.2.1)
+      react: 19.2.1
+    optionalDependencies:
+      "@types/react": 19.2.7
 
   "@stablelib/base64@1.0.1": {}
 
@@ -7471,6 +7522,10 @@ snapshots:
   react-hook-form@7.71.1(react@19.1.1):
     dependencies:
       react: 19.1.1
+
+  react-hook-form@7.71.1(react@19.2.1):
+    dependencies:
+      react: 19.2.1
 
   react-is@16.13.1: {}
 

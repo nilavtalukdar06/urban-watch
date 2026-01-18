@@ -1,9 +1,115 @@
 "use client";
 
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@workspace/ui/components/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
+
+const formSchema = z.object({
+  fullName: z.string().min(2, { message: "Full Name is required" }),
+  phoneNumber: z.string().length(10, { message: "Invalid Phone number" }),
+  dateOfBirth: z.string().min(3, { message: "Date of birth is required" }),
+  permanentAddress: z
+    .string()
+    .min(5, { message: "Permanent Address is required" }),
+});
+
 export function OnboardingForm() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullName: "",
+      phoneNumber: "",
+      dateOfBirth: "",
+      permanentAddress: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+  }
   return (
-    <div className="py-2 w-full">
-      <p>Onboarding Form</p>
+    <div className="py-4 w-full">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-normal">Full Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-normal">Phone Number</FormLabel>
+                <FormControl>
+                  <Input
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={10}
+                    placeholder="Enter your 10 digit phone number"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      field.onChange(value);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dateOfBirth"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-normal">Date Of Birth</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your date of birth" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="permanentAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-normal">Permanent Address</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex w-full justify-center items-center">
+            <Button type="submit" className="w-fit">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
