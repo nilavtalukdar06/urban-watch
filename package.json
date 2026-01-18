@@ -20,7 +20,8 @@
     "node": ">=20"
   },
   "dependencies": {
-    "react-hook-form": "^7.71.1"
+    "react-hook-form": "^7.71.1",
+    "sonner": "^2.0.7"
   },
   "overrides": {
     "react": "19.2.1",
