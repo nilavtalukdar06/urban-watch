@@ -1,7 +1,10 @@
+import { Navbar } from "@/components/shared/navbar";
+
 export default function Home() {
   return (
-    <div className="p-4">
-      <p className="text-muted-foreground font-light">Home</p>
+    <div>
+      <Navbar />
+      <p className="text-muted-foreground font-light p-4">Home</p>
     </div>
   );
 }

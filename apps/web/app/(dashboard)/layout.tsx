@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/shared/navbar";
 import { AuthGuard } from "@/modules/auth/components/auth-guard";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -17,10 +16,7 @@ export default async function Layout({ children }: Props) {
   }
   return (
     <AuthGuard>
-      <main className="max-w-2xl mx-auto w-full">
-        <Navbar />
-        {children}
-      </main>
+      <main className="max-w-2xl mx-auto w-full">{children}</main>
     </AuthGuard>
   );
 }
