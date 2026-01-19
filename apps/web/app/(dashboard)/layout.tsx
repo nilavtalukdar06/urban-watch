@@ -14,5 +14,9 @@ export default async function Layout({ children }: Props) {
       redirect("/onboarding");
     }
   }
-  return <AuthGuard>{children}</AuthGuard>;
+  return (
+    <AuthGuard>
+      <main className="max-w-2xl mx-auto w-full">{children}</main>
+    </AuthGuard>
+  );
 }
