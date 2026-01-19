@@ -14,4 +14,9 @@ export default defineSchema({
     documentType: v.optional(v.string()),
     citizenId: v.id("citizens"),
   }).index("by_citizenId", ["citizenId"]),
+  chatbot: defineTable({
+    role: v.string(),
+    content: v.string(),
+    userId: v.string(),
+  }).index("by_userId", ["userId"]),
 });
