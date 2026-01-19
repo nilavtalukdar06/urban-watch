@@ -18,3 +18,15 @@ export const createMessage = mutation({
     return messageId;
   },
 });
+
+export const createAImessage = mutation({
+  args: {
+    role: v.string(),
+    content: v.string(),
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const messageId = await ctx.db.insert("chatbot", { ...args });
+    return messageId;
+  },
+});
