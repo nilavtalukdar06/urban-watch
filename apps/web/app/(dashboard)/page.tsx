@@ -1,9 +1,7 @@
-import { UserButton } from "@clerk/nextjs";
-
 export default function Home() {
   return (
     <div className="p-4">
-      <UserButton />
+      <p className="text-muted-foreground font-light">Home</p>
     </div>
   );
 }
