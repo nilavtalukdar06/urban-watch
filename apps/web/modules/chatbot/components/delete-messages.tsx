@@ -26,6 +26,7 @@ export function DeleteMessages() {
     try {
       setIsLoading(true);
       await mutation({});
+      toast.success("Messages Deleted Successfully");
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete messages");
@@ -43,8 +44,10 @@ export function DeleteMessages() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="font-normal text-neutral-700">
+            Are you absolutely sure?
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground font-light">
             This action cannot be undone. This will permanently delete your
             messages.
           </DialogDescription>

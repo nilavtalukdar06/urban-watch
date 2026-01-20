@@ -15,7 +15,7 @@ export default async function Chatbot() {
   );
   return (
     <PromptProvider>
-      <div className="h-screen w-full flex flex-col flex-1">
+      <div className="h-screen w-full flex flex-col">
         <Navbar />
         <MessageContainer preloadedMessages={result} />
       </div>
