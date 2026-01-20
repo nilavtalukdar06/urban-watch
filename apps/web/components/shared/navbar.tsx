@@ -14,7 +14,7 @@ export function Navbar() {
       <Link href="/">
         <Image src="/logo.svg" height={36} width={160} alt="logo" />
       </Link>
-      <nav className="flex justify-end gap-x-3">
+      <nav className="flex justify-end gap-x-3 items-center">
         {pathname === "/chatbot" && <DeleteMessages />}
         <UserButton>
           <UserButton.MenuItems>
