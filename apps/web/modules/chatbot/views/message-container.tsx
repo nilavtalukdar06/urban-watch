@@ -78,8 +78,8 @@ export function MessageContainer(props: {
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
-      <div className="w-full px-4 py-3">
-        <PromptInput status={status} sendMessage={sendMessage} />
+      <div className="px-4 py-3">
+        <PromptInput sendMessage={sendMessage} status={status} />
       </div>
     </section>
   );
