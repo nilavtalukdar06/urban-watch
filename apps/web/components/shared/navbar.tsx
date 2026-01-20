@@ -1,7 +1,7 @@
 "use client";
 
+import { DeleteMessages } from "@/modules/chatbot/components/delete-messages";
 import { UserButton } from "@clerk/nextjs";
-import { Button } from "@workspace/ui/components/button";
 import { MessageSquareCodeIcon, TriangleAlertIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,11 +15,7 @@ export function Navbar() {
         <Image src="/logo.svg" height={36} width={160} alt="logo" />
       </Link>
       <nav className="flex justify-end gap-x-3">
-        {pathname === "/chatbot" && (
-          <Button variant="outline" size="sm">
-            <TriangleAlertIcon className="text-muted-foreground" />
-          </Button>
-        )}
+        {pathname === "/chatbot" && <DeleteMessages />}
         <UserButton>
           <UserButton.MenuItems>
             <UserButton.Link

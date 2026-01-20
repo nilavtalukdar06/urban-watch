@@ -24,10 +24,10 @@ export function PromptInput({ status, sendMessage }: Props) {
   const mutation = useMutation(api.functions.chatbot.createMessage);
   const { prompt, setPrompt } = usePrompt();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       setIsLoading(false);
-      mutation({ role: "user", content: prompt });
+      await mutation({ role: "user", content: prompt });
       sendMessage({ text: prompt });
       setPrompt("");
     } catch (error) {
