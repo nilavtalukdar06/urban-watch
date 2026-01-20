@@ -22,6 +22,7 @@ export const createUser = mutation({
     }
     const citizenId = await ctx.db.insert("citizens", {
       ...args,
+      points: 0,
       userId: auth.subject,
     });
     const identificationId = await ctx.db.insert("userIdentity", {

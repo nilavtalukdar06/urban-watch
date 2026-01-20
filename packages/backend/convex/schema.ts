@@ -7,6 +7,7 @@ export default defineSchema({
     dateOfBirth: v.string(),
     phoneNumber: v.string(),
     permanentAddress: v.string(),
+    points: v.number(),
     userId: v.string(),
   }).index("by_userId", ["userId"]),
   userIdentity: defineTable({
