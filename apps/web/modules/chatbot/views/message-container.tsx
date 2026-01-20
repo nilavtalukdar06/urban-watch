@@ -13,6 +13,7 @@ import { api } from "@workspace/backend/convex/_generated/api";
 import { useChat } from "@ai-sdk/react";
 import { useEffect } from "react";
 import { convertToUIMessage } from "../utils/ui-messages";
+import { Shimmer } from "@workspace/ui/components/ai-elements/shimmer";
 import {
   Message,
   MessageContent,
@@ -74,6 +75,20 @@ export function MessageContainer(props: {
                 </MessageContent>
               </Message>
             ))
+          )}
+          {status === "submitted" && (
+            <div className="flex flex-col items-start justify-center gap-y-2">
+              <Shimmer duration={1} className="font-light text-sm">
+                Thinking...
+              </Shimmer>
+            </div>
+          )}
+          {status === "error" && (
+            <div className="flex flex-col items-start justify-center gap-y-2">
+              <p className="text-sm text-red-500 font-light">
+                Failed to fulfill your request, please try again later.
+              </p>
+            </div>
           )}
         </ConversationContent>
         <ConversationScrollButton />
