@@ -18,6 +18,7 @@ import {
   MessageContent,
 } from "@workspace/ui/components/ai-elements/message";
 import { MessageResponse } from "@workspace/ui/components/ai-elements/message";
+import { cn } from "@workspace/ui/lib/utils";
 
 export function MessageContainer(props: {
   preloadedMessages: Preloaded<typeof api.functions.chatbot.getMessages>;
@@ -26,18 +27,20 @@ export function MessageContainer(props: {
   const { messages, setMessages, status, sendMessage } = useChat();
   useEffect(() => {
     setMessages(
-      result.map((message) =>
-        convertToUIMessage({
-          id: message._id,
-          role: message.role as "system" | "assistant" | "user",
-          content: message.content,
-          createdAt: message._creationTime,
-        }),
-      ),
+      result
+        .map((message) =>
+          convertToUIMessage({
+            id: message._id,
+            role: message.role as "system" | "assistant" | "user",
+            content: message.content,
+            createdAt: message._creationTime,
+          }),
+        )
+        .reverse(),
     );
   }, [result, setMessages]);
   return (
-    <section className="flex-1 flex flex-col h-full p-4">
+    <section className="flex-1 flex flex-col h-full">
       <Conversation className="flex flex-col flex-1 min-h-0">
         <ConversationContent>
           {messages.length === 0 ? (
@@ -52,9 +55,15 @@ export function MessageContainer(props: {
                 <MessageContent>
                   {message.parts.map((part, i) => {
                     switch (part.type) {
-                      case "text": // we don't use any reasoning or tool calls in this example
+                      case "text":
                         return (
-                          <MessageResponse key={`${message.id}-${i}`}>
+                          <MessageResponse
+                            key={`${message.id}-${i}`}
+                            className={cn(
+                              message.role === "assistant" &&
+                                "text-muted-foreground font-light",
+                            )}
+                          >
                             {part.text}
                           </MessageResponse>
                         );
@@ -69,7 +78,7 @@ export function MessageContainer(props: {
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
-      <div className="w-full">
+      <div className="w-full px-4 py-3">
         <PromptInput status={status} sendMessage={sendMessage} />
       </div>
     </section>
