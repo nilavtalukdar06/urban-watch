@@ -40,8 +40,8 @@ export function MessageContainer(props: {
     );
   }, [result, setMessages]);
   return (
-    <section className="flex-1 flex flex-col h-full">
-      <Conversation className="flex flex-col flex-1 min-h-0">
+    <section className="flex flex-col overflow-y-auto flex-1">
+      <Conversation className="flex flex-col flex-1">
         <ConversationContent>
           {messages.length === 0 ? (
             <ConversationEmptyState
