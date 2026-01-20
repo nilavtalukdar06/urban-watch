@@ -7,15 +7,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-html,
-body {
-  -ms-overflow-style: none; /* IE & Edge */
-  scrollbar-width: none; /* Firefox */
+/* Hide scrollbar globally but allow scrolling */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+*::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari */
 }
 
 :root {
