@@ -1,10 +1,19 @@
 import { Navbar } from "@/components/shared/navbar";
+import { currentUser } from "@clerk/nextjs/server";
 
-export default function Home() {
+export default async function Home() {
+  const user = await currentUser();
   return (
     <div>
       <Navbar />
-      <p className="text-muted-foreground font-light p-4">Home</p>
+      <div className="p-4">
+        <p className="text-neutral-700 font-normal text-xl">
+          Hi, {user?.firstName}
+        </p>
+        <p className="text text-muted-foreground font-light">
+          Welcome to Urban Watch
+        </p>
+      </div>
     </div>
   );
 }
