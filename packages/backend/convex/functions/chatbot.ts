@@ -1,4 +1,4 @@
-import { mutation } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
 
 export const createMessage = mutation({
@@ -28,5 +28,17 @@ export const createAImessage = mutation({
   handler: async (ctx, args) => {
     const messageId = await ctx.db.insert("chatbot", { ...args });
     return messageId;
+  },
+});
+
+export const getMessages = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const messages = await ctx.db.query("chatbot").order("desc").collect();
+    return messages;
   },
 });
