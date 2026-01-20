@@ -1,11 +1,25 @@
+import { MessageSquare } from "lucide-react";
 import { PromptInput } from "../components/prompt-input";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@workspace/ui/components/ai-elements/conversation";
 
 export function MessageContainer() {
   return (
     <section className="flex-1 flex flex-col h-full p-4">
-      <div className="flex flex-col flex-1 min-h-0">
-        <p className="text-muted-foreground">Message Container</p>
-      </div>
+      <Conversation className="flex flex-col flex-1 min-h-0">
+        <ConversationContent>
+          <ConversationEmptyState
+            icon={<MessageSquare className="size-12" />}
+            title="Start a conversation"
+            description="Type a message below to begin chatting"
+          />
+        </ConversationContent>
+        <ConversationScrollButton />
+      </Conversation>
       <div>
         <PromptInput />
       </div>
