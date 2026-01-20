@@ -8,7 +8,12 @@ import {
 import { ArrowUpIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 
-export function PromptInput() {
+interface Props {
+  status: "submitted" | "streaming" | "ready" | "error";
+  sendMessage: (message: { text: string }) => void;
+}
+
+export function PromptInput({ status, sendMessage }: Props) {
   return (
     <div className="grid w-full">
       <InputGroup className="bg-white rounded-md shadow-sm border border-neutral-200">
