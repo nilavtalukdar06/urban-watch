@@ -45,7 +45,7 @@ export const getMessages = query({
 
 export const deleteMessages = mutation({
   args: {},
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const auth = await ctx.auth.getUserIdentity();
     if (!auth) {
       throw new Error("the user is not authenticated");
