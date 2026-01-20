@@ -42,3 +42,23 @@ export const getMessages = query({
     return messages;
   },
 });
+
+export const deleteMessages = mutation({
+  args: {},
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const result = await ctx.db
+      .query("chatbot")
+      .filter((q) => q.eq(q.field("userId"), auth.subject))
+      .collect();
+    for (const message of result) {
+      await ctx.db.delete("chatbot", message._id);
+    }
+    return {
+      message: "messages deleted",
+    };
+  },
+});
