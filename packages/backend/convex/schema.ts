@@ -9,7 +9,9 @@ export default defineSchema({
     permanentAddress: v.string(),
     points: v.number(),
     userId: v.string(),
-  }).index("by_userId", ["userId"]),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_points", ["points"]),
   userIdentity: defineTable({
     isAuthorized: v.boolean(),
     documentType: v.optional(v.string()),

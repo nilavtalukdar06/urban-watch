@@ -1,4 +1,4 @@
-import { mutation } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
 
 export const createUser = mutation({
@@ -30,5 +30,21 @@ export const createUser = mutation({
       citizenId,
     });
     return identificationId;
+  },
+});
+
+export const getUsers = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const users = await ctx.db
+      .query("citizens")
+      .withIndex("by_points")
+      .order("desc")
+      .collect();
+    return users;
   },
 });
