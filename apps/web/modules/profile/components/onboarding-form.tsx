@@ -13,13 +13,12 @@ import {
   FormMessage,
 } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
-import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
-import { api } from "@workspace/backend/convex/_generated/api";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { updateMetadata } from "../functions/update-metadata";
+import { createUser } from "../functions/create-user";
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: "Full Name is required" }),
@@ -33,7 +32,6 @@ const formSchema = z.object({
 export function OnboardingForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const mutation = useMutation(api.functions.users.createUser);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,7 +45,7 @@ export function OnboardingForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true);
-      await mutation({ ...values });
+      await createUser({ ...values });
       await updateMetadata();
       toast.success("Profile Created Successfully");
       router.replace("/");

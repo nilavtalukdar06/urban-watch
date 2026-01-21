@@ -28,6 +28,7 @@
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-textarea-autosize": "^8.5.9",
+    "stream-chat": "^9.29.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
