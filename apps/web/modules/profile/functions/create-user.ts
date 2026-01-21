@@ -3,7 +3,7 @@
 import { upsertUser } from "@/lib/stream";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { fetchMutation } from "convex/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 interface User {
   fullName: string;
@@ -14,13 +14,19 @@ interface User {
 
 export const createUser = async (user: User) => {
   try {
+    const token =
+      (await (await auth()).getToken({ template: "convex" })) ?? undefined;
     const clerkUser = await currentUser();
     if (!clerkUser) {
       throw new Error("user is not authenticated");
     }
-    const result = await fetchMutation(api.functions.users.createUser, {
-      ...user,
-    });
+    const result = await fetchMutation(
+      api.functions.users.createUser,
+      {
+        ...user,
+      },
+      { token },
+    );
     await upsertUser(clerkUser.id, clerkUser.fullName!);
     return {
       success: true,
