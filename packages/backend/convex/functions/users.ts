@@ -24,6 +24,7 @@ export const createUser = mutation({
       ...args,
       points: 0,
       userId: auth.subject,
+      email: auth.email!,
     });
     const identificationId = await ctx.db.insert("userIdentity", {
       isAuthorized: false,
