@@ -1,5 +1,7 @@
 import { Navbar } from "@/components/shared/navbar";
 import { currentUser } from "@clerk/nextjs/server";
+import { Button } from "@workspace/ui/components/button";
+import { Plus } from "lucide-react";
 
 export default async function Home() {
   const user = await currentUser();
@@ -13,6 +15,12 @@ export default async function Home() {
         <p className="text text-muted-foreground font-light">
           Welcome to Urban Watch
         </p>
+        <div className="my-2">
+          <Button variant="green" size="sm">
+            <span>Submit Report</span>
+            <Plus />
+          </Button>
+        </div>
       </div>
     </div>
   );
