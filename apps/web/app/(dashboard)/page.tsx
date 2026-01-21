@@ -22,7 +22,7 @@ export default async function Home() {
             <Plus />
           </Button>
         </div>
-        <div className="my-2">
+        <div className="my-4">
           <Links />
         </div>
       </div>
