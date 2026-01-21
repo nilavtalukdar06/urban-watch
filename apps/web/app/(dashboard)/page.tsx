@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/shared/navbar";
+import { Links } from "@/modules/dashboard/components/links";
 import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "@workspace/ui/components/button";
 import { Plus } from "lucide-react";
@@ -20,6 +21,9 @@ export default async function Home() {
             <span>Submit Report</span>
             <Plus />
           </Button>
+        </div>
+        <div className="my-2">
+          <Links />
         </div>
       </div>
     </div>
