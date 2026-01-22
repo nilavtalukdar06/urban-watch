@@ -4,10 +4,20 @@ import { Preloaded, usePreloadedQuery } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { useEffect, useState } from "react";
 import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  EllipsisIcon,
+  SearchIcon,
+} from "lucide-react";
+import {
   ColumnDef,
   flexRender,
+  ColumnFiltersState,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
+  getFilteredRowModel,
+  VisibilityState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -17,6 +27,21 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu";
+import { Button } from "@workspace/ui/components/button";
+import Link from "next/link";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@workspace/ui/components/input-group";
 
 type User = {
   id: string;
@@ -38,12 +63,41 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "points",
     header: "Points",
   },
+  {
+    id: "actions",
+    cell({ row }) {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon-sm">
+              <EllipsisIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel className="text-xs font-light text-muted-foreground">
+              Actions
+            </DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/chat/${row.original.id}`}
+                className="text-neutral-700 cursor-pointer"
+              >
+                Chat Now
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
 ];
 
 export function Leaderboard(props: {
   preloadedUsers: Preloaded<typeof api.functions.users.getUsers>;
 }) {
   const [data, setData] = useState<User[]>([]);
+  const [filters, setFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const users = usePreloadedQuery(props.preloadedUsers);
   useEffect(() => {
     const result = users.map((item) => {
@@ -60,6 +114,14 @@ export function Leaderboard(props: {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnFilters: filters,
+      columnVisibility,
+    },
   });
   return (
     <div className="my-4">
@@ -68,6 +130,50 @@ export function Leaderboard(props: {
         <p className="text-sm text-neutral-500 font-light">
           See where you stand among others
         </p>
+      </div>
+      <div className="pb-4 w-full flex items-center justify-between">
+        <InputGroup className="max-w-sm w-full shadow-none">
+          <InputGroupInput
+            placeholder="Search users by name"
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="placeholder:text-muted-foreground text-muted-foreground font-light placeholder:font-light"
+          />
+          <InputGroupAddon>
+            <SearchIcon className="text-muted-foreground" />
+          </InputGroupAddon>
+        </InputGroup>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="ml-auto text-muted-foreground font-light shadow-none"
+            >
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize text-muted-foreground font-light"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
@@ -122,6 +228,24 @@ export function Leaderboard(props: {
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="w-full flex items-center justify-end my-4 gap-2">
+        <Button
+          variant="outline"
+          size="icon-sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          <ArrowLeftIcon className="text-muted-foreground" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon-sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          <ArrowRightIcon className="text-muted-foreground" />
+        </Button>
       </div>
     </div>
   );
