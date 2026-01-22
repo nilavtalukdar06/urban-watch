@@ -47,7 +47,7 @@ export function Links() {
 function LinkCard({ icon: Icon, label, description, path }: Props) {
   return (
     <Link
-      className="w-full p-3 hover:bg-sidebar rounded-md shadow-sm flex flex-col gap-y-2 border"
+      className="w-full p-3 hover:bg-sidebar rounded-md flex flex-col gap-y-2 border"
       href={path}
     >
       <Button variant="green" size="icon-sm">
