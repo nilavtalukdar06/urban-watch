@@ -33,7 +33,7 @@ export default async function Home() {
             <TriangleAlertIcon />
           </Button>
         </div>
-        <div className="my-4">
+        <div className="mt-4 mb-2">
           <Links />
         </div>
         <Leaderboard preloadedUsers={preloadedUsers} />

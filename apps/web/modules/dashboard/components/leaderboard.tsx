@@ -124,14 +124,14 @@ export function Leaderboard(props: {
     },
   });
   return (
-    <div className="my-4">
-      <div className="py-4">
+    <div className="w-full">
+      <div className="py-2">
         <p className="text-lg text-neutral-600">Leaderboard Ranking</p>
         <p className="text-sm text-neutral-500 font-light">
           See where you stand among others
         </p>
       </div>
-      <div className="pb-4 w-full flex items-center justify-between">
+      <div className="pb-4 w-full flex items-center justify-between gap-x-4">
         <InputGroup className="max-w-sm w-full shadow-none">
           <InputGroupInput
             placeholder="Search users by name"
@@ -247,6 +247,6 @@ export function Leaderboard(props: {
           <ArrowRightIcon className="text-muted-foreground" />
         </Button>
       </div>
-    </div>
+      </div>
   );
 }
