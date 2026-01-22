@@ -1,3 +1,4 @@
+import { currentUser } from "@clerk/nextjs/server";
 import { StreamChat } from "stream-chat";
 
 export const stream = StreamChat.getInstance(
@@ -12,4 +13,21 @@ export const upsertUser = async (userId: string, name: string) => {
     image: "https://getstream.io/random_png/?id=" + userId,
   });
   return result;
+};
+
+export const generateToken = async () => {
+  "use server";
+  const user = await currentUser();
+  if (!user) {
+    throw new Error("the user is not authenticated");
+  }
+  const token = stream.createToken(user.id);
+  return {
+    token,
+    user: {
+      id: user.id,
+      name: user.fullName,
+      image: "https://getstream.io/random_png/?id=" + user.id,
+    },
+  };
 };
