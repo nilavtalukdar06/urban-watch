@@ -28,7 +28,7 @@ export default async function Home() {
           Welcome to Urban Watch
         </p>
         <div className="my-2">
-          <Button variant="default" className="bg-green-500 hover:bg-green-600">
+          <Button variant="green" size="sm">
             <span>Submit Report</span>
             <TriangleAlertIcon />
           </Button>

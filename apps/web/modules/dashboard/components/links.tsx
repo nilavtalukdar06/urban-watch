@@ -51,9 +51,8 @@ function LinkCard({ icon: Icon, label, description, path }: Props) {
       href={path}
     >
       <Button
-        variant="default"
+        variant="green"
         size="icon-sm"
-        className="bg-green-500 hover:bg-green-500 pointer-events-none"
       >
         <Icon />
       </Button>
