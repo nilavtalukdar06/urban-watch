@@ -75,7 +75,10 @@ export function Leaderboard(props: {
             {table.getHeaderGroups().map((item) => (
               <TableRow key={item.id}>
                 {item.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="font-normal text-neutral-700"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -95,7 +98,10 @@ export function Leaderboard(props: {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-muted-foreground font-light">
+                    <TableCell
+                      key={cell.id}
+                      className="text-muted-foreground font-light"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
