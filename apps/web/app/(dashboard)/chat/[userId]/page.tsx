@@ -1,4 +1,4 @@
-import { Chat } from "@/components/chat";
+import { ChatComponent } from "@/components/chat";
 import { generateToken } from "@/lib/stream";
 import { redirect } from "next/navigation";
 
@@ -27,7 +27,7 @@ export default async function ChatPage({ params }: Props) {
   }
   return (
     <div className="p-4">
-      <Chat token={token.token} user={token.user} otherUserId={userId} />
+      <ChatComponent token={token.token} user={token.user} otherUserId={userId} />
     </div>
   );
 }
