@@ -50,7 +50,11 @@ function LinkCard({ icon: Icon, label, description, path }: Props) {
       className="w-full p-3 hover:bg-sidebar rounded-md flex flex-col gap-y-2 border"
       href={path}
     >
-      <Button variant="green" size="icon-sm">
+      <Button
+        variant="default"
+        size="icon-sm"
+        className="bg-green-500 hover:bg-green-500 pointer-events-none"
+      >
         <Icon />
       </Button>
       <div className="flex flex-col">

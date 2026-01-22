@@ -2,7 +2,7 @@ import { Navbar } from "@/components/shared/navbar";
 import { Links } from "@/modules/dashboard/components/links";
 import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "@workspace/ui/components/button";
-import { Plus } from "lucide-react";
+import { TriangleAlertIcon } from "lucide-react";
 import { preloadQuery } from "convex/nextjs";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Leaderboard } from "@/modules/dashboard/components/leaderboard";
@@ -28,9 +28,9 @@ export default async function Home() {
           Welcome to Urban Watch
         </p>
         <div className="my-2">
-          <Button variant="green" size="sm">
+          <Button variant="default" className="bg-green-500 hover:bg-green-600">
             <span>Submit Report</span>
-            <Plus />
+            <TriangleAlertIcon />
           </Button>
         </div>
         <div className="my-4">
