@@ -37,7 +37,7 @@ export function ChatComponent(props: Props) {
     if (!client) {
       return;
     }
-    const channel = client.channel("messaging", uuidv4(), {
+    const channel = client.channel("messaging", {
       members: [props.user.id, props.otherUserId],
     });
     setChannel(channel);
