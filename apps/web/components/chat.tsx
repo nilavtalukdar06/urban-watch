@@ -12,6 +12,7 @@ import {
   Thread,
   Window,
 } from "stream-chat-react";
+import "stream-chat-react/dist/css/v2/index.css";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
@@ -52,17 +53,15 @@ export function ChatComponent(props: Props) {
     );
   }
   return (
-    <div className="w-full">
-      <Chat client={client}>
-        <Channel channel={channel}>
-          <Window>
-            <ChannelHeader />
-            <MessageList />
-            <MessageInput />
-          </Window>
-          <Thread />
-        </Channel>
-      </Chat>
-    </div>
+    <Chat client={client}>
+      <Channel channel={channel}>
+        <Window>
+          <ChannelHeader />
+          <MessageList />
+          <MessageInput />
+        </Window>
+        <Thread />
+      </Channel>
+    </Chat>
   );
 }
