@@ -29,7 +29,7 @@ export default async function ChatPage({ params }: Props) {
     redirect("/");
   }
   return (
-    <div className="p-4 flex-1 flex flex-col h-screen">
+    <div className="p-2 flex-1 flex flex-col h-screen">
       <ChatComponent
         token={token.token}
         user={token.user}
