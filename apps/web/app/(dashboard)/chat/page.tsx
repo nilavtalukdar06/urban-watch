@@ -1,4 +1,4 @@
-import { ChannelList } from "@/components/channel";
+import { Inbox } from "@/components/channel";
 import { Navbar } from "@/components/shared/navbar";
 import { generateToken } from "@/lib/stream";
 import { redirect } from "next/navigation";
@@ -13,7 +13,7 @@ export default async function InboxPage() {
     <div className="w-full">
       <Navbar />
       <div className="p-4 w-full">
-        <ChannelList user={result.user as User} token={result.token} />
+        <Inbox user={result.user as User} token={result.token} />
       </div>
     </div>
   );
