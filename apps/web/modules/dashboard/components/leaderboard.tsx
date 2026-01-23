@@ -173,35 +173,57 @@ export function Leaderboard(props: {
             <SearchIcon className="text-muted-foreground" />
           </InputGroupAddon>
         </InputGroup>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <div className="w-full flex justify-end gap-x-4 items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="ml-auto text-muted-foreground font-light shadow-none"
+              >
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize text-muted-foreground font-light"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div className="flex gap-x-2 w-full justify-end items-center">
             <Button
               variant="outline"
-              className="ml-auto text-muted-foreground font-light shadow-none"
+              size="icon-sm"
+              className="shadow-none"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
             >
-              Columns
+              <ArrowLeftIcon className="text-muted-foreground" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize text-muted-foreground font-light"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="shadow-none"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <ArrowRightIcon className="text-muted-foreground" />
+            </Button>
+          </div>
+        </div>
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
@@ -256,24 +278,6 @@ export function Leaderboard(props: {
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="w-full flex items-center justify-end my-4 gap-2">
-        <Button
-          variant="outline"
-          size="icon-sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <ArrowLeftIcon className="text-muted-foreground" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon-sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          <ArrowRightIcon className="text-muted-foreground" />
-        </Button>
       </div>
     </div>
   );
