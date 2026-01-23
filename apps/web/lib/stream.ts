@@ -6,11 +6,15 @@ export const stream = StreamChat.getInstance(
   process.env.STREAM_API_SECRET!,
 );
 
-export const upsertUser = async (userId: string, name: string) => {
+export const upsertUser = async (
+  userId: string,
+  name: string,
+  imageUrl: string,
+) => {
   const result = await stream.upsertUser({
     id: userId,
     name,
-    image: "https://getstream.io/random_png/?id=" + userId,
+    image: imageUrl ?? "https://getstream.io/random_png/?id=" + userId,
   });
   return result;
 };
@@ -27,7 +31,7 @@ export const generateToken = async () => {
     user: {
       id: user.id,
       name: user.fullName,
-      image: "https://getstream.io/random_png/?id=" + user.id,
+      image: user?.imageUrl || "https://getstream.io/random_png/?id=" + user.id,
     },
   };
 };

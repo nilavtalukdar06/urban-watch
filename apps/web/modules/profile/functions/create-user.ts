@@ -24,11 +24,11 @@ export const createUser = async (user: User) => {
       api.functions.users.createUser,
       {
         ...user,
-        clerkUserId: clerkUser.id
+        clerkUserId: clerkUser.id,
       },
       { token },
     );
-    await upsertUser(clerkUser.id, clerkUser.fullName!);
+    await upsertUser(clerkUser.id, clerkUser.fullName!, clerkUser.imageUrl);
     return {
       success: true,
       convexUserId: result,
