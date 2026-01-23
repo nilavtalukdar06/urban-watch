@@ -7,9 +7,13 @@ import { preloadQuery } from "convex/nextjs";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Leaderboard } from "@/modules/dashboard/components/leaderboard";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const user = await currentUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
   const token =
     (await (await auth()).getToken({ template: "convex" })) ?? undefined;
   const preloadedUsers = await preloadQuery(
@@ -36,7 +40,7 @@ export default async function Home() {
         <div className="mt-4 mb-2">
           <Links />
         </div>
-        <Leaderboard preloadedUsers={preloadedUsers} />
+        <Leaderboard preloadedUsers={preloadedUsers} authUserId={user.id} />
       </div>
     </div>
   );

@@ -25,9 +25,16 @@ export default async function ChatPage({ params }: Props) {
     console.error(error);
     redirect("/");
   }
+  if (token.user.id === userId) {
+    redirect("/");
+  }
   return (
-    <div className="p-4">
-      <ChatComponent token={token.token} user={token.user} otherUserId={userId} />
+    <div className="p-4 flex-1 flex flex-col h-screen">
+      <ChatComponent
+        token={token.token}
+        user={token.user}
+        otherUserId={userId}
+      />
     </div>
   );
 }

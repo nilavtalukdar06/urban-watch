@@ -9,11 +9,11 @@ import {
   ChannelHeader,
   MessageInput,
   MessageList,
-  Thread,
   Window,
+  OPTIONAL_MESSAGE_ACTIONS,
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
-import { v4 as uuidv4 } from "uuid";
+import type { CustomMessageActions } from "stream-chat-react";
 
 interface Props {
   otherUserId: string;
@@ -43,6 +43,17 @@ export function ChatComponent(props: Props) {
     setChannel(channel);
   }, [client]);
 
+  const deleteForMe: CustomMessageActions = {
+    "Delete for me": async (message) => {
+      if (!client) return;
+      try {
+        await client.deleteMessage(message.id, { deleteForMe: true });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  };
+
   if (!client) {
     return (
       <div className="min-h-svh w-full h-full flex justify-center items-center p-4">
@@ -57,10 +68,18 @@ export function ChatComponent(props: Props) {
       <Channel channel={channel}>
         <Window>
           <ChannelHeader />
-          <MessageList />
+          <MessageList
+            messageActions={[
+              "quote",
+              "edit",
+              "delete",
+              "react",
+              OPTIONAL_MESSAGE_ACTIONS.deleteForMe,
+            ]}
+            customMessageActions={deleteForMe}
+          />
           <MessageInput />
         </Window>
-        <Thread />
       </Channel>
     </Chat>
   );

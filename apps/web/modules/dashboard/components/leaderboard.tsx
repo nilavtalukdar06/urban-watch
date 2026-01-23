@@ -48,7 +48,14 @@ type User = {
   name: string;
   email: string;
   points: number;
+  clerkUserId: string;
 };
+
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData> {
+    authUserId: string;
+  }
+}
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -65,7 +72,12 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "actions",
-    cell({ row }) {
+    cell({ row, table }) {
+      const authUserId = table.options.meta?.authUserId;
+      const isSelf = row.original.clerkUserId === authUserId;
+      if (isSelf) {
+        return null;
+      }
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -79,7 +91,7 @@ export const columns: ColumnDef<User>[] = [
             </DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link
-                href={`/chat/${row.original.id}`}
+                href={`/chat/${row.original.clerkUserId}`}
                 className="text-neutral-700 cursor-pointer"
               >
                 Chat Now
@@ -94,6 +106,7 @@ export const columns: ColumnDef<User>[] = [
 
 export function Leaderboard(props: {
   preloadedUsers: Preloaded<typeof api.functions.users.getUsers>;
+  authUserId: string;
 }) {
   const [data, setData] = useState<User[]>([]);
   const [filters, setFilters] = useState<ColumnFiltersState>([]);
@@ -106,6 +119,7 @@ export function Leaderboard(props: {
         email: item.email,
         name: item.fullName,
         points: item.points,
+        clerkUserId: item.clerkUserId,
       };
     });
     setData(result);
@@ -121,6 +135,9 @@ export function Leaderboard(props: {
     state: {
       columnFilters: filters,
       columnVisibility,
+    },
+    meta: {
+      authUserId: props.authUserId,
     },
   });
   return (
@@ -247,6 +264,6 @@ export function Leaderboard(props: {
           <ArrowRightIcon className="text-muted-foreground" />
         </Button>
       </div>
-      </div>
+    </div>
   );
 }
