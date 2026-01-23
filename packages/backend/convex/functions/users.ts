@@ -7,6 +7,7 @@ export const createUser = mutation({
     dateOfBirth: v.string(),
     phoneNumber: v.string(),
     permanentAddress: v.string(),
+    clerkUserId: v.string(),
   },
   handler: async (ctx, args) => {
     const auth = await ctx.auth.getUserIdentity();

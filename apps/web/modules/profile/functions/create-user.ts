@@ -24,6 +24,7 @@ export const createUser = async (user: User) => {
       api.functions.users.createUser,
       {
         ...user,
+        clerkUserId: clerkUser.id
       },
       { token },
     );

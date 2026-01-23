@@ -9,6 +9,7 @@ export default defineSchema({
     phoneNumber: v.string(),
     permanentAddress: v.string(),
     points: v.number(),
+    clerkUserId: v.optional(v.string()),
     userId: v.string(),
   })
     .index("by_userId", ["userId"])
