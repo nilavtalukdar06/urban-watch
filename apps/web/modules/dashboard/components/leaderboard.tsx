@@ -16,6 +16,7 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
+  PaginationState,
   getFilteredRowModel,
   VisibilityState,
 } from "@tanstack/react-table";
@@ -111,6 +112,10 @@ export function Leaderboard(props: {
   const [data, setData] = useState<User[]>([]);
   const [filters, setFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 5,
+  });
   const users = usePreloadedQuery(props.preloadedUsers);
   useEffect(() => {
     const result = users.map((item) => {
@@ -135,11 +140,17 @@ export function Leaderboard(props: {
     state: {
       columnFilters: filters,
       columnVisibility,
+      pagination,
     },
+    onPaginationChange: setPagination,
     meta: {
       authUserId: props.authUserId,
     },
   });
+
+  useEffect(() => {
+    table.setPageIndex(0);
+  }, [filters]);
   return (
     <div className="w-full">
       <div className="py-2">
