@@ -47,7 +47,8 @@ export function Inbox({ user, token }: Props) {
   const userToken = token;
 
   const filters = {
-    members: { $in: [userId], type: "messaging" },
+    members: { $in: [userId] },
+    type: "messaging",
   };
   const options = {
     presence: true,
@@ -72,7 +73,7 @@ export function Inbox({ user, token }: Props) {
     );
   }
   return (
-    <div className="w-full">
+    <div className="w-full h-[80svh] overflow-y-auto">
       <Chat client={client}>
         <ChannelList
           filters={filters}

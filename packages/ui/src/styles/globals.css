@@ -9,12 +9,17 @@
 
 /* Hide scrollbar globally but allow scrolling */
 * {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 *::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari */
+  display: none; /* Chrome, Safari */
+}
+
+.str-chat__channel-list {
+  border-right-color: white !important;
+  border-right-width: 0px !important;
 }
 
 :root {
