@@ -17,6 +17,7 @@ export default defineSchema({
   userIdentity: defineTable({
     isAuthorized: v.boolean(),
     documentType: v.optional(v.string()),
+    notes: v.optional(v.string()),
     citizenId: v.id("citizens"),
   }).index("by_citizenId", ["citizenId"]),
   chatbot: defineTable({
