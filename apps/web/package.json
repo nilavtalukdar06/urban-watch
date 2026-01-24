@@ -19,6 +19,7 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.3",
     "@tanstack/react-table": "^8.21.3",
+    "@uploadcare/react-uploader": "^1.11.2",
     "@workspace/backend": "workspace:*",
     "@workspace/ui": "workspace:*",
     "ai": "^6.0.39",
