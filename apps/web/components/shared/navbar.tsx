@@ -13,9 +13,11 @@ export function Navbar() {
   const pathname = usePathname();
   return (
     <div className="w-full">
-      <div className="px-4">
-        <Verification />
-      </div>
+      {pathname !== "/verify-account" && (
+        <div className="px-4">
+          <Verification />
+        </div>
+      )}
       <header className="w-full p-4 flex justify-between items-center">
         <Link href="/">
           <Image src="/logo.svg" height={36} width={160} alt="logo" />
