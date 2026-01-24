@@ -42,7 +42,7 @@ export default async function Home() {
         </div>
         <Leaderboard preloadedUsers={preloadedUsers} authUserId={user.id} />
       </div>
-      <p className="text-center text-muted-foreground sm:hidden font-light mb-4 text-xs">
+      <p className="text-center text-muted-foreground font-light mb-4 text-xs">
         Made with love ❤️ by Nilav Talukdar
       </p>
     </div>
