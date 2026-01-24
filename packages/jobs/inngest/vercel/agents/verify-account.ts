@@ -1,5 +1,6 @@
 import { openai } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import { generateText, Output } from "ai";
+import { z } from "zod";
 
 interface Account {
   imageUrl: string;
@@ -14,6 +15,23 @@ export async function verifyAccount(props: Account) {
   try {
     const result = await generateText({
       model: openai("gpt-5-nano"),
+      output: Output.object({
+        schema: z.object({
+          isAuthorized: z
+            .boolean()
+            .describe(
+              "True if the ID appears legitimate and matches the provided user details",
+            ),
+          documentType: z
+            .optional(z.string())
+            .describe("Type of identity document if authorized"),
+          notes: z
+            .string()
+            .describe(
+              "Brief explanation of verification result or mismatch reason",
+            ),
+        }),
+      }),
       messages: [
         {
           role: "user",
