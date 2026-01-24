@@ -1,0 +1,17 @@
+{
+  "name": "@workspace/jobs",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm dlx inngest-cli@latest dev"
+  },
+  "exports": {
+    "./jobs": "./jobs/**"
+  },
+  "devDependencies": {
+    "@workspace/typescript-config": "workspace:*",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "inngest": "^3.49.3"
+  }
+}

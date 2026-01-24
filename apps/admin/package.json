@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@workspace/jobs": "workspace:*",
     "@workspace/backend": "workspace:*",
     "@clerk/nextjs": "^6.36.8",
     "@workspace/ui": "workspace:*",
