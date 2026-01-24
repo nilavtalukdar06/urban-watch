@@ -2,6 +2,7 @@
 
 import { api } from "@workspace/backend/convex/_generated/api";
 import { useQuery } from "convex/react";
+import Link from "next/link";
 
 export function Verification() {
   const result = useQuery(api.functions.users.checkVerificationStatus);
@@ -24,7 +25,12 @@ export function Verification() {
     <div className="p-1 bg-red-50">
       <p className="text-sm font-light text-red-500 text-center">
         You have not verified your account yet, please click here to{" "}
-        <span className="text-red-700 underline cursor-pointer">verify</span>
+        <Link
+          className="text-red-700 underline cursor-pointer"
+          href="/verify-account"
+        >
+          verify
+        </Link>
       </p>
     </div>
   );
