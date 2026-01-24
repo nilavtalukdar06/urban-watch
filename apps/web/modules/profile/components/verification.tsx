@@ -11,6 +11,15 @@ export function Verification() {
   if (result && result.isAuthorized) {
     return null;
   }
+  if (result && result?.verificationStatus === "in-review") {
+    return (
+      <div className="p-1 bg-yellow-50">
+        <p className="text-sm font-light text-yellow-500 text-center">
+          You are account is currently in review, we will notify you once done
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="p-1 bg-red-50">
       <p className="text-sm font-light text-red-500 text-center">
