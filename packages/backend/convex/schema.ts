@@ -16,6 +16,7 @@ export default defineSchema({
     .index("by_points", ["points"]),
   userIdentity: defineTable({
     isAuthorized: v.boolean(),
+    verificationStatus: v.optional(v.string()),
     documentType: v.optional(v.string()),
     notes: v.optional(v.string()),
     citizenId: v.id("citizens"),
