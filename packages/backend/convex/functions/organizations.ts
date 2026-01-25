@@ -19,6 +19,7 @@ export const createOrganization = mutation({
     const result = await ctx.db.insert("organization", {
       ...args,
       organizationId,
+      payments_enabled: false,
       userId: auth.subject,
     });
     return result;

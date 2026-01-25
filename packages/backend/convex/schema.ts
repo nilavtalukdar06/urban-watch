@@ -31,6 +31,7 @@ export default defineSchema({
     purpose: v.string(),
     goal: v.string(),
     organizationId: v.string(),
+    payments_enabled: v.boolean(),
     userId: v.string(),
   }),
 });
