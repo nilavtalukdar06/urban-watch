@@ -4,18 +4,41 @@ import { FileUploaderMinimal } from "@uploadcare/react-uploader/next";
 import "@uploadcare/react-uploader/core.css";
 import { useState } from "react";
 import { Button } from "@workspace/ui/components/button";
+import { toast } from "sonner";
+import { verifyAccount } from "../functions/verify-account";
+import { cn } from "@workspace/ui/lib/utils";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { useRouter } from "next/navigation";
 
 export function UploadFile() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>("");
+
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      await verifyAccount(imageUrl);
+      router.replace("/");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send verification request");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="max-w-xs w-full mx-auto my-24">
       <div className="text-muted-foreground font-light text-center flex flex-col gap-y-4 justify-center items-center">
         <h3 className="text-neutral-700">Upload your Identity</h3>
         <FileUploaderMinimal
-          className="w-full"
+          className={cn(
+            "w-full",
+            isLoading && "pointer-events-none opacity-50",
+          )}
           sourceList="local, camera"
           classNameUploader="uc-light"
-          pubkey="34afe62839288fda88ce"
+          pubkey={process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY!}
           multiple={false}
           removeCopyright={true}
           onCommonUploadSuccess={(e) => {
@@ -26,7 +49,20 @@ export function UploadFile() {
           Upload a clear, well-lit photo of your full Identity Card. If it has
           two sides, merge the front and back into one image before uploading.
         </p>
-        <Button className="rounded-lg text-sm">Request Verification</Button>
+        <Button
+          className="rounded-lg text-sm"
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <span className="flex gap-x-2 justify-center items-center">
+              <Spinner />
+              <span>Requesting...</span>
+            </span>
+          ) : (
+            "Request Verification"
+          )}
+        </Button>
       </div>
     </div>
   );
