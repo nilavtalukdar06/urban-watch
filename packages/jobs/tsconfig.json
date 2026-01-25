@@ -5,7 +5,8 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@workspace/emails/*": ["../../packages/emails/*"]
+      "@workspace/emails/*": ["../../packages/emails/*"],
+      "@workspace/backend/*": ["../../packages/backend/*"],
     }
   },
   "include": ["inngest/**/*.ts"],

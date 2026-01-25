@@ -273,6 +273,9 @@ importers:
       "@ai-sdk/openai":
         specifier: ^3.0.18
         version: 3.0.18(zod@3.25.76)
+      "@workspace/backend":
+        specifier: workspace:*
+        version: link:../backend
       "@workspace/emails":
         specifier: workspace:*
         version: link:../emails
