@@ -52,6 +52,8 @@ export function OnboardingForm() {
     } catch (error) {
       console.error(error);
       toast.error("Failed to create profile");
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
