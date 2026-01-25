@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { updateMetadata } from "../functions/update-metadata";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Spinner } from "@workspace/ui/components/spinner";
 
 const formSchema = z.object({
