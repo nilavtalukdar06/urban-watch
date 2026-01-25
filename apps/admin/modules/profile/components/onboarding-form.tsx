@@ -14,6 +14,13 @@ import {
 } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { Textarea } from "@workspace/ui/components/textarea";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useMutation } from "convex/react";
+import { api } from "@workspace/backend/convex/_generated/api";
+import { updateMetadata } from "../functions/update-metadata";
+import { useRouter } from "next/router";
+import { Spinner } from "@workspace/ui/components/spinner";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is too short" }),
@@ -22,6 +29,9 @@ const formSchema = z.object({
 });
 
 export function OnboardingForm() {
+  const router = useRouter();
+  const mutation = useMutation(api.functions.organizations.createOrganization);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,8 +41,18 @@ export function OnboardingForm() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setIsLoading(true);
+      await mutation({ ...values });
+      await updateMetadata();
+      toast.success("Profile Created Successfully");
+      form.reset();
+      router.replace("/");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to create profile");
+    }
   };
   return (
     <div className="w-full my-2">
@@ -90,7 +110,9 @@ export function OnboardingForm() {
             )}
           />
           <div className="w-full flex justify-center items-center">
-            <Button className="w-fit">Submit</Button>
+            <Button className="w-fit" disabled={isLoading}>
+              {isLoading ? <Spinner /> : "Submit"}
+            </Button>
           </div>
         </form>
       </Form>
