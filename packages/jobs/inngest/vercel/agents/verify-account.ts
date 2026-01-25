@@ -1,16 +1,14 @@
 import { openai } from "@ai-sdk/openai";
-import { generateText, Output, stepCountIs, tool } from "ai";
+import { generateText, Output } from "ai";
 import { z } from "zod";
 import {
   account_verification_prompt,
   userPrompt,
 } from "../prompts/verify-account.js";
-import { verificationEmail } from "@workspace/emails/src/verify-account.js";
 
 interface Account {
   imageUrl: string;
   user: {
-    email: string;
     name: string;
     dateOfBirth: string;
     permanentAddress: string;
@@ -18,26 +16,9 @@ interface Account {
 }
 
 export async function verifyAccount(props: Account) {
-  const emailTool = tool({
-    description:
-      "Send the email to the user about their ID verification status",
-    inputSchema: z.object({
-      subject: z.string().describe("Subject of the email"),
-      body: z.string().describe("Body of the email"),
-    }),
-    strict: true,
-    execute: async ({ subject, body }) => {
-      const result = await verificationEmail(props.user.email, subject, body);
-      return result;
-    },
-  });
   try {
     const result = await generateText({
       model: openai("gpt-5-nano"),
-      stopWhen: stepCountIs(5),
-      tools: {
-        emailTool,
-      },
       output: Output.object({
         schema: z.object({
           isAuthorized: z
