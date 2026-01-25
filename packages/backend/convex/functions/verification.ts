@@ -29,13 +29,22 @@ export const verificationRecord = mutation({
     isAuthorized: v.boolean(),
     documentType: v.optional(v.string()),
     notes: v.string(),
-    userId: v.id("citizens"),
+    citizenId: v.id("citizens"),
   },
   handler: async (ctx, args) => {
-    const result = await ctx.db.insert("userIdentity", {
-      ...args,
-      citizenId: args.userId,
+    const identity = await ctx.db
+      .query("userIdentity")
+      .withIndex("by_citizenId", (q) => q.eq("citizenId", args.citizenId))
+      .first();
+    if (!identity) {
+      throw new Error("userIdentity record not found");
+    }
+    await ctx.db.patch(identity._id, {
+      isAuthorized: args.isAuthorized,
+      documentType: args.documentType,
+      notes: args.notes,
+      verificationStatus: "reviewed",
     });
-    return result;
+    return identity._id;
   },
 });

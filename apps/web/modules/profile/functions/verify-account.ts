@@ -24,7 +24,7 @@ export const verifyAccount = async (imageUrl: string) => {
     data: {
       imageUrl,
       user: {
-        userId: user._id,
+        citizenId: user._id,
         email: user.email,
         name: user.fullName,
         dateOfBirth: user.dateOfBirth,

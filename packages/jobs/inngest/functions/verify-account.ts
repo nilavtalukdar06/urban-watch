@@ -20,7 +20,7 @@ export const verifyAccountFunction = inngest.createFunction(
     });
     await step.run("insert-record", async () => {
       await fetchMutation(api.functions.verification.verificationRecord, {
-        userId: event.data.userId,
+        citizenId: event.data.user.citizenId,
         isAuthorized: account.isAuthorized,
         documentType: account.documentType ?? undefined,
         notes: account.notes,
