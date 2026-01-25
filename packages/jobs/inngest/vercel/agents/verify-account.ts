@@ -1,6 +1,10 @@
 import { openai } from "@ai-sdk/openai";
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import {
+  account_verification_prompt,
+  userPrompt,
+} from "../prompts/verify-account.js";
 
 interface Account {
   imageUrl: string;
@@ -34,11 +38,19 @@ export async function verifyAccount(props: Account) {
       }),
       messages: [
         {
+          role: "system",
+          content: account_verification_prompt,
+        },
+        {
           role: "user",
           content: [
             {
               type: "text",
-              text: "please verify the id",
+              text: userPrompt(
+                props.user.name,
+                props.user.dateOfBirth,
+                props.user.permanentAddress,
+              ),
             },
             {
               type: "image",
