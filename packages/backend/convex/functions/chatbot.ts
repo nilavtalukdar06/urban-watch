@@ -38,7 +38,11 @@ export const getMessages = query({
     if (!auth) {
       throw new Error("the user is not authenticated");
     }
-    const messages = await ctx.db.query("chatbot").order("desc").collect();
+    const messages = await ctx.db
+      .query("chatbot")
+      .filter((q) => q.eq(q.field("userId"), auth.subject))
+      .order("desc")
+      .collect();
     return messages;
   },
 });
