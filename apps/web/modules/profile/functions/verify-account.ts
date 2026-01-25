@@ -1,8 +1,27 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { api } from "@workspace/backend/convex/_generated/api";
+import { inngest } from "@workspace/jobs/inngest/client";
+import { fetchQuery } from "convex/nextjs";
 
 export const verifyAccount = async (imageUrl: string) => {
-  const { userId } = await auth();
-  return userId;
+  const result = await auth();
+  const token = (await result.getToken({ template: "convex" })) ?? undefined;
+  const user = await fetchQuery(api.functions.users.getUser, {}, { token });
+  if (!user) {
+    throw new Error("user is not present");
+  }
+  await inngest.send({
+    name: "test/verify-account",
+    data: {
+      imageUrl,
+      user: {
+        email: user.email,
+        name: user.fullName,
+        dateOfBirth: user.dateOfBirth,
+        permanentAddress: user.permanentAddress,
+      },
+    },
+  });
 };
