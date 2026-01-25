@@ -5,6 +5,7 @@
     "./emails": "./emails/**"
   },
   "devDependencies": {
+    "@types/node": "^25.0.10",
     "@workspace/typescript-config": "workspace:*",
     "typescript": "latest"
   },
