@@ -1,19 +1,6 @@
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
-import { auth, clerkClient } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const { orgId } = await auth();
-  if (!orgId) {
-    redirect("/sign-in");
-  }
-  const client = await clerkClient();
-  const organization = await client.organizations.getOrganization({
-    organizationId: orgId,
-  });
-  if (!organization.publicMetadata?.hasProfile) {
-    redirect("/onboarding");
-  }
   return (
     <div className="p-4 flex flex-col items-start justify-center">
       <UserButton />
