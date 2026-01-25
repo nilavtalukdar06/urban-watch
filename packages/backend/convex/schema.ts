@@ -26,4 +26,11 @@ export default defineSchema({
     content: v.string(),
     userId: v.string(),
   }).index("by_userId", ["userId"]),
+  organization: defineTable({
+    name: v.string(),
+    purpose: v.string(),
+    goal: v.string(),
+    organizationId: v.string(),
+    userId: v.string(),
+  }),
 });
