@@ -16,6 +16,9 @@ export const verifyAccountFunction = inngest.createFunction(
         },
       });
     });
+    await step.run("insert-record", async () => {
+      console.log("insert");
+    });
     const result = await step.run("send-email", async () => {
       return await verificationEmail(
         event.data.user.email,

@@ -3,7 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { inngest } from "@workspace/jobs/inngest/client";
-import { fetchQuery } from "convex/nextjs";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
 
 export const verifyAccount = async (imageUrl: string) => {
   const result = await auth();
@@ -12,6 +12,9 @@ export const verifyAccount = async (imageUrl: string) => {
   if (!user) {
     throw new Error("user is not present");
   }
+  await fetchMutation(api.functions.verification.updateStatus, {
+    userId: user._id,
+  });
   await inngest.send({
     name: "test/verify-account",
     data: {
