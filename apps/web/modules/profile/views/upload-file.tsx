@@ -19,6 +19,7 @@ export function UploadFile() {
     try {
       setIsLoading(true);
       await verifyAccount(imageUrl);
+      toast.success("Request has been sent");
       router.replace("/");
     } catch (error) {
       console.error(error);
