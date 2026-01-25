@@ -1,7 +1,10 @@
 {
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
-    "rootDir": "inngest"
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/emails/*": ["../../packages/emails/*"]
+    }
   },
   "include": ["inngest"],
   "exclude": ["node_modules"]

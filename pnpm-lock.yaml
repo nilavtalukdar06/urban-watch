@@ -223,7 +223,7 @@ importers:
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
-        specifier: latest
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/eslint-config:
@@ -273,6 +273,9 @@ importers:
       "@ai-sdk/openai":
         specifier: ^3.0.18
         version: 3.0.18(zod@3.25.76)
+      "@workspace/emails":
+        specifier: workspace:*
+        version: link:../emails
       ai:
         specifier: ^6.0.39
         version: 6.0.42(zod@3.25.76)
@@ -290,7 +293,7 @@ importers:
         specifier: workspace:*
         version: link:../typescript-config
       typescript:
-        specifier: latest
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/typescript-config: {}
