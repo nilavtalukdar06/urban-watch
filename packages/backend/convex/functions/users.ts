@@ -58,9 +58,16 @@ export const checkVerificationStatus = query({
     if (!auth) {
       throw new Error("the user is not authenticated");
     }
+    const citizen = await ctx.db
+      .query("citizens")
+      .filter((q) => q.eq(q.field("userId"), auth.subject))
+      .first();
+    if (!citizen) {
+      throw new Error("citizen doesn't exist");
+    }
     const result = await ctx.db
       .query("userIdentity")
-      .filter((q) => q.eq(q.field("citizenId"), auth.subject))
+      .filter((q) => q.eq(q.field("citizenId"), citizen._id))
       .first();
     return result;
   },
