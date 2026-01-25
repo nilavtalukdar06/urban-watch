@@ -10,6 +10,7 @@
 
 import type * as functions_chatbot from "../functions/chatbot.js";
 import type * as functions_users from "../functions/users.js";
+import type * as functions_verification from "../functions/verification.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +21,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   "functions/chatbot": typeof functions_chatbot;
   "functions/users": typeof functions_users;
+  "functions/verification": typeof functions_verification;
 }>;
 
 /**
