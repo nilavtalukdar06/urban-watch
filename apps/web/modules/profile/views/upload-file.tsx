@@ -52,7 +52,7 @@ export function UploadFile() {
         <Button
           className="rounded-lg text-sm"
           onClick={handleSubmit}
-          disabled={isLoading}
+          disabled={isLoading || !imageUrl}
         >
           {isLoading ? (
             <span className="flex gap-x-2 justify-center items-center">
