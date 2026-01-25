@@ -66,7 +66,7 @@ export async function verifyAccount(props: Account) {
         },
       ],
     });
-    return result.content;
+    return result.output;
   } catch (error) {
     console.error(error);
     throw error;
