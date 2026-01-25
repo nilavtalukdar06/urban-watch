@@ -65,3 +65,18 @@ export const checkVerificationStatus = query({
     return result;
   },
 });
+
+export const getUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const result = await ctx.db
+      .query("citizens")
+      .filter((q) => q.eq(q.field("userId"), auth.subject))
+      .first();
+    return result;
+  },
+});
