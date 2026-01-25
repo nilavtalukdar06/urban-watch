@@ -1,0 +1,14 @@
+{
+  "name": "@workspace/emails",
+  "type": "module",
+  "exports": {
+    "./emails": "./emails/**"
+  },
+  "devDependencies": {
+    "@workspace/typescript-config": "workspace:*",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "resend": "^6.8.0"
+  }
+}
