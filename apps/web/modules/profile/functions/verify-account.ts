@@ -12,9 +12,13 @@ export const verifyAccount = async (imageUrl: string) => {
   if (!user) {
     throw new Error("user is not present");
   }
-  await fetchMutation(api.functions.verification.updateStatus, {
-    userId: user._id,
-  });
+  await fetchMutation(
+    api.functions.verification.updateStatus,
+    {
+      userId: user._id,
+    },
+    { token },
+  );
   await inngest.send({
     name: "test/verify-account",
     data: {
