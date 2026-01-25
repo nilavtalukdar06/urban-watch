@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   account_verification_prompt,
   userPrompt,
-} from "../prompts/verify-account.js";
+} from "../prompts/verify-account";
 
 interface Account {
   imageUrl: string;
@@ -27,8 +27,11 @@ export async function verifyAccount(props: Account) {
               "True if the ID appears legitimate and matches the provided user details",
             ),
           documentType: z
-            .optional(z.string())
-            .describe("Type of identity document if authorized"),
+            .string()
+            .nullable()
+            .describe(
+              "Type of identity document if authorized, otherwise null",
+            ),
           notes: z
             .string()
             .describe(

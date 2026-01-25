@@ -1,7 +1,9 @@
 {
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
-    "rootDir": "src"
+    "baseUrl": ".",
+    "module": "preserve",
+    "moduleResolution": "bundler"
   },
   "include": ["src"],
   "exclude": ["node_modules"]

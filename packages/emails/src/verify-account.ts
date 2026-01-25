@@ -1,4 +1,4 @@
-import { resend } from "./lib/resend.js";
+import { resend } from "./lib/resend";
 
 export async function verificationEmail(
   emailTo: string,

@@ -1,6 +1,6 @@
-import { inngest } from "inngest/client.js";
-import { verifyAccount } from "inngest/vercel/agents/verify-account.js";
-import { verificationEmail } from "@workspace/emails/src/verify-account.js";
+import { inngest } from "../client";
+import { verifyAccount } from "../vercel/agents/verify-account";
+import { verificationEmail } from "@workspace/emails/src/verify-account";
 
 export const verifyAccountFunction = inngest.createFunction(
   { id: "verify-account" },
