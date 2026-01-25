@@ -27,7 +27,7 @@ export const updateStatus = mutation({
 export const verificationRecord = mutation({
   args: {
     isAuthorized: v.boolean(),
-    documentType: v.string(),
+    documentType: v.optional(v.string()),
     notes: v.string(),
     userId: v.id("citizens"),
   },

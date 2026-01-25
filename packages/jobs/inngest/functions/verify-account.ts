@@ -1,6 +1,8 @@
+import { fetchMutation } from "convex/nextjs";
 import { inngest } from "../client";
 import { verifyAccount } from "../vercel/agents/verify-account";
 import { verificationEmail } from "@workspace/emails/src/verify-account";
+import { api } from "@workspace/backend/convex/_generated/api";
 
 export const verifyAccountFunction = inngest.createFunction(
   { id: "verify-account" },
@@ -17,7 +19,12 @@ export const verifyAccountFunction = inngest.createFunction(
       });
     });
     await step.run("insert-record", async () => {
-      console.log("insert");
+      await fetchMutation(api.functions.verification.verificationRecord, {
+        userId: event.data.userId,
+        isAuthorized: account.isAuthorized,
+        documentType: account.documentType ?? undefined,
+        notes: account.notes,
+      });
     });
     const result = await step.run("send-email", async () => {
       return await verificationEmail(
