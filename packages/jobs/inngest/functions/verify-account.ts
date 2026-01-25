@@ -6,7 +6,7 @@ export const verifyAccountFunction = inngest.createFunction(
   { id: "verify-account" },
   { event: "test/verify-account" },
   async ({ event, step }) => {
-    const account = await step.run("verify-acccount", async () => {
+    const account = await step.run("verify-account", async () => {
       return await verifyAccount({
         imageUrl: event.data.imageUrl,
         user: {
