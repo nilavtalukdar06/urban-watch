@@ -4,6 +4,10 @@ import { v } from "convex/values";
 export const updateStatus = mutation({
   args: { userId: v.id("citizens") },
   handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("user is not authenticated");
+    }
     const { userId } = args;
     const identity = await ctx.db
       .query("userIdentity")
