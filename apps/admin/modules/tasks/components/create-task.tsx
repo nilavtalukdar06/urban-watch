@@ -39,6 +39,7 @@ import {
   PopoverTrigger,
 } from "@workspace/ui/components/popover";
 import { cn } from "@workspace/ui/lib/utils";
+import { useState } from "react";
 
 const formSchema = z.object({
   title: z.string().min(2, { message: "Task title is too short" }),
@@ -55,6 +56,7 @@ const formSchema = z.object({
 });
 
 export function CreateTask() {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -69,7 +71,7 @@ export function CreateTask() {
     console.log(values);
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="my-3">
         <Button
           variant="secondary"
@@ -149,10 +151,7 @@ export function CreateTask() {
                     <FormLabel className="font-normal text-neutral-600">
                       Assign Task
                     </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full shadow-none rounded-sm">
                           <SelectValue placeholder="Select a member to assign task" />
@@ -205,6 +204,7 @@ export function CreateTask() {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
+                          disabled={(date) => date < new Date()}
                         />
                       </PopoverContent>
                     </Popover>
@@ -221,17 +221,17 @@ export function CreateTask() {
                 className="w-fit shadow-none rounded-sm"
                 variant="outline"
                 type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  form.reset();
+                }}
               >
-                Cancel{" "}
-                <span>
-                  <XIcon />
-                </span>
+                <span>Cancel</span>
+                <XIcon />
               </Button>
               <Button className="w-fit shadow-none rounded-sm" type="submit">
-                Submit{" "}
-                <span>
-                  <CalendarIcon />
-                </span>
+                <span>Submit</span>
+                <CalendarIcon />
               </Button>
             </div>
           </form>
