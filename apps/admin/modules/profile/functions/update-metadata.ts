@@ -8,10 +8,9 @@ export const updateMetadata = async () => {
     throw new Error("organization id is not present");
   }
   const client = await clerkClient();
-  const result = await client.organizations.updateOrganization(orgId, {
+  await client.organizations.updateOrganization(orgId, {
     publicMetadata: {
       hasProfile: true,
     },
   });
-  return result;
 };
