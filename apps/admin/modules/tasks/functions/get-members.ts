@@ -19,6 +19,7 @@ export async function getOrganizationMemebers() {
     userId: member.publicUserData?.userId,
     name:
       member.publicUserData?.firstName + " " + member.publicUserData?.lastName,
+    role: member.role,
   }));
   return result;
 }
