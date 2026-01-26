@@ -15,11 +15,9 @@ import {
 } from "@workspace/ui/components/sidebar";
 import {
   ClipboardCheckIcon,
-  CoinsIcon,
   HashIcon,
   InboxIcon,
   UserRoundCheckIcon,
-  UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
