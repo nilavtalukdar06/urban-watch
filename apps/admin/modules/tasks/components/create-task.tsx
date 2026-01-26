@@ -39,7 +39,10 @@ import {
   PopoverTrigger,
 } from "@workspace/ui/components/popover";
 import { cn } from "@workspace/ui/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getOrganizationMemebers } from "../functions/get-members";
+import { toast } from "sonner";
+import { Badge } from "@workspace/ui/components/badge";
 
 const formSchema = z.object({
   title: z.string().min(2, { message: "Task title is too short" }),
@@ -55,7 +58,15 @@ const formSchema = z.object({
     }),
 });
 
+type Member = {
+  userId: string | undefined;
+  role: string;
+  name: string;
+};
+
 export function CreateTask() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [members, setMembers] = useState<Member[] | []>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,10 +81,27 @@ export function CreateTask() {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
   };
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        setIsLoading(true);
+        const result = await getOrganizationMemebers();
+        setMembers(result);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch organization members");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchMembers();
+  }, [setMembers]);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="my-3">
         <Button
+          disabled={isLoading}
           variant="secondary"
           className="bg-sidebar! border font-normal shadow-none"
         >
@@ -158,9 +186,29 @@ export function CreateTask() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="nilav">Nilav Talukdar</SelectItem>
-                        <SelectItem value="jhon">Jhon Doe</SelectItem>
-                        <SelectItem value="aarav">Aarav Sharma</SelectItem>
+                        {members.map((member) => (
+                          <SelectItem
+                            value={member.userId!}
+                            key={member.userId}
+                            className="flex justify-start items-center gap-x-4"
+                          >
+                            <span>{member.name}</span>
+                            <Badge
+                              variant="secondary"
+                              className={cn(
+                                member.role === "org:admin"
+                                  ? "bg-red-50 text-red-500 flex items-center"
+                                  : "bg-purple-50 text-purple-500",
+                              )}
+                            >
+                              {member.role
+                                .split(":")[1]
+                                ?.charAt(0)
+                                .toUpperCase() +
+                                member.role.split(":")[1]!.slice(1)}
+                            </Badge>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
