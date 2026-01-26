@@ -140,3 +140,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .rbc-header {
+    @apply font-light! text-sm! text-muted-foreground! py-2!
+  }
+  .rbc-button-link {
+    @apply text-xs! font-light! text-muted-foreground!
+  }
+  .rbc-month-view {
+    @apply rounded-sm!
+  }
+  .rbc-off-range-bg {
+    @apply bg-transparent!
+  }
+  .rbc-today {
+    @apply bg-transparent!
+  }
+  .rbc-date-cell {
+    @apply p-2!
+  }
+}

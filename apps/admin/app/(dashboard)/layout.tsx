@@ -30,7 +30,7 @@ export default async function Layout({ children }: Props) {
     <AuthGuard>
       <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />
-        <main>
+        <main className="flex-1 min-w-0">
           <div className="p-2">
             <SidebarTrigger />
           </div>
