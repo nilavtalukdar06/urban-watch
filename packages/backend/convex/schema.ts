@@ -34,4 +34,18 @@ export default defineSchema({
     payments_enabled: v.boolean(),
     userId: v.string(),
   }),
+  tasks: defineTable({
+    organizationId: v.string(),
+    title: v.string(),
+    description: v.string(),
+    assignedByUserId: v.string(),
+    assignedToUserId: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("in_progress"),
+      v.literal("completed"),
+      v.literal("cancelled"),
+    ),
+    dueDate: v.number(),
+  }),
 });
