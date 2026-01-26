@@ -21,6 +21,7 @@ import {
   UserRoundCheckIcon,
   UsersIcon,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 const taskItems = [
@@ -53,12 +54,12 @@ const settingsItems = [
   {
     label: "Manage Users",
     path: "/users",
-    icon: UsersIcon,
+    icon: "clerk.svg",
   },
   {
     label: "Payments",
     path: "/payments",
-    icon: CoinsIcon,
+    icon: "stripe.svg",
   },
 ] as const;
 
@@ -115,7 +116,12 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.path}>
                   <SidebarMenuButton asChild>
                     <Link href={item.path}>
-                      <item.icon />
+                      <Image
+                        src={`/icons/${item.icon}`}
+                        height={16}
+                        width={16}
+                        alt="logos"
+                      />
                       <span>{item.label}</span>
                     </Link>
                   </SidebarMenuButton>
