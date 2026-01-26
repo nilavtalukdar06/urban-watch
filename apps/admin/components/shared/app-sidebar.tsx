@@ -1,9 +1,146 @@
 "use client";
 
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@workspace/ui/components/sidebar";
+import {
+  ClipboardCheckIcon,
+  CoinsIcon,
+  HashIcon,
+  InboxIcon,
+  UserRoundCheckIcon,
+  UsersIcon,
+} from "lucide-react";
+import Link from "next/link";
+
+const taskItems = [
+  {
+    label: "All Tasks",
+    path: "/",
+    icon: ClipboardCheckIcon,
+  },
+  {
+    label: "My Tasks",
+    path: "/my-tasks",
+    icon: UserRoundCheckIcon,
+  },
+] as const;
+
+const reportItems = [
+  {
+    label: "General",
+    path: "/reports",
+    icon: HashIcon,
+  },
+  {
+    label: "My Reports",
+    path: "/my-reports",
+    icon: InboxIcon,
+  },
+] as const;
+
+const settingsItems = [
+  {
+    label: "Manage Users",
+    path: "/users",
+    icon: UsersIcon,
+  },
+  {
+    label: "Payments",
+    path: "/payments",
+    icon: CoinsIcon,
+  },
+] as const;
+
 export function AppSidebar() {
   return (
-    <div className="p-4">
-      <p className="text-muted-foreground">App Sidebar</p>
-    </div>
+    <Sidebar>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <OrganizationSwitcher />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Manage Tasks</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {taskItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.path}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Manage Reports</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {reportItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.path}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>All Settings</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {settingsItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.path}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <UserButton
+              showName={true}
+              appearance={{
+                elements: {
+                  userButtonBox: "flex-row-reverse! px-2! py-1!",
+                  avatarBox: "size-5!",
+                  userButtonOuterIdentifier: "p-0!",
+                },
+              }}
+            />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
   );
 }
