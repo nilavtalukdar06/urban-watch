@@ -10,7 +10,7 @@ export default async function Home() {
     (await (await auth()).getToken({ template: "convex" })) ?? undefined;
   const preloadedTasks = await preloadQuery(api.functions.tasks.getTasks, {}, { token });
   return (
-    <div className="px-4 pb-4">
+    <div className="px-4 pb-4 w-full">
       <h3 className="text-lg text-neutral-600 font-light">
         Task Management Dashboard
       </h3>
