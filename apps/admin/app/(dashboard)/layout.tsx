@@ -6,6 +6,7 @@ import {
   SidebarTrigger,
 } from "@workspace/ui/components/sidebar";
 import { AppSidebar } from "@/components/shared/app-sidebar";
+import { cookies } from "next/headers";
 
 interface Props {
   children: React.ReactNode;
@@ -23,9 +24,11 @@ export default async function Layout({ children }: Props) {
   if (!organization.publicMetadata?.hasProfile) {
     redirect("/onboarding");
   }
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
   return (
     <AuthGuard>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />
         <main>
           <div className="p-2">
