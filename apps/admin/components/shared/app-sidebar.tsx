@@ -67,7 +67,14 @@ export function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <OrganizationSwitcher />
+            <OrganizationSwitcher
+              appearance={{
+                elements: {
+                  organizationSwitcherTriggerIcon: "hidden!",
+                  organizationSwitcherTrigger: "py-2!",
+                },
+              }}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -136,7 +143,7 @@ export function AppSidebar() {
               showName={true}
               appearance={{
                 elements: {
-                  userButtonBox: "flex-row-reverse! px-2! py-1!",
+                  userButtonBox: "flex-row-reverse! p-2!",
                   avatarBox: "size-5!",
                   userButtonOuterIdentifier: "p-0!",
                 },
