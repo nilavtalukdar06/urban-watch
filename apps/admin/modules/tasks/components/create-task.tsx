@@ -15,12 +15,15 @@ export function CreateTask() {
   return (
     <Dialog>
       <DialogTrigger asChild className="my-3">
-        <Button variant="secondary" className="bg-sidebar! border font-normal">
+        <Button
+          variant="secondary"
+          className="bg-sidebar! border font-normal shadow-none"
+        >
           <span>Add Task</span>
           <CalendarCheckIcon />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[425px] rounded-sm">
         <DialogHeader>
           <DialogTitle className="font-normal text-neutral-600">
             Create Task
