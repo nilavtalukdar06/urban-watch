@@ -17,6 +17,7 @@ export async function getOrganizationMemebers() {
   });
   const result = members.data.map((member) => ({
     userId: member.publicUserData?.userId,
+    email: member.publicUserData?.identifier,
     name:
       member.publicUserData?.firstName + " " + member.publicUserData?.lastName,
     role: member.role,

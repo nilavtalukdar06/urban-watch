@@ -9,7 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
-import { CalendarCheckIcon, CalendarIcon, XIcon } from "lucide-react";
+import {
+  CalendarCheckIcon,
+  CalendarIcon,
+  LoaderIcon,
+  XIcon,
+} from "lucide-react";
 import { Calendar } from "@workspace/ui/components/calendar";
 import { z } from "zod";
 import { format } from "date-fns";
@@ -43,6 +48,8 @@ import { useEffect, useState } from "react";
 import { getOrganizationMemebers } from "../functions/get-members";
 import { toast } from "sonner";
 import { Badge } from "@workspace/ui/components/badge";
+import { useMutation } from "convex/react";
+import { api } from "@workspace/backend/convex/_generated/api";
 
 const formSchema = z.object({
   title: z.string().min(2, { message: "Task title is too short" }),
@@ -62,9 +69,12 @@ type Member = {
   userId: string | undefined;
   role: string;
   name: string;
+  email: string | undefined;
 };
 
 export function CreateTask() {
+  const mutation = useMutation(api.functions.tasks.createTask);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [members, setMembers] = useState<Member[] | []>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -78,8 +88,19 @@ export function CreateTask() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setIsSubmitting(true);
+      await mutation({ ...values, dueDate: values.dueDate.getTime() });
+      toast.success("Task added successfully");
+      setIsOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to submit task");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -98,7 +119,7 @@ export function CreateTask() {
     fetchMembers();
   }, [setMembers]);
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen || isSubmitting} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="my-3">
         <Button
           disabled={isLoading}
@@ -181,7 +202,7 @@ export function CreateTask() {
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="w-full shadow-none rounded-sm">
+                        <SelectTrigger className="w-full shadow-none rounded-sm h-12!">
                           <SelectValue placeholder="Select a member to assign task" />
                         </SelectTrigger>
                       </FormControl>
@@ -190,9 +211,13 @@ export function CreateTask() {
                           <SelectItem
                             value={member.userId!}
                             key={member.userId}
-                            className="flex justify-start items-center gap-x-4"
                           >
-                            <span>{member.name}</span>
+                            <div className="flex flex-col justify-center items-start">
+                              <span>{member.name}</span>
+                              <span className="text-xs text-muted-foreground font-light">
+                                {member.email}
+                              </span>
+                            </div>
                             <Badge
                               variant="secondary"
                               className={cn(
@@ -269,6 +294,7 @@ export function CreateTask() {
                 className="w-fit shadow-none rounded-sm"
                 variant="outline"
                 type="button"
+                disabled={isSubmitting}
                 onClick={() => {
                   setIsOpen(false);
                   form.reset();
@@ -277,9 +303,17 @@ export function CreateTask() {
                 <span>Cancel</span>
                 <XIcon />
               </Button>
-              <Button className="w-fit shadow-none rounded-sm" type="submit">
-                <span>Submit</span>
-                <CalendarIcon />
+              <Button
+                className="w-fit shadow-none rounded-sm bg-gradient-to-br from-blue-400 to-blue-500"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                <span>{isSubmitting ? "Loading..." : "Submit"}</span>
+                {isSubmitting ? (
+                  <LoaderIcon className="animate-spin" />
+                ) : (
+                  <CalendarIcon />
+                )}
               </Button>
             </div>
           </form>
