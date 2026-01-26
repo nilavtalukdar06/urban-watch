@@ -1,4 +1,4 @@
-import { mutation } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
 
 export const createTask = mutation({
@@ -28,5 +28,25 @@ export const createTask = mutation({
       organizationId: orgId,
     });
     return taskId;
+  },
+});
+
+export const getTasks = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const orgId = auth?.orgId;
+    if (!orgId) {
+      throw new Error("organization doesn't exist");
+    }
+    const result = await ctx.db
+      .query("tasks")
+      .filter((q) => q.eq(q.field("organizationId"), orgId))
+      .order("asc")
+      .collect();
+    return result;
   },
 });
