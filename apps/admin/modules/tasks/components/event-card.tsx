@@ -11,7 +11,6 @@ import {
 } from "@workspace/ui/components/dialog";
 import { cn } from "@workspace/ui/lib/utils";
 import {
-  CornerRightDown,
   RadioTowerIcon,
   TriangleAlertIcon,
   XIcon,
@@ -51,6 +50,7 @@ const taskColors = {
 type Assignee = {
   email: string | null;
   fullName: string | null;
+  role: string | null;
 };
 
 export function EventCard(props: EventCardProps) {
@@ -116,10 +116,12 @@ export function EventCard(props: EventCardProps) {
             Cancel
             <XIcon />
           </Button>
-          <Button size="sm" variant="destructive">
-            Delete Task
-            <TriangleAlertIcon />
-          </Button>
+          {assignee?.role === "org:admin" && (
+            <Button size="sm" variant="destructive">
+              Delete Task
+              <TriangleAlertIcon />
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
