@@ -28,6 +28,15 @@ type Task = {
   _creationTime: number;
 };
 
+type Event = {
+  id: string;
+  start: Date;
+  end: Date;
+  title: string;
+  allDay: boolean;
+  resource: Task;
+};
+
 const locales = {
   "en-US": require("date-fns/locale/en-US"),
 };
@@ -40,7 +49,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const mapTaskToEvents = (tasks: Task[]) => {
+const mapTaskToEvents = (tasks: Task[]): Event[] => {
   return tasks.map((task) => {
     const due = new Date(task.dueDate);
     return {
@@ -57,9 +66,9 @@ const mapTaskToEvents = (tasks: Task[]) => {
 export function CalendarView(props: {
   preloadedTasks: Preloaded<typeof api.functions.tasks.getTasks>;
 }) {
-  const [events, setEvents] = useState<any>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [value, setValue] = useState(
-    events.length > 0 ? new Date(events[0].dueDate) : new Date(),
+    events.length > 0 && events[0]?.end ? new Date(events[0].end) : new Date(),
   );
   const tasks = usePreloadedQuery(props.preloadedTasks);
   useEffect(() => {
