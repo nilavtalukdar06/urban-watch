@@ -89,7 +89,7 @@ export function CalendarView(props: {
   };
   if (events) {
     return (
-      <div className="h-[800px] w-full">
+      <div className="h-[800px] w-full my-2">
         <Calendar
           localizer={localizer}
           date={value}
