@@ -50,3 +50,22 @@ export const getTasks = query({
     return result;
   },
 });
+
+export const deleteTask = mutation({
+  args: { taskId: v.id("tasks") },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const organizationId = auth?.orgId;
+    const role = auth?.orgRole as string;
+    if (!organizationId) {
+      throw new Error("organization doesn't exist");
+    }
+    if (role.includes("memeber")) {
+      throw new Error("a member cannot delete task");
+    }
+    await ctx.db.delete(args.taskId);
+  },
+});
