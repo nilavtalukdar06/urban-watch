@@ -13,6 +13,8 @@ import {
   addMonths,
 } from "date-fns";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { EventCard } from "../components/event-card";
+import { Toolbar } from "../components/toolbar";
 
 type Task = {
   title: string;
@@ -78,7 +80,7 @@ export function CalendarView(props: {
   };
   if (events) {
     return (
-      <div className="my-3 h-[700px] w-full">
+      <div className="h-[800px] w-full">
         <Calendar
           localizer={localizer}
           date={value}
@@ -92,6 +94,23 @@ export function CalendarView(props: {
           formats={{
             weekdayFormat: (date, culture, localizer) =>
               localizer?.format(date, "EEE", culture) ?? "",
+          }}
+          components={{
+            eventWrapper: ({ event }) => {
+              return (
+                <div className="w-full px-1">
+                  <EventCard
+                    end={event.end}
+                    title={event.title}
+                    start={event.start}
+                    resource={event.resource}
+                  />
+                </div>
+              );
+            },
+            toolbar: () => {
+              return <Toolbar date={value} onNavigate={handleNavigate} />;
+            },
           }}
         />
       </div>
