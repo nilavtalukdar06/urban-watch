@@ -283,7 +283,7 @@ export function CreateTask() {
                     </Popover>
                     <FormMessage />
                     <FormDescription className="font-light">
-                      Enter the due that of the task
+                      Enter the due date of the task
                     </FormDescription>
                   </FormItem>
                 );
