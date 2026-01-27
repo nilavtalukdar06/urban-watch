@@ -91,7 +91,18 @@ export function CreateTask() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsSubmitting(true);
-      await mutation({ ...values, dueDate: values.dueDate.getTime() });
+      const selectedMember = members.find(
+        (m) => m.userId === values.assignedToUserId,
+      );
+      if (!selectedMember) {
+        toast.error("Invalid assignee selected");
+        return;
+      }
+      await mutation({
+        ...values,
+        assigneeName: selectedMember.name,
+        dueDate: values.dueDate.getTime(),
+      });
       toast.success("Task added successfully");
       setIsOpen(false);
       form.reset();

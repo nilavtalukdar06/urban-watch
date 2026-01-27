@@ -40,6 +40,7 @@ export default defineSchema({
     description: v.string(),
     assignedByUserId: v.string(),
     assignedToUserId: v.string(),
+    assigneeName: v.string(),
     status: v.union(
       v.literal("pending"),
       v.literal("in_progress"),

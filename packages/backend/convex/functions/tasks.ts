@@ -7,6 +7,7 @@ export const createTask = mutation({
     description: v.string(),
     dueDate: v.number(),
     assignedToUserId: v.string(),
+    assigneeName: v.string(),
   },
   handler: async (ctx, args) => {
     const auth = await ctx.auth.getUserIdentity();
