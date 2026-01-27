@@ -21,6 +21,7 @@ type Task = {
   description: string;
   assignedToUserId: string;
   assignedByUserId: string;
+  assigneeName: string;
   status: string;
   organizationId: string;
   dueDate: number;
