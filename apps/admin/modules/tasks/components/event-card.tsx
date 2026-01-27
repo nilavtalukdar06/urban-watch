@@ -10,16 +10,17 @@ import {
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
 import { cn } from "@workspace/ui/lib/utils";
-import {
-  RadioTowerIcon,
-  TriangleAlertIcon,
-  XIcon,
-} from "lucide-react";
+import { Loader, RadioTowerIcon, TriangleAlertIcon, XIcon } from "lucide-react";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { getUser } from "../functions/get-user";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import { useMutation } from "convex/react";
+import { api } from "@workspace/backend/convex/_generated/api";
+import type { Id } from "@workspace/backend/convex/_generated/dataModel";
+import { toast } from "sonner";
+import { useOrganization } from "@clerk/nextjs";
 
 type Task = {
   title: string;
@@ -50,10 +51,12 @@ const taskColors = {
 type Assignee = {
   email: string | null;
   fullName: string | null;
-  role: string | null;
 };
 
 export function EventCard(props: EventCardProps) {
+  const { membership } = useOrganization();
+  const mutation = useMutation(api.functions.tasks.deleteTask);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [assignee, setAssignee] = useState<Assignee | null>(null);
   useEffect(() => {
@@ -63,8 +66,21 @@ export function EventCard(props: EventCardProps) {
     };
     fetchUser();
   }, []);
+
+  const handleClick = async () => {
+    try {
+      setIsLoading(true);
+      await mutation({ taskId: props.resource._id as Id<"tasks"> });
+      toast.success("Task Deleted Successfully");
+      setIsOpen(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen || isLoading} onOpenChange={setIsOpen}>
       <DialogTrigger className="w-full" asChild>
         <button
           className={cn(
@@ -110,16 +126,21 @@ export function EventCard(props: EventCardProps) {
         <DialogFooter>
           <Button
             size="sm"
+            disabled={isLoading}
             variant="secondary"
             onClick={() => setIsOpen(false)}
           >
             Cancel
             <XIcon />
           </Button>
-          {assignee?.role === "org:admin" && (
-            <Button size="sm" variant="destructive">
-              Delete Task
-              <TriangleAlertIcon />
+          {membership?.role === "org:admin" && (
+            <Button size="sm" variant="destructive" onClick={handleClick}>
+              {isLoading ? "Loading..." : "Delete Task"}
+              {isLoading ? (
+                <Loader className="animate-spin" />
+              ) : (
+                <TriangleAlertIcon />
+              )}
             </Button>
           )}
         </DialogFooter>
