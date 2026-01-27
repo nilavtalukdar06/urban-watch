@@ -143,13 +143,13 @@
 
 @layer components {
   .rbc-header {
-    @apply font-light! text-sm! text-muted-foreground! py-2!;
+    @apply font-light! text-sm! text-muted-foreground! py-2! border-neutral-200!;
   }
   .rbc-button-link {
     @apply text-xs! font-medium! text-neutral-700!;
   }
   .rbc-month-view {
-    @apply rounded-sm!;
+    @apply rounded-sm! border-neutral-200!;
   }
   .rbc-off-range-bg {
     @apply bg-transparent!;
@@ -159,5 +159,11 @@
   }
   .rbc-date-cell {
     @apply p-2!;
+  }
+  .rbc-day-bg {
+    @apply border-neutral-200!;
+  }
+  .rbc-month-row {
+    @apply border-neutral-200!;
   }
 }
