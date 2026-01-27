@@ -56,13 +56,16 @@ type Assignee = {
 export function EventCard(props: EventCardProps) {
   const { membership } = useOrganization();
   const mutation = useMutation(api.functions.tasks.deleteTask);
+  const [isFetchingUser, setIsFetchingUser] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [assignee, setAssignee] = useState<Assignee | null>(null);
   useEffect(() => {
     const fetchUser = async () => {
+      setIsFetchingUser(true);
       const result = await getUser(props.resource.assignedToUserId);
       setAssignee({ ...result });
+      setIsFetchingUser(false);
     };
     fetchUser();
   }, []);
@@ -115,7 +118,7 @@ export function EventCard(props: EventCardProps) {
         </p>
         <div className="text-neutral-700 flex justify-start items-center gap-x-2 text-sm">
           Assigned To:{" "}
-          {assignee === undefined ? (
+          {isFetchingUser ? (
             <Skeleton className="h-3 w-[120px]" />
           ) : (
             <span className="text-muted-foreground font-light">
