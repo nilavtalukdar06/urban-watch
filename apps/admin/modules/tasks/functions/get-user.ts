@@ -12,5 +12,10 @@ export const getUser = async (assignedToUserId: string) => {
   }
   const client = await clerkClient();
   const user = await client.users.getUser(assignedToUserId);
-  return user;
+  return JSON.parse(
+    JSON.stringify({
+      fullName: user.fullName,
+      email: user.primaryEmailAddress?.emailAddress as string | null,
+    }),
+  );
 };
