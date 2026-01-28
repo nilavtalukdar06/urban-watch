@@ -2,7 +2,7 @@
 
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Preloaded, usePreloadedQuery } from "convex/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GripVertical } from "lucide-react";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
@@ -14,85 +14,60 @@ import {
   KanbanItem,
   KanbanOverlay,
 } from "@workspace/ui/components/kanban";
+import { format } from "date-fns";
 
-interface Task {
+interface KanbanTask {
   id: string;
   title: string;
-  priority: "low" | "medium" | "high";
   assignee?: string;
   dueDate?: string;
 }
 
-const COLUMN_TITLES: Record<string, string> = {
-  backlog: "Backlog",
-  inProgress: "In Progress",
-  done: "Done",
+type ColumnKey = "pending" | "in_progress" | "completed" | "cancelled";
+
+const COLUMN_TITLES: Record<ColumnKey, string> = {
+  pending: "Pending",
+  in_progress: "In Progress",
+  completed: "Completed",
+  cancelled: "Cancelled",
 };
 
 export function KanbanView(props: {
   preloadedTasks: Preloaded<typeof api.functions.tasks.fetchUserTasks>;
 }) {
-  const [columns, setColumns] = useState<Record<string, Task[]>>({
-    backlog: [
-      {
-        id: "1",
-        title: "Add authentication",
-        priority: "high",
-        assignee: "John Doe",
-        dueDate: "2024-04-01",
-      },
-      {
-        id: "2",
-        title: "Create API endpoints",
-        priority: "medium",
-        assignee: "Jane Smith",
-        dueDate: "2024-04-05",
-      },
-      {
-        id: "3",
-        title: "Write documentation",
-        priority: "low",
-        assignee: "Bob Johnson",
-        dueDate: "2024-04-10",
-      },
-    ],
-    inProgress: [
-      {
-        id: "4",
-        title: "Design system updates",
-        priority: "high",
-        assignee: "Alice Brown",
-        dueDate: "2024-03-28",
-      },
-      {
-        id: "5",
-        title: "Implement dark mode",
-        priority: "medium",
-        assignee: "Charlie Wilson",
-        dueDate: "2024-04-02",
-      },
-    ],
-    done: [
-      {
-        id: "7",
-        title: "Setup project",
-        priority: "high",
-        assignee: "Eve Davis",
-        dueDate: "2024-03-25",
-      },
-      {
-        id: "8",
-        title: "Initial commit",
-        priority: "low",
-        assignee: "Frank White",
-        dueDate: "2024-03-24",
-      },
-    ],
-  });
   const tasks = usePreloadedQuery(props.preloadedTasks);
+  const initialColumns = useMemo<Record<ColumnKey, KanbanTask[]>>(
+    () => ({
+      pending: [],
+      in_progress: [],
+      completed: [],
+      cancelled: [],
+    }),
+    [],
+  );
+  const [columns, setColumns] =
+    useState<Record<ColumnKey, KanbanTask[]>>(initialColumns);
   useEffect(() => {
-    console.log(tasks);
+    if (!tasks) return;
+    const nextColumns: Record<ColumnKey, KanbanTask[]> = {
+      pending: [],
+      in_progress: [],
+      completed: [],
+      cancelled: [],
+    };
+    for (const task of tasks) {
+      nextColumns[task.status].push({
+        id: task._id,
+        title: task.title,
+        assignee: task.assigneeName,
+        dueDate: task.dueDate
+          ? format(new Date(task.dueDate), "dd MMM")
+          : undefined,
+      });
+    }
+    setColumns(nextColumns);
   }, [tasks]);
+
   return (
     <div className="my-4 w-full">
       <Kanban
@@ -100,71 +75,60 @@ export function KanbanView(props: {
         onValueChange={setColumns}
         getItemValue={(item) => item.id}
       >
-        <KanbanBoard className="grid auto-rows-fr sm:grid-cols-3">
-          {Object.entries(columns).map(([columnValue, tasks]) => (
-            <KanbanColumn key={columnValue} value={columnValue}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-sm">
-                    {COLUMN_TITLES[columnValue]}
-                  </span>
-                  <Badge
-                    variant="secondary"
-                    className="pointer-events-none rounded-sm"
-                  >
-                    {tasks.length}
-                  </Badge>
+        <KanbanBoard className="grid auto-rows-fr sm:grid-cols-4">
+          {(Object.keys(columns) as ColumnKey[]).map((columnKey) => {
+            const columnTasks = columns[columnKey];
+            return (
+              <KanbanColumn key={columnKey} value={columnKey}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm">
+                      {COLUMN_TITLES[columnKey]}
+                    </span>
+                    <Badge
+                      variant="secondary"
+                      className="pointer-events-none rounded-sm"
+                    >
+                      {columnTasks.length}
+                    </Badge>
+                  </div>
+                  <KanbanColumnHandle asChild>
+                    <Button variant="ghost" size="icon">
+                      <GripVertical className="h-4 w-4" />
+                    </Button>
+                  </KanbanColumnHandle>
                 </div>
-                <KanbanColumnHandle asChild>
-                  <Button variant="ghost" size="icon">
-                    <GripVertical className="h-4 w-4" />
-                  </Button>
-                </KanbanColumnHandle>
-              </div>
-              <div className="flex flex-col gap-2 p-0.5">
-                {tasks.map((task) => (
-                  <KanbanItem key={task.id} value={task.id} asHandle asChild>
-                    <div className="rounded-md border bg-card p-3 shadow-xs">
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-col gap-2 p-0.5">
+                  {columnTasks.map((task) => (
+                    <KanbanItem key={task.id} value={task.id} asHandle asChild>
+                      <div className="rounded-md border bg-card p-3 shadow-xs">
+                        <div className="flex flex-col gap-2">
                           <span className="line-clamp-1 font-medium text-sm">
                             {task.title}
                           </span>
-                          <Badge
-                            variant={
-                              task.priority === "high"
-                                ? "destructive"
-                                : task.priority === "medium"
-                                  ? "default"
-                                  : "secondary"
-                            }
-                            className="pointer-events-none h-5 rounded-sm px-1.5 text-[11px] capitalize"
-                          >
-                            {task.priority}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center justify-between text-muted-foreground text-xs">
-                          {task.assignee && (
-                            <div className="flex items-center gap-1">
-                              <div className="size-2 rounded-full bg-primary/20" />
-                              <span className="line-clamp-1">
-                                {task.assignee}
-                              </span>
-                            </div>
-                          )}
-                          {task.dueDate && (
-                            <time className="text-[10px] tabular-nums">
-                              {task.dueDate}
-                            </time>
-                          )}
+                          <div className="flex items-center justify-between text-muted-foreground text-xs">
+                            {task.assignee && (
+                              <div className="flex items-center gap-1">
+                                <div className="size-2 rounded-full bg-primary/20" />
+                                <span className="line-clamp-1">
+                                  {task.assignee}
+                                </span>
+                              </div>
+                            )}
+                            {task.dueDate && (
+                              <time className="text-[10px] tabular-nums">
+                                {task.dueDate}
+                              </time>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </KanbanItem>
-                ))}
-              </div>
-            </KanbanColumn>
-          ))}
+                    </KanbanItem>
+                  ))}
+                </div>
+              </KanbanColumn>
+            );
+          })}
         </KanbanBoard>
         <KanbanOverlay>
           <div className="size-full rounded-md bg-primary/10" />
