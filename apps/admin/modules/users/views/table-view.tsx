@@ -50,8 +50,9 @@ import {
 } from "@workspace/ui/components/input-group";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import Image from "next/image";
+import { exportAllUsers } from "../functions/export-all";
 
-type User = {
+export type User = {
   _id: Id<"citizens">;
   _creationTime: number;
   userId: string;
@@ -239,6 +240,7 @@ export function TableView(props: {
             <Button
               variant="outline"
               className="font-normal rounded-none shadow-none bg-sidebar!"
+              onClick={() => exportAllUsers(users)}
             >
               <span>Export all users</span>
               <Image

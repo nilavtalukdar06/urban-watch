@@ -1,4 +1,4 @@
-import { TableView } from "@/modules/users/table-view";
+import { TableView } from "@/modules/users/views/table-view";
 import { auth } from "@clerk/nextjs/server";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { preloadQuery } from "convex/nextjs";
