@@ -47,6 +47,13 @@ const taskColors = {
   completed: "bg-green-50 text-green-600 border-green-200",
 };
 
+const status = {
+  pending: "Pending",
+  in_progress: "In Progress",
+  cancelled: "Cancelled",
+  completed: "Completed",
+};
+
 export function EventCard(props: EventCardProps) {
   const { membership } = useOrganization();
   const mutation = useMutation(api.functions.tasks.deleteTask);
@@ -105,6 +112,18 @@ export function EventCard(props: EventCardProps) {
             {props.resource.assigneeName}
           </span>
         </div>
+        <p className="text-sm text-muted-foreground font-light">
+          #{" "}
+          {
+            status[
+              props.resource.status as
+                | "pending"
+                | "in_progress"
+                | "cancelled"
+                | "completed"
+            ]
+          }
+        </p>
         <DialogFooter>
           <Button
             size="sm"
