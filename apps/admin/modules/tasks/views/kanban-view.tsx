@@ -20,6 +20,7 @@ import { useMutation } from "convex/react";
 interface KanbanTask {
   id: string;
   title: string;
+  description: string;
   assignee?: string;
   dueDate?: string;
 }
@@ -61,6 +62,7 @@ export function KanbanView(props: {
       nextColumns[task.status].push({
         id: task._id,
         title: task.title,
+        description: task.description,
         assignee: task.assigneeName,
         dueDate: task.dueDate
           ? format(new Date(task.dueDate), "dd MMM")
@@ -141,6 +143,11 @@ export function KanbanView(props: {
                           <span className="line-clamp-1 font-medium text-sm">
                             {task.title}
                           </span>
+                          {task.description && (
+                            <p className="line-clamp-2 text-xs text-muted-foreground">
+                              {task.description}
+                            </p>
+                          )}
                           <div className="flex items-center justify-between text-muted-foreground text-xs">
                             {task.assignee && (
                               <div className="flex items-center gap-1">
