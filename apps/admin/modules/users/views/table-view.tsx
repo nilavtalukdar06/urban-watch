@@ -178,10 +178,6 @@ const columns: ColumnDef<User>[] = [
               <MailIcon />
               <span>Send Email</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-500 cursor-pointer hover:bg-red-50! hover:text-red-600! rounded-none font-normal">
-              <Trash2Icon className="text-inherit" />
-              <span>Delete User</span>
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
