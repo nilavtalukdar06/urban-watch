@@ -15,6 +15,7 @@ import {
   KanbanOverlay,
 } from "@workspace/ui/components/kanban";
 import { format } from "date-fns";
+import { useMutation } from "convex/react";
 
 interface KanbanTask {
   id: string;
@@ -35,6 +36,7 @@ const COLUMN_TITLES: Record<ColumnKey, string> = {
 export function KanbanView(props: {
   preloadedTasks: Preloaded<typeof api.functions.tasks.fetchUserTasks>;
 }) {
+  const updateTaskStatus = useMutation(api.functions.tasks.updateTaskStatus);
   const tasks = usePreloadedQuery(props.preloadedTasks);
   const initialColumns = useMemo<Record<ColumnKey, KanbanTask[]>>(
     () => ({
@@ -68,11 +70,44 @@ export function KanbanView(props: {
     setColumns(nextColumns);
   }, [tasks]);
 
+  const handleKanbanChange = async (
+    nextColumns: Record<ColumnKey, KanbanTask[]>,
+  ) => {
+    const prevColumns = columns;
+    for (const fromColumn of Object.keys(prevColumns) as ColumnKey[]) {
+      const prevTasks = prevColumns[fromColumn];
+      const nextTasks = nextColumns[fromColumn];
+
+      if (prevTasks.length === nextTasks.length) continue;
+      const movedTask = prevTasks.find(
+        (task) => !nextTasks.some((t) => t.id === task.id),
+      );
+      if (!movedTask) continue;
+      const toColumn = (Object.keys(nextColumns) as ColumnKey[]).find((col) =>
+        nextColumns[col].some((t) => t.id === movedTask.id),
+      );
+      if (!toColumn || toColumn === fromColumn) continue;
+      setColumns(nextColumns);
+
+      try {
+        await updateTaskStatus({
+          taskId: movedTask.id as any,
+          status: toColumn,
+        });
+      } catch (error) {
+        console.error("Failed to update task status", error);
+        setColumns(prevColumns);
+      }
+      return;
+    }
+    setColumns(nextColumns);
+  };
+
   return (
     <div className="my-4 w-full">
       <Kanban
         value={columns}
-        onValueChange={setColumns}
+        onValueChange={handleKanbanChange}
         getItemValue={(item) => item.id}
       >
         <KanbanBoard className="grid auto-rows-fr sm:grid-cols-4">
