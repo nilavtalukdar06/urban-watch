@@ -1,19 +1,313 @@
 "use client";
 
 import { api } from "@workspace/backend/convex/_generated/api";
+import type { Id } from "@workspace/backend/convex/_generated/dataModel";
 import { Preloaded, usePreloadedQuery } from "convex/react";
-import { useEffect } from "react";
+import {
+  ColumnDef,
+  flexRender,
+  SortingState,
+  ColumnFiltersState,
+  getCoreRowModel,
+  getPaginationRowModel,
+  VisibilityState,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@workspace/ui/components/table";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MailIcon,
+  MoreHorizontal,
+  Trash2Icon,
+  UserIcon,
+  SearchIcon,
+  ArrowUpDown,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@workspace/ui/components/dropdown-menu";
+import { Button } from "@workspace/ui/components/button";
+import { useState } from "react";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@workspace/ui/components/input-group";
+
+type User = {
+  _id: Id<"citizens">;
+  _creationTime: number;
+  userId: string;
+  points: number;
+  phoneNumber: string;
+  permanentAddress: string;
+  fullName: string;
+  email: string;
+  dateOfBirth: string;
+  clerkUserId: string;
+};
+
+const columns: ColumnDef<User>[] = [
+  {
+    accessorKey: "fullName",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="justify-start px-0! font-normal"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span>Full Name</span>
+          <ArrowUpDown className="size-4 text-neutral-600" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="justify-start px-0! font-normal"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span>Email</span>
+          <ArrowUpDown className="size-4 text-neutral-600" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "phoneNumber",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="justify-start px-0! font-normal"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span>Phone Number</span>
+          <ArrowUpDown className="size-4 text-neutral-600" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "permanentAddress",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="justify-start px-0! font-normal"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span>Permanent Address</span>
+          <ArrowUpDown className="size-4 text-neutral-600" />
+        </Button>
+      );
+    },
+  },
+  {
+    header: "Actions",
+    id: "actions",
+    cell: () => {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon-sm" className="rounded-none!">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="rounded-none">
+            <DropdownMenuLabel className="text-sm font-light text-muted-foreground">
+              Actions
+            </DropdownMenuLabel>
+            <DropdownMenuItem className="cursor-pointer rounded-none font-normal">
+              <UserIcon />
+              <span>Export User</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer rounded-none font-normal">
+              <MailIcon />
+              <span>Send Email</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500 cursor-pointer hover:bg-red-50! hover:text-red-600! rounded-none font-normal">
+              <Trash2Icon className="text-inherit" />
+              <span>Delete User</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
 
 export function TableView(props: {
   preloadedUsers: Preloaded<typeof api.functions.users.getUsers>;
 }) {
-  const users = usePreloadedQuery(props.preloadedUsers);
-  useEffect(() => {
-    console.log(users);
-  }, [users]);
-  return (
-    <div className="my-4">
-      <p className="text-muted-foreground font-light">Citizens</p>
-    </div>
-  );
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const users: User[] = usePreloadedQuery(props.preloadedUsers);
+  if (users && users.length === 0) {
+    return (
+      <div className="my-4">
+        <p className="text-red-500 font-light">
+          Oops!, There are no users using Urban Watch.
+        </p>
+      </div>
+    );
+  }
+  if (users && users.length > 0) {
+    const table = useReactTable({
+      data: users,
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+      onSortingChange: setSorting,
+      onColumnFiltersChange: setColumnFilters,
+      onColumnVisibilityChange: setColumnVisibility,
+      getFilteredRowModel: getFilteredRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+      state: {
+        sorting,
+        columnFilters,
+        columnVisibility,
+      },
+    });
+    return (
+      <div className="my-4 w-full">
+        <div className="mb-4 flex items-start justify-between">
+          <InputGroup className="max-w-xs w-full shadow-none rounded-none">
+            <InputGroupInput
+              placeholder="Search users by name"
+              onChange={(event) =>
+                table.getColumn("fullName")?.setFilterValue(event.target.value)
+              }
+            />
+            <InputGroupAddon>
+              <SearchIcon />
+            </InputGroupAddon>
+          </InputGroup>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="secondary"
+                className="ml-auto bg-sidebar! border font-normal shadow-none rounded-none!"
+              >
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-none">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize font-light cursor-pointer rounded-none text-muted-foreground"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="w-full shadow-none border">
+          <Table>
+            <TableHeader className="bg-sidebar">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} className="font-normal">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className="font-light text-muted-foreground"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="my-4 w-full flex justify-end gap-x-2">
+          <Button
+            variant="secondary"
+            size="icon"
+            className="bg-sidebar! border font-normal shadow-none rounded-none!"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronLeft />
+          </Button>
+          <Button
+            variant="secondary"
+            size="icon"
+            className="bg-sidebar! border font-normal shadow-none rounded-none!"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+      </div>
+    );
+  }
 }
