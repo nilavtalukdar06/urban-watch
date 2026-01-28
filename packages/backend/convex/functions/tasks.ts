@@ -70,3 +70,28 @@ export const deleteTask = mutation({
     await ctx.db.delete(args.taskId);
   },
 });
+
+export const fetchUserTasks = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const organizationId = auth?.orgId;
+    if (!organizationId) {
+      throw new Error("organization doesn't exist");
+    }
+    const result = await ctx.db
+      .query("tasks")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("assignedToUserId"), auth.subject),
+          q.eq(q.field("organizationId"), organizationId),
+        ),
+      )
+      .order("desc")
+      .collect();
+    return result;
+  },
+});
