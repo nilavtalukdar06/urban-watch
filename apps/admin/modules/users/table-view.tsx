@@ -48,6 +48,8 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
+import { Checkbox } from "@workspace/ui/components/checkbox";
+import Image from "next/image";
 
 type User = {
   _id: Id<"citizens">;
@@ -63,6 +65,30 @@ type User = {
 };
 
 const columns: ColumnDef<User>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="rounded-none! shadow-none! bg-white"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="rounded-none! shadow-none!"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "fullName",
     header: ({ column }) => {
@@ -163,6 +189,7 @@ export function TableView(props: {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
   const users: User[] = usePreloadedQuery(props.preloadedUsers);
   if (users && users.length === 0) {
     return (
@@ -182,28 +209,46 @@ export function TableView(props: {
       onSortingChange: setSorting,
       onColumnFiltersChange: setColumnFilters,
       onColumnVisibilityChange: setColumnVisibility,
+      onRowSelectionChange: setRowSelection,
       getFilteredRowModel: getFilteredRowModel(),
       getSortedRowModel: getSortedRowModel(),
       state: {
         sorting,
         columnFilters,
         columnVisibility,
+        rowSelection,
       },
     });
     return (
       <div className="my-4 w-full">
         <div className="mb-4 flex items-start justify-between">
-          <InputGroup className="max-w-xs w-full shadow-none rounded-none">
-            <InputGroupInput
-              placeholder="Search users by name"
-              onChange={(event) =>
-                table.getColumn("fullName")?.setFilterValue(event.target.value)
-              }
-            />
-            <InputGroupAddon>
-              <SearchIcon />
-            </InputGroupAddon>
-          </InputGroup>
+          <div className="w-full flex justify-start items-center gap-x-4">
+            <InputGroup className="max-w-xs w-full shadow-none rounded-none">
+              <InputGroupInput
+                placeholder="Search users by name"
+                onChange={(event) =>
+                  table
+                    .getColumn("fullName")
+                    ?.setFilterValue(event.target.value)
+                }
+              />
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+            </InputGroup>
+            <Button
+              variant="outline"
+              className="font-normal rounded-none shadow-none bg-sidebar!"
+            >
+              <span>Export all users</span>
+              <Image
+                src="/icons/excel.svg"
+                height={16}
+                width={16}
+                alt="excel_logo"
+              />
+            </Button>
+          </div>
           <div className="flex justify-end items-center gap-x-4">
             <div className="w-full flex justify-end gap-x-2">
               <Button
@@ -225,6 +270,18 @@ export function TableView(props: {
                 <ChevronRight />
               </Button>
             </div>
+            <Button
+              variant="destructive"
+              className="rounded-none! shadow-none font-normal"
+              disabled={table.getFilteredSelectedRowModel().rows.length === 0}
+            >
+              Delete{" "}
+              {table.getFilteredSelectedRowModel().rows.length !== 0
+                ? table.getFilteredSelectedRowModel().rows.length === 1
+                  ? `${table.getFilteredSelectedRowModel().rows.length} User`
+                  : `${table.getFilteredSelectedRowModel().rows.length} Users`
+                : ""}
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
