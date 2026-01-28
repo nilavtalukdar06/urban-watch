@@ -51,6 +51,7 @@ import {
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import Image from "next/image";
 import { exportAllUsers } from "../functions/export-all";
+import { exportSingleUserToExcel } from "../functions/export-user";
 
 export type User = {
   _id: Id<"citizens">;
@@ -153,7 +154,8 @@ const columns: ColumnDef<User>[] = [
   {
     header: "Actions",
     id: "actions",
-    cell: () => {
+    cell: ({ row }) => {
+      const user = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -165,7 +167,10 @@ const columns: ColumnDef<User>[] = [
             <DropdownMenuLabel className="text-sm font-light text-muted-foreground">
               Actions
             </DropdownMenuLabel>
-            <DropdownMenuItem className="cursor-pointer rounded-none font-normal">
+            <DropdownMenuItem
+              className="cursor-pointer rounded-none font-normal"
+              onClick={() => exportSingleUserToExcel(user)}
+            >
               <UserIcon />
               <span>Export User</span>
             </DropdownMenuItem>
