@@ -95,3 +95,50 @@ export const fetchUserTasks = query({
     return result;
   },
 });
+
+export const updateTaskStatus = mutation({
+  args: {
+    taskId: v.id("tasks"),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("in_progress"),
+      v.literal("completed"),
+      v.literal("cancelled"),
+    ),
+  },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const organizationId = auth?.orgId as string;
+    if (!organizationId) {
+      throw new Error("organization doesn't exist");
+    }
+    const task = await ctx.db.get(args.taskId);
+    if (!task) {
+      throw new Error("task not found");
+    }
+    if (task.organizationId !== organizationId) {
+      throw new Error("task doesn't belong to this organization");
+    }
+    if (task.assignedToUserId !== auth.subject) {
+      throw new Error("task status can only be updated by the assignee");
+    }
+    if (task.status === args.status) {
+      return {
+        success: true,
+        taskId: args.taskId,
+        status: args.status,
+      };
+    }
+    await ctx.db.patch(args.taskId, {
+      status: args.status,
+    });
+    return {
+      success: true,
+      taskId: args.taskId,
+      status: args.status,
+    };
+  },
+});
