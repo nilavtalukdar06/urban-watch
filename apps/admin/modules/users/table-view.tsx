@@ -204,35 +204,57 @@ export function TableView(props: {
               <SearchIcon />
             </InputGroupAddon>
           </InputGroup>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <div className="flex justify-end items-center gap-x-4">
+            <div className="w-full flex justify-end gap-x-2">
               <Button
                 variant="secondary"
-                className="ml-auto bg-sidebar! border font-normal shadow-none rounded-none!"
+                size="icon"
+                className="bg-sidebar! border font-normal shadow-none rounded-none!"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
               >
-                Columns
+                <ChevronLeft />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-none">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize font-light cursor-pointer rounded-none text-muted-foreground"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="bg-sidebar! border font-normal shadow-none rounded-none!"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronRight />
+              </Button>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  className="ml-auto bg-sidebar! border font-normal shadow-none rounded-none!"
+                >
+                  Columns
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="rounded-none">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize font-light cursor-pointer rounded-none text-muted-foreground"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         <div className="w-full shadow-none border">
           <Table>
@@ -286,26 +308,6 @@ export function TableView(props: {
               )}
             </TableBody>
           </Table>
-        </div>
-        <div className="my-4 w-full flex justify-end gap-x-2">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="bg-sidebar! border font-normal shadow-none rounded-none!"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="secondary"
-            size="icon"
-            className="bg-sidebar! border font-normal shadow-none rounded-none!"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronRight />
-          </Button>
         </div>
       </div>
     );
