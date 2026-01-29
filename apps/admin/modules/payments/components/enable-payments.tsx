@@ -62,7 +62,11 @@ export function EnablePayments() {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            id="enable-payments"
+          >
             <FormField
               control={form.control}
               name="keyName"
@@ -130,6 +134,7 @@ export function EnablePayments() {
         <DialogFooter>
           <DialogClose asChild>
             <Button
+              type="button"
               variant="outline"
               className="rounded-none shadow-none bg-sidebar border font-normal"
             >
@@ -138,6 +143,8 @@ export function EnablePayments() {
           </DialogClose>
           <Button
             variant="destructive"
+            type="submit"
+            form="enable-payments"
             className="rounded-none shadow-none font-normal"
           >
             Save Keys
