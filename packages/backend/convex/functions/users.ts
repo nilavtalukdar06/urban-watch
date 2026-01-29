@@ -1,5 +1,6 @@
 import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
+import axios from "axios";
 
 export const createUser = mutation({
   args: {
@@ -94,6 +95,13 @@ export const deleteUsers = mutation({
     clerkIds: v.array(v.string()),
   },
   handler: async (ctx, args) => {
+    if (args.userIds.length !== args.clerkIds.length) {
+      throw new Error("userIds and clerkIds length mismatch");
+    }
+    const merged = args.clerkIds.map((clerkId, index) => ({
+      clerkId,
+      userId: args.userIds[index],
+    }));
     const auth = await ctx.auth.getUserIdentity();
     if (!auth) {
       throw new Error("the user is not authenticated");
@@ -106,9 +114,16 @@ export const deleteUsers = mutation({
     if (role.includes("member")) {
       throw new Error("only an admin can delete users");
     }
-    for (const id of args.userIds) {
-      await ctx.db.delete(id);
-    }
+    await Promise.all(
+      merged.map(async (item) => {
+        await axios.delete(`https://api.clerk.com/v1/users/${item.clerkId}`, {
+          headers: {
+            Authorization: `Bearer ${process.env.CLERK_SECRET_KEY!}`,
+          },
+        });
+        await ctx.db.delete(item.userId);
+      }),
+    );
     return {
       deletedCount: args.userIds.length,
     };
