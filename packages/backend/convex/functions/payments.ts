@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
+import { Id } from "../_generated/dataModel";
 
 export const checkPaymentStatus = query({
   args: {},
@@ -35,6 +36,13 @@ export const saveKeys = mutation({
     if (!organizationId) {
       throw new Error("organization doesn't exist");
     }
+    const organization = await ctx.db
+      .query("organization")
+      .filter((q) => q.eq(q.field("organizationId"), organizationId))
+      .first();
+    if (!organization) {
+      throw new Error("organization doesn't exist");
+    }
     const keys = await ctx.db
       .query("apiKeys")
       .filter((q) => q.eq(q.field("organizationId"), organizationId))
@@ -44,7 +52,7 @@ export const saveKeys = mutation({
         "keys already exist, delete the previous ones if you want new",
       );
     }
-    const result = await ctx.db.insert("apiKeys", {
+    await ctx.db.insert("apiKeys", {
       keyName: args.keyName,
       provider: "stripe",
       publicKeyPrefix: args.publicKeyPrefix,
@@ -52,6 +60,11 @@ export const saveKeys = mutation({
       organizationId,
       userId: auth.subject,
     });
+    const result = await ctx.db.patch(
+      "organization",
+      organization?._id as Id<"organization">,
+      { payments_enabled: true },
+    );
     return result;
   },
 });
