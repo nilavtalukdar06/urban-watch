@@ -8,10 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@workspace/ui/components/table";
-import { Button } from "@workspace/ui/components/button";
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { format } from "date-fns";
+import { DeleteKeys } from "../components/delete-keys";
 
 export function TableView() {
   const keys = useQuery(api.functions.payments.retriveKeys);
@@ -56,13 +56,7 @@ export function TableView() {
               {format(new Date(keys[0]?._creationTime!), "d MMMM yyyy")}
             </TableCell>
             <TableCell>
-              <Button
-                size="sm"
-                variant="destructive"
-                className="rounded-none shadow-none font-normal"
-              >
-                Delete Keys
-              </Button>
+              <DeleteKeys keyId={keys[0]?._id} />
             </TableCell>
           </TableRow>
         </TableBody>
