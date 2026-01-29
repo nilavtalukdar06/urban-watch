@@ -49,4 +49,12 @@ export default defineSchema({
     ),
     dueDate: v.number(),
   }),
+  apiKeys: defineTable({
+    organizationId: v.string(),
+    provider: v.string(),
+    keyName: v.string(),
+    publicKeyPrefix: v.string(),
+    secretKeyPrefix: v.string(),
+    userId: v.string(),
+  }),
 });
