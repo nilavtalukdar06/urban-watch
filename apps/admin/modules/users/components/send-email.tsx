@@ -23,6 +23,9 @@ import {
 } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { Textarea } from "@workspace/ui/components/textarea";
+import { useState } from "react";
+import { toast } from "sonner";
+import { triggerEmail } from "../functions/trigger-email";
 
 const formSchema = z.object({
   subject: z.string().min(2, { message: "Subject is too short" }),
@@ -36,7 +39,8 @@ interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function SendEmail({ open, onOpenChange, email }: Props) {
+export function SendEmail({ open, onOpenChange, setOpen, email }: Props) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,11 +49,21 @@ export function SendEmail({ open, onOpenChange, email }: Props) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setIsLoading(true);
+      await triggerEmail(email, values.subject, values.body);
+      toast.success("Email sending process started");
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send email");
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open || isLoading} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-none w-[425px] p-5">
         <DialogHeader>
           <DialogTitle className="font-light text-xl text-neutral-600">
@@ -110,6 +124,7 @@ export function SendEmail({ open, onOpenChange, email }: Props) {
             <Button
               variant="destructive"
               type="button"
+              disabled={isLoading}
               className="rounded-none font-normal shadow-none"
             >
               Cancel
@@ -120,6 +135,7 @@ export function SendEmail({ open, onOpenChange, email }: Props) {
             variant="outline"
             type="submit"
             form="send-email"
+            disabled={isLoading}
           >
             Send
           </Button>
