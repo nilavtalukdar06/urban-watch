@@ -27,6 +27,10 @@ import { Input } from "@workspace/ui/components/input";
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import { toast } from "sonner";
+import { useState } from "react";
+import axios from "axios";
+import { Spinner } from "@workspace/ui/components/spinner";
 
 const formSchema = z.object({
   keyName: z.string().min(2, { message: "Key name is too short" }),
@@ -35,6 +39,8 @@ const formSchema = z.object({
 });
 
 export function EnablePayments() {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const result = useQuery(api.functions.payments.checkPaymentStatus);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,11 +51,24 @@ export function EnablePayments() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setIsLoading(true);
+      await axios.post("/api/secrets/create", {
+        ...values,
+      });
+      toast.success("Saved api keys");
+      setIsOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add api keys");
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen || isLoading} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {result === undefined ? (
           <Skeleton className="w-[142px] h-[36px] rounded-none" />
@@ -146,6 +165,7 @@ export function EnablePayments() {
           <DialogClose asChild>
             <Button
               type="button"
+              disabled={isLoading}
               variant="outline"
               className="rounded-none shadow-none bg-sidebar border font-normal"
             >
@@ -156,9 +176,11 @@ export function EnablePayments() {
             variant="destructive"
             type="submit"
             form="enable-payments"
+            disabled={isLoading}
             className="rounded-none shadow-none font-normal"
           >
-            Save Keys
+            {isLoading && <Spinner />}
+            {isLoading ? "Saving..." : "Save Keys"}
           </Button>
         </DialogFooter>
       </DialogContent>
