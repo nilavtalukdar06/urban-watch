@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@workspace/backend/convex/_generated/api";
 import { Id } from "@workspace/backend/convex/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -11,6 +12,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { useMutation } from "convex/react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   count: number;
@@ -18,31 +23,65 @@ interface Props {
 }
 
 export function DeleteUser({ count, userIds }: Props) {
+  const mutation = useMutation(api.functions.users.deleteUsers);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleDelete = async () => {
+    try {
+      setIsLoading(true);
+      await mutation({ userIds });
+      toast.success("Users Deleted Successfully");
+      setIsOpen(false);
+    } catch (error) {
+      console.error(error);
+      toast.success("Failed to delete users");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
-    <Dialog>
+    <Dialog open={isOpen || isLoading} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           disabled={count === 0}
           variant="destructive"
           className="rounded-none! shadow-none font-normal"
         >
-          <span>Delete User</span>
+          Delete{" "}
+          {count === 0
+            ? "Users"
+            : count === 1
+              ? `${count} user`
+              : `${count} users`}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[425px] p-5 rounded-none">
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="font-light text-xl text-neutral-600">
+            Are you absolutely sure?
+          </DialogTitle>
+          <DialogDescription className="text-sm font-light text-muted-foreground">
             This action cannot be undone. This will permanently delete the data
             from our database.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button>Cancel</Button>
-          <Button>
-            <span>
-              Delete {count} {count === 1 ? "user" : "users"}
-            </span>
+          <Button
+            className="rounded-none bg-sidebar! shadow-none border font-normal"
+            variant="outline"
+            onClick={() => setIsOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="rounded-none shadow-none font-normal"
+            variant="destructive"
+            disabled={isLoading}
+            onClick={handleDelete}
+          >
+            {isLoading && <Spinner />}
+            <span>{isLoading ? "Loading" : "Delete"}</span>
           </Button>
         </DialogFooter>
       </DialogContent>
