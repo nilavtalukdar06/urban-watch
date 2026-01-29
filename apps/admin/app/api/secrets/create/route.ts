@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    const token = await getToken({ template: "convex" });
+    const token = (await getToken({ template: "convex" })) ?? undefined;
     const client = new InfisicalSDK({
       siteUrl: "https://app.infisical.com",
     });
@@ -56,10 +56,16 @@ export async function POST(request: NextRequest) {
         projectId: process.env.PROJECT_ID!,
         secretValue: parsedSchema.data.secretKey,
       });
-    return NextResponse.json(
-      { keys: { publicKey, secretKey } },
-      { status: 201 },
+    const result = await fetchMutation(
+      api.functions.payments.saveKeys,
+      {
+        keyName: parsedSchema.data.keyName,
+        publicKey: publicKey.secret.secretValue,
+        secretKey: secretKey.secret.secretValue,
+      },
+      { token },
     );
+    return NextResponse.json({ success: true, keyId: result }, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
