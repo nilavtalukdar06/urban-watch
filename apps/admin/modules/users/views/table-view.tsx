@@ -52,6 +52,7 @@ import Image from "next/image";
 import { exportAllUsers } from "../functions/export-all";
 import { exportSingleUserToExcel } from "../functions/export-user";
 import { DeleteUser } from "../components/delete-users";
+import { SendEmail } from "../components/send-email";
 
 export type User = {
   _id: Id<"citizens">;
@@ -156,30 +157,41 @@ const columns: ColumnDef<User>[] = [
     id: "actions",
     cell: ({ row }) => {
       const user = row.original;
+      const [open, setOpen] = useState<boolean>(false);
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="rounded-none!">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="rounded-none">
-            <DropdownMenuLabel className="text-sm font-light text-muted-foreground">
-              Actions
-            </DropdownMenuLabel>
-            <DropdownMenuItem
-              className="cursor-pointer rounded-none font-normal"
-              onClick={() => exportSingleUserToExcel(user)}
-            >
-              <UserIcon />
-              <span>Export User</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer rounded-none font-normal">
-              <MailIcon />
-              <span>Send Email</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-sm" className="rounded-none!">
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="rounded-none">
+              <DropdownMenuLabel className="text-sm font-light text-muted-foreground">
+                Actions
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                className="cursor-pointer rounded-none font-normal"
+                onClick={() => exportSingleUserToExcel(user)}
+              >
+                <UserIcon />
+                <span>Export User</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer rounded-none font-normal"
+                onSelect={() => setOpen(true)}
+              >
+                <MailIcon />
+                <span>Send Email</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <SendEmail
+            open={open}
+            onOpenChange={setOpen}
+            email={row.original.email}
+          />
+        </>
       );
     },
   },
