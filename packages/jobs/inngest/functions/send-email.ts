@@ -7,6 +7,7 @@ export const sendEmailFunction = inngest.createFunction(
   async ({ event, step }) => {
     const result = await step.run("send-user-email", async () => {
       return await sendEmail(
+        event.data.orgName,
         event.data.email,
         event.data.subject,
         event.data.body,

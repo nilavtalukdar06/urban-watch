@@ -1,12 +1,13 @@
 import { resend } from "./lib/resend";
 
 export async function sendEmail(
+  emailFrom: string,
   emailTo: string,
   subject: string,
   body: string,
 ) {
   const { data, error } = await resend.emails.send({
-    from: "Urban Watch <nilavtalukdar06@imagify.space>",
+    from: `${emailFrom} <nilavtalukdar06@imagify.space>`,
     to: [emailTo],
     subject,
     html: `<p>${body}</p>`,
