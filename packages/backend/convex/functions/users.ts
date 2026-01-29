@@ -91,6 +91,7 @@ export const getUser = query({
 export const deleteUsers = mutation({
   args: {
     userIds: v.array(v.id("citizens")),
+    clerkIds: v.array(v.string()),
   },
   handler: async (ctx, args) => {
     const auth = await ctx.auth.getUserIdentity();

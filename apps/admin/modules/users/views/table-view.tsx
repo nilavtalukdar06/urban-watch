@@ -279,6 +279,9 @@ export function TableView(props: {
               userIds={table
                 .getFilteredSelectedRowModel()
                 .rows.map((row) => row.original._id)}
+              clerkIds={table
+                .getFilteredSelectedRowModel()
+                .rows.map((item) => item.original.clerkUserId)}
               onDeleted={() => table.resetRowSelection()}
             />
             <DropdownMenu>
