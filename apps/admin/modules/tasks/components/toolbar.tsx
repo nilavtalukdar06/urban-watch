@@ -16,7 +16,7 @@ export function Toolbar({ date, onNavigate }: Props) {
         variant="outline"
         size="sm"
         onClick={() => onNavigate("PREV")}
-        className="shadow-none font-normal bg-sidebar border"
+        className="shadow-none font-normal bg-sidebar border rounded-none"
       >
         <ChevronLeftIcon />
         <span>Prev</span>
@@ -25,7 +25,7 @@ export function Toolbar({ date, onNavigate }: Props) {
         variant="outline"
         size="sm"
         onClick={() => onNavigate("NEXT")}
-        className="shadow-none font-normal bg-sidebar border"
+        className="shadow-none font-normal bg-sidebar border rounded-none"
       >
         <span>Next</span>
         <ChevronRightIcon />

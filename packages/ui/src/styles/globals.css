@@ -149,7 +149,7 @@
     @apply text-xs! font-medium! text-neutral-700!;
   }
   .rbc-month-view {
-    @apply rounded-sm! border-neutral-200!;
+    @apply rounded-none! border-neutral-200!;
   }
   .rbc-off-range-bg {
     @apply bg-transparent!;

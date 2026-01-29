@@ -135,13 +135,13 @@ export function CreateTask() {
         <Button
           disabled={isLoading}
           variant="secondary"
-          className="bg-sidebar! border font-normal shadow-none"
+          className="bg-sidebar! border font-normal shadow-none rounded-none"
         >
           <span>Add Task</span>
           <CalendarCheckIcon />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[425px] p-5 rounded-sm">
+      <DialogContent className="w-[425px] p-5 rounded-none">
         <DialogHeader>
           <DialogTitle className="font-normal text-neutral-600">
             Create Task
@@ -165,7 +165,7 @@ export function CreateTask() {
                       <Input
                         placeholder="Enter the task title"
                         {...field}
-                        className="shadow-none rounded-sm"
+                        className="shadow-none rounded-none"
                       />
                     </FormControl>
                     <FormDescription className="font-light">
@@ -190,7 +190,7 @@ export function CreateTask() {
                       <Textarea
                         placeholder="Enter the task description"
                         {...field}
-                        className="shadow-none rounded-sm"
+                        className="shadow-none rounded-none"
                       />
                     </FormControl>
                     <FormDescription className="font-light">
@@ -213,15 +213,16 @@ export function CreateTask() {
                     </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="w-full shadow-none rounded-sm h-12!">
+                        <SelectTrigger className="w-full shadow-none rounded-none h-12!">
                           <SelectValue placeholder="Select a member to assign task" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="rounded-none">
                         {members.map((member) => (
                           <SelectItem
                             value={member.userId!}
                             key={member.userId}
+                            className="rounded-none"
                           >
                             <div className="flex flex-col justify-center items-start">
                               <span>{member.name}</span>
@@ -270,7 +271,7 @@ export function CreateTask() {
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-full pl-3 text-left font-normal shadow-none rounded-sm",
+                              "w-full pl-3 text-left font-normal shadow-none rounded-none",
                               !field.value && "text-muted-foreground",
                             )}
                           >
@@ -302,8 +303,8 @@ export function CreateTask() {
             />
             <div className="w-full flex justify-end items-center gap-x-3 mt-4">
               <Button
-                className="w-fit shadow-none rounded-sm"
-                variant="outline"
+                className="w-fit font-normal shadow-none rounded-none"
+                variant="destructive"
                 type="button"
                 disabled={isSubmitting}
                 onClick={() => {
@@ -315,8 +316,9 @@ export function CreateTask() {
                 <XIcon />
               </Button>
               <Button
-                className="w-fit shadow-none rounded-sm bg-gradient-to-br from-blue-400 to-blue-500"
+                className="w-fit shadow-none rounded-none bg-sidebar border font-normal"
                 type="submit"
+                variant="secondary"
                 disabled={isSubmitting}
               >
                 <span>{isSubmitting ? "Loading..." : "Submit"}</span>

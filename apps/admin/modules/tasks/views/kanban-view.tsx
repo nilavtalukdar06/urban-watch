@@ -116,10 +116,14 @@ export function KanbanView(props: {
           {(Object.keys(columns) as ColumnKey[]).map((columnKey) => {
             const columnTasks = columns[columnKey];
             return (
-              <KanbanColumn key={columnKey} value={columnKey}>
+              <KanbanColumn
+                key={columnKey}
+                value={columnKey}
+                className="rounded-none p-2"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm">
+                    <span className="font-normal text-base text-neutral-700">
                       {COLUMN_TITLES[columnKey]}
                     </span>
                     <Badge
@@ -130,7 +134,11 @@ export function KanbanView(props: {
                     </Badge>
                   </div>
                   <KanbanColumnHandle asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-none"
+                    >
                       <GripVertical className="h-4 w-4" />
                     </Button>
                   </KanbanColumnHandle>
@@ -138,13 +146,13 @@ export function KanbanView(props: {
                 <div className="flex flex-col gap-2 p-0.5">
                   {columnTasks.map((task) => (
                     <KanbanItem key={task.id} value={task.id} asHandle asChild>
-                      <div className="rounded-md border bg-card p-3 shadow-xs">
+                      <div className="rounded-none border bg-card p-3">
                         <div className="flex flex-col gap-2">
-                          <span className="line-clamp-1 font-medium text-sm">
+                          <span className="line-clamp-1 font-normal text-sm">
                             {task.title}
                           </span>
                           {task.description && (
-                            <p className="line-clamp-2 text-xs text-muted-foreground">
+                            <p className="line-clamp-2 font-light text-xs text-muted-foreground">
                               {task.description}
                             </p>
                           )}
@@ -152,13 +160,13 @@ export function KanbanView(props: {
                             {task.assignee && (
                               <div className="flex items-center gap-1">
                                 <div className="size-2 rounded-full bg-primary/20" />
-                                <span className="line-clamp-1">
+                                <span className="line-clamp-1 font-light">
                                   {task.assignee}
                                 </span>
                               </div>
                             )}
                             {task.dueDate && (
-                              <time className="text-[10px] tabular-nums">
+                              <time className="text-[10px] tabular-nums font-light">
                                 {task.dueDate}
                               </time>
                             )}

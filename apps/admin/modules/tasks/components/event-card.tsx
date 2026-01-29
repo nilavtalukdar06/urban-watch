@@ -77,7 +77,7 @@ export function EventCard(props: EventCardProps) {
       <DialogTrigger className="w-full" asChild>
         <button
           className={cn(
-            "w-full flex-1 my-[1px] flex justify-start items-center text-xs font-medium border p-1 rounded-sm gap-x-1 cursor-pointer",
+            "w-full flex-1 my-[1px] flex justify-start items-center text-xs font-normal border p-1 gap-x-1 cursor-pointer",
             taskColors[
               props.resource.status as
                 | "pending"
