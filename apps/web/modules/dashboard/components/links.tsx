@@ -47,11 +47,12 @@ export function Links() {
 function LinkCard({ icon: Icon, label, description, path }: Props) {
   return (
     <Link
-      className="w-full p-3 hover:bg-sidebar rounded-md flex flex-col gap-y-2 border"
+      className="w-full p-3 hover:bg-sidebar rounded-none flex flex-col gap-y-2 border"
       href={path}
     >
       <Button
-        variant="green"
+        variant="outline"
+        className="bg-green-500 text-white hover:bg-green-600 hover:text-white rounded-none shadow-none border-none"
         size="icon-sm"
       >
         <Icon />

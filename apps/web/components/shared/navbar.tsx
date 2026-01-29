@@ -23,7 +23,12 @@ export function Navbar() {
           <Image src="/logo.svg" height={36} width={160} alt="logo" />
         </Link>
         <nav className="flex justify-end gap-x-3 items-center">
-          <Button variant="outline" size="icon-sm" asChild>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            asChild
+            className="rounded-none shadow-none bg-sidebar font-normal"
+          >
             <Link href="/chat">
               <SendIcon className="text-muted-foreground" />
             </Link>

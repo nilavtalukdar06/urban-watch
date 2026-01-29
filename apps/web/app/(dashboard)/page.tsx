@@ -32,7 +32,11 @@ export default async function Home() {
           Welcome to Urban Watch
         </p>
         <div className="my-2">
-          <Button variant="green" size="sm">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="rounded-none border bg-sidebar font-normal shadow-none"
+          >
             <span>Submit Report</span>
             <TriangleAlertIcon />
           </Button>

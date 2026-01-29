@@ -82,15 +82,15 @@ export const columns: ColumnDef<User>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm">
+            <Button variant="ghost" size="icon-sm" className="rounded-none">
               <EllipsisIcon />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="rounded-none">
             <DropdownMenuLabel className="text-xs font-light text-muted-foreground">
               Actions
             </DropdownMenuLabel>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="rounded-none!">
               <Link
                 href={`/chat/${row.original.clerkUserId}`}
                 className="text-neutral-700 cursor-pointer"
@@ -160,14 +160,14 @@ export function Leaderboard(props: {
         </p>
       </div>
       <div className="pb-4 w-full flex items-center justify-between gap-x-4">
-        <InputGroup className="max-w-sm w-full shadow-none">
+        <InputGroup className="max-w-sm w-full shadow-none rounded-none">
           <InputGroupInput
             placeholder="Search users by name"
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
-            className="placeholder:text-muted-foreground text-muted-foreground font-light placeholder:font-light"
+            className="placeholder:text-muted-foreground text-muted-foreground font-light placeholder:font-light rounded-none"
           />
           <InputGroupAddon>
             <SearchIcon className="text-muted-foreground" />
@@ -178,7 +178,7 @@ export function Leaderboard(props: {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="ml-auto text-muted-foreground font-light shadow-none"
+                className="ml-auto text-muted-foreground font-light shadow-none rounded-none"
               >
                 Columns
               </Button>
@@ -207,7 +207,7 @@ export function Leaderboard(props: {
             <Button
               variant="outline"
               size="icon-sm"
-              className="shadow-none"
+              className="shadow-none rounded-none"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -216,7 +216,7 @@ export function Leaderboard(props: {
             <Button
               variant="outline"
               size="icon-sm"
-              className="shadow-none"
+              className="shadow-none rounded-none"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
@@ -225,7 +225,7 @@ export function Leaderboard(props: {
           </div>
         </div>
       </div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-none border">
         <Table>
           <TableHeader className="bg-sidebar">
             {table.getHeaderGroups().map((item) => (
