@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@workspace/backend/convex/_generated/api";
-import { Id } from "@workspace/backend/convex/_generated/dataModel";
+import type { Id } from "@workspace/backend/convex/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
 import { Spinner } from "@workspace/ui/components/spinner";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -25,14 +25,14 @@ interface Props {
 }
 
 export function DeleteUser({ count, userIds, clerkIds, onDeleted }: Props) {
-  const mutation = useMutation(api.functions.users.deleteUsers);
+  const action = useAction(api.functions.users.deleteUsers);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleDelete = async () => {
     try {
       setIsLoading(true);
-      await mutation({
+      await action({
         clerkIds,
         userIds,
       });
@@ -41,7 +41,7 @@ export function DeleteUser({ count, userIds, clerkIds, onDeleted }: Props) {
       setIsOpen(false);
     } catch (error) {
       console.error(error);
-      toast.success("Failed to delete users");
+      toast.error("Failed to delete users");
     } finally {
       setIsLoading(false);
     }
