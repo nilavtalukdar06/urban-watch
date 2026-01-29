@@ -87,3 +87,29 @@ export const getUser = query({
     return result;
   },
 });
+
+export const deleteUsers = mutation({
+  args: {
+    userIds: v.array(v.id("citizens")),
+  },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const organizationId = auth?.orgId as string;
+    if (!organizationId) {
+      throw new Error("organization doesn't exist");
+    }
+    const role = auth?.orgRole as string;
+    if (role.includes("member")) {
+      throw new Error("only an admin can delete users");
+    }
+    for (const id of args.userIds) {
+      await ctx.db.delete(id);
+    }
+    return {
+      deletedCount: args.userIds.length,
+    };
+  },
+});
