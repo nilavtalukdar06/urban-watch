@@ -68,3 +68,22 @@ export const saveKeys = mutation({
     return result;
   },
 });
+
+export const retriveKeys = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const organizationId = auth?.orgId;
+    if (!organizationId) {
+      throw new Error("organization doesn't exist");
+    }
+    const keys = await ctx.db
+      .query("apiKeys")
+      .filter((q) => q.eq(q.field("organizationId"), organizationId))
+      .collect();
+    return keys;
+  },
+});
