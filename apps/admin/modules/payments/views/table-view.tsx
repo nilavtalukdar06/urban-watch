@@ -16,12 +16,12 @@ export function TableView() {
       <Table className="border">
         <TableHeader className="bg-sidebar">
           <TableRow>
-            <TableHead>Provider</TableHead>
-            <TableHead>Key Name</TableHead>
-            <TableHead>Public Key</TableHead>
-            <TableHead>Secret Key</TableHead>
-            <TableHead>Submitted At</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="font-normal">Provider</TableHead>
+            <TableHead className="font-normal">Key Name</TableHead>
+            <TableHead className="font-normal">Public Key</TableHead>
+            <TableHead className="font-normal">Secret Key</TableHead>
+            <TableHead className="font-normal">Submitted At</TableHead>
+            <TableHead className="font-normal">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
