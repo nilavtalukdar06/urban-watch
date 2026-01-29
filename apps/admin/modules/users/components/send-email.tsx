@@ -33,6 +33,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   email: string;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function SendEmail({ open, onOpenChange, email }: Props) {

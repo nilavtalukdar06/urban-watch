@@ -188,6 +188,7 @@ const columns: ColumnDef<User>[] = [
           </DropdownMenu>
           <SendEmail
             open={open}
+            setOpen={setOpen}
             onOpenChange={setOpen}
             email={row.original.email}
           />
