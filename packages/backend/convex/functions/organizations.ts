@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "../_generated/server";
+import { mutation, query } from "../_generated/server";
 
 export const createOrganization = mutation({
   args: {
@@ -22,6 +22,21 @@ export const createOrganization = mutation({
       payments_enabled: false,
       userId: auth.subject,
     });
+    return result;
+  },
+});
+
+export const getOrganizations = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authneticated");
+    }
+    const result = await ctx.db
+      .query("organization")
+      .filter((q) => q.eq(q.field("payments_enabled"), true))
+      .collect();
     return result;
   },
 });
