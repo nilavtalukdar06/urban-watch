@@ -87,3 +87,29 @@ export const retriveKeys = query({
     return keys;
   },
 });
+
+export const deleteKeys = mutation({
+  args: { apiId: v.id("apiKeys") },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const organizationId = auth?.orgId as string;
+    if (!organizationId) {
+      throw new Error("organization doesn't exist");
+    }
+    const organization = await ctx.db
+      .query("organization")
+      .filter((q) => q.eq(q.field("organizationId"), organizationId))
+      .first();
+    if (!organization) {
+      throw new Error("organization doesn't exist");
+    }
+    await ctx.db.delete(args.apiId);
+    const result = await ctx.db.patch("organization", organization._id, {
+      payments_enabled: false,
+    });
+    return result;
+  },
+});
