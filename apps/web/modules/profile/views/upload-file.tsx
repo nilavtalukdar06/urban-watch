@@ -51,7 +51,7 @@ export function UploadFile() {
           two sides, merge the front and back into one image before uploading.
         </p>
         <Button
-          className="rounded-lg text-sm"
+          className="rounded-none shadow-none text-sm font-normal"
           onClick={handleSubmit}
           disabled={isLoading || !imageUrl}
         >

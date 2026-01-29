@@ -38,7 +38,11 @@ export function DeleteMessages() {
   return (
     <Dialog open={isOpen || isLoading} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon-sm">
+        <Button
+          variant="outline"
+          size="icon-sm"
+          className="rounded-none shadow-none"
+        >
           <TriangleAlertIcon className="text-muted-foreground" />
         </Button>
       </DialogTrigger>

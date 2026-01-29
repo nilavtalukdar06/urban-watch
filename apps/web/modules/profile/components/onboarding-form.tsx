@@ -71,7 +71,11 @@ export function OnboardingForm() {
               <FormItem>
                 <FormLabel className="font-normal">Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your name" {...field} />
+                  <Input
+                    placeholder="Enter your name"
+                    {...field}
+                    className="rounded-none shadow-none"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -87,6 +91,7 @@ export function OnboardingForm() {
                   <Input
                     inputMode="numeric"
                     pattern="[0-9]*"
+                    className="rounded-none shadow-none"
                     maxLength={10}
                     placeholder="Enter your 10 digit phone number"
                     {...field}
@@ -107,7 +112,11 @@ export function OnboardingForm() {
               <FormItem>
                 <FormLabel className="font-normal">Date Of Birth</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your date of birth" {...field} />
+                  <Input
+                    placeholder="Enter your date of birth"
+                    className="rounded-none shadow-none"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -120,14 +129,22 @@ export function OnboardingForm() {
               <FormItem>
                 <FormLabel className="font-normal">Permanent Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your address" {...field} />
+                  <Input
+                    placeholder="Enter your address"
+                    className="rounded-none shadow-none"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <div className="flex w-full justify-center items-center">
-            <Button type="submit" className="w-fit" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-fit rounded-none shadow-none"
+              disabled={isLoading}
+            >
               {isLoading ? <Spinner /> : "Submit"}
             </Button>
           </div>
