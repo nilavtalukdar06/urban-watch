@@ -11,8 +11,39 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
+
+const formSchema = z.object({
+  keyName: z.string().min(2, { message: "Key name is too short" }),
+  publicKey: z.string().min(5, { message: "Public Key is too short" }),
+  secretKey: z.string().min(5, { message: "Secret Key is too short" }),
+});
 
 export function EnablePayments() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      keyName: "",
+      publicKey: "",
+      secretKey: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -30,6 +61,72 @@ export function EnablePayments() {
             keys
           </DialogDescription>
         </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="keyName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-light">API Key Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the key name"
+                      className="shadow-none rounded-none font-light placeholder:font-light"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="font-light">
+                    Choose a name for your secret keys
+                  </FormDescription>
+                  <FormMessage className="font-light" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="publicKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-light">Public Key</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the stripe public key"
+                      className="shadow-none rounded-none font-light placeholder:font-light"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="font-light">
+                    Go to your stripe dashboard and paste your public api key
+                    here
+                  </FormDescription>
+                  <FormMessage className="font-light" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="secretKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-light">Secret Key</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the stripe public key"
+                      className="shadow-none rounded-none font-light placeholder:font-light"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="font-light">
+                    Go to your stripe dashboard and paste your secret api key
+                    here
+                  </FormDescription>
+                  <FormMessage className="font-light" />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
         <DialogFooter>
           <DialogClose asChild>
             <Button
