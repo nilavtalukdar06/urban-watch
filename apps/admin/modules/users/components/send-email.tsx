@@ -55,6 +55,7 @@ export function SendEmail({ open, onOpenChange, setOpen, email }: Props) {
       await triggerEmail(email, values.subject, values.body);
       toast.success("Email sending process started");
       setOpen(false);
+      form.reset();
     } catch (error) {
       console.error(error);
       toast.error("Failed to send email");
