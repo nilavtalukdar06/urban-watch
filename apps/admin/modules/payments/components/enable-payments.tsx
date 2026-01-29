@@ -24,6 +24,9 @@ import {
   FormMessage,
 } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
+import { useQuery } from "convex/react";
+import { api } from "@workspace/backend/convex/_generated/api";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 const formSchema = z.object({
   keyName: z.string().min(2, { message: "Key name is too short" }),
@@ -32,6 +35,7 @@ const formSchema = z.object({
 });
 
 export function EnablePayments() {
+  const result = useQuery(api.functions.payments.checkPaymentStatus);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,9 +51,16 @@ export function EnablePayments() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="rounded-none shadow-none font-normal">
-          Enable Payments
-        </Button>
+        {result === undefined ? (
+          <Skeleton className="w-[142px] h-[36px] rounded-none" />
+        ) : (
+          <Button
+            className="rounded-none shadow-none font-normal"
+            disabled={result?.payments_enabled === true}
+          >
+            Enable Payments
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="w-[425px] rounded-none p-5">
         <DialogHeader>
