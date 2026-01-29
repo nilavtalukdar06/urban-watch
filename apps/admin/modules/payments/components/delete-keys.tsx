@@ -12,10 +12,34 @@ import {
 } from "@workspace/ui/components/dialog";
 import { Button } from "@workspace/ui/components/button";
 import type { Id } from "@workspace/backend/convex/_generated/dataModel";
+import { useState } from "react";
+import { toast } from "sonner";
+import axios from "axios";
+import { Spinner } from "@workspace/ui/components/spinner";
 
 export function DeleteKeys({ keyId }: { keyId: Id<"apiKeys"> | undefined }) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleDelete = async () => {
+    try {
+      setIsLoading(true);
+      await axios.delete("/api/secrets/delete", {
+        data: {
+          keyId,
+        },
+      });
+      toast.success("Deleted API Keys");
+      setIsOpen(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete keys");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
-    <Dialog>
+    <Dialog open={isOpen || isLoading} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           size="sm"
@@ -39,6 +63,7 @@ export function DeleteKeys({ keyId }: { keyId: Id<"apiKeys"> | undefined }) {
         <DialogFooter>
           <DialogClose>
             <Button
+              disabled={isLoading}
               variant="outline"
               className="shadow-none rounded-none bg-sidebar font-normal"
             >
@@ -46,10 +71,13 @@ export function DeleteKeys({ keyId }: { keyId: Id<"apiKeys"> | undefined }) {
             </Button>
           </DialogClose>
           <Button
+            onClick={handleDelete}
+            disabled={isLoading}
             variant="destructive"
             className="shadow-none rounded-none font-normal"
           >
-            Delete
+            {isLoading && <Spinner />}
+            {isLoading ? "Loading..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>
