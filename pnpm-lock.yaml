@@ -217,6 +217,9 @@ importers:
 
   packages/backend:
     dependencies:
+      axios:
+        specifier: ^1.13.4
+        version: 1.13.4
       convex:
         specifier: ^1.31.5
         version: 1.31.5(@clerk/clerk-react@5.59.4(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)
@@ -3984,6 +3987,12 @@ packages:
     resolution:
       {
         integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==,
+      }
+
+  axios@1.13.4:
+    resolution:
+      {
+        integrity: sha512-1wVkUaAO6WyaYtCkcYCOx12ZgpGf9Zif+qXa4n+oYzK558YryKqiL6UWwd5DqiH3VRW0GYhTZQ/vlgJrCoNQlg==,
       }
 
   bail@2.0.2:
@@ -11553,6 +11562,14 @@ snapshots:
       possible-typed-array-names: 1.1.0
 
   axios@1.13.2:
+    dependencies:
+      follow-redirects: 1.15.11
+      form-data: 4.0.5
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.13.4:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.5
