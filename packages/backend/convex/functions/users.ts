@@ -1,5 +1,6 @@
-import { mutation, query } from "../_generated/server";
+import { mutation, query, action } from "../_generated/server";
 import { v } from "convex/values";
+import { api } from "../_generated/api";
 import axios from "axios";
 
 export const createUser = mutation({
@@ -89,19 +90,34 @@ export const getUser = query({
   },
 });
 
-export const deleteUsers = mutation({
+export const deleteUsersFromDB = mutation({
+  args: {
+    userIds: v.array(v.id("citizens")),
+  },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) throw new Error("not authenticated");
+    const organizationId = auth?.orgId as string;
+    if (!organizationId) {
+      throw new Error("organization doesn't exist");
+    }
+    if ((auth.orgRole as string)?.includes("member")) {
+      throw new Error("only admin can delete users");
+    }
+    await Promise.all(args.userIds.map((id) => ctx.db.delete(id)));
+    return { deletedCount: args.userIds.length };
+  },
+});
+
+export const deleteUsers = action({
   args: {
     userIds: v.array(v.id("citizens")),
     clerkIds: v.array(v.string()),
   },
   handler: async (ctx, args) => {
     if (args.userIds.length !== args.clerkIds.length) {
-      throw new Error("userIds and clerkIds length mismatch");
+      throw new Error("length mismatch");
     }
-    const merged = args.clerkIds.map((clerkId, index) => ({
-      clerkId,
-      userId: args.userIds[index],
-    }));
     const auth = await ctx.auth.getUserIdentity();
     if (!auth) {
       throw new Error("the user is not authenticated");
@@ -112,20 +128,20 @@ export const deleteUsers = mutation({
     }
     const role = auth?.orgRole as string;
     if (role.includes("member")) {
-      throw new Error("only an admin can delete users");
+      throw new Error("only an admin can delete a user");
     }
     await Promise.all(
-      merged.map(async (item) => {
-        await axios.delete(`https://api.clerk.com/v1/users/${item.clerkId}`, {
+      args.clerkIds.map(async (clerkId) => {
+        await axios.delete(`https://api.clerk.com/v1/users/${clerkId}`, {
           headers: {
             Authorization: `Bearer ${process.env.CLERK_SECRET_KEY!}`,
           },
         });
-        await ctx.db.delete(item.userId);
       }),
     );
-    return {
-      deletedCount: args.userIds.length,
-    };
+    await ctx.runMutation(api.functions.users.deleteUsersFromDB, {
+      userIds: args.userIds,
+    });
+    return { deletedCount: args.userIds.length };
   },
 });
