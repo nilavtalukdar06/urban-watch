@@ -28,7 +28,6 @@ import {
   ChevronRight,
   MailIcon,
   MoreHorizontal,
-  Trash2Icon,
   UserIcon,
   SearchIcon,
   ArrowUpDown,
@@ -52,6 +51,7 @@ import { Checkbox } from "@workspace/ui/components/checkbox";
 import Image from "next/image";
 import { exportAllUsers } from "../functions/export-all";
 import { exportSingleUserToExcel } from "../functions/export-user";
+import { DeleteUser } from "../components/delete-users";
 
 export type User = {
   _id: Id<"citizens">;
@@ -273,18 +273,12 @@ export function TableView(props: {
                 <ChevronRight />
               </Button>
             </div>
-            <Button
-              variant="destructive"
-              className="rounded-none! shadow-none font-normal"
-              disabled={table.getFilteredSelectedRowModel().rows.length === 0}
-            >
-              Delete{" "}
-              {table.getFilteredSelectedRowModel().rows.length !== 0
-                ? table.getFilteredSelectedRowModel().rows.length === 1
-                  ? `${table.getFilteredSelectedRowModel().rows.length} User`
-                  : `${table.getFilteredSelectedRowModel().rows.length} Users`
-                : ""}
-            </Button>
+            <DeleteUser
+              count={table.getFilteredSelectedRowModel().rows.length}
+              userIds={table
+                .getFilteredSelectedRowModel()
+                .rows.map((row) => row.original._id)}
+            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
