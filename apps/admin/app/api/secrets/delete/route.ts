@@ -50,7 +50,7 @@ export async function DELETE(request: NextRequest) {
       },
       { token },
     );
-    return NextResponse.json({ success: true, apiId: result }, { status: 500 });
+    return NextResponse.json({ success: true, apiId: result }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
