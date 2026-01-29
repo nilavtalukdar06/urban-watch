@@ -91,7 +91,7 @@ export function EventCard(props: EventCardProps) {
           <span className="flex-1 truncate text-start">{props.title}</span>
         </button>
       </DialogTrigger>
-      <DialogContent className="w-[425px] p-4">
+      <DialogContent className="w-[425px] p-4 rounded-none">
         <DialogHeader>
           <DialogTitle className="font-normal text-neutral-700">
             {props.title}
@@ -126,16 +126,20 @@ export function EventCard(props: EventCardProps) {
         </p>
         <DialogFooter>
           <Button
-            size="sm"
             disabled={isLoading}
             variant="secondary"
+            className="bg-sidebar! border! rounded-none! shaodow-none! font-normal"
             onClick={() => setIsOpen(false)}
           >
             Cancel
             <XIcon />
           </Button>
           {membership?.role === "org:admin" && (
-            <Button size="sm" variant="destructive" onClick={handleClick}>
+            <Button
+              variant="destructive"
+              onClick={handleClick}
+              className="rounded-none shadow-none font-normal"
+            >
               {isLoading ? "Loading..." : "Delete Task"}
               {isLoading ? (
                 <Loader className="animate-spin" />
