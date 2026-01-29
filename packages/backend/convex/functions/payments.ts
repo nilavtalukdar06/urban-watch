@@ -23,8 +23,8 @@ export const checkPaymentStatus = query({
 export const saveKeys = mutation({
   args: {
     keyName: v.string(),
-    publicKey: v.string(),
-    secretKey: v.string(),
+    publicKeyPrefix: v.string(),
+    secretKeyPrefix: v.string(),
   },
   handler: async (ctx, args) => {
     const auth = await ctx.auth.getUserIdentity();
@@ -35,11 +35,20 @@ export const saveKeys = mutation({
     if (!organizationId) {
       throw new Error("organization doesn't exist");
     }
+    const keys = await ctx.db
+      .query("apiKeys")
+      .filter((q) => q.eq(q.field("organizationId"), organizationId))
+      .first();
+    if (keys) {
+      throw new Error(
+        "keys already exist, delete the previous ones if you want new",
+      );
+    }
     const result = await ctx.db.insert("apiKeys", {
       keyName: args.keyName,
       provider: "stripe",
-      publicKeyPrefix: args.publicKey.slice(0, 9),
-      secretKeyPrefix: args.secretKey.slice(0, 9),
+      publicKeyPrefix: args.publicKeyPrefix,
+      secretKeyPrefix: args.secretKeyPrefix,
       organizationId,
       userId: auth.subject,
     });

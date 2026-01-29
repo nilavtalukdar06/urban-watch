@@ -60,8 +60,8 @@ export async function POST(request: NextRequest) {
       api.functions.payments.saveKeys,
       {
         keyName: parsedSchema.data.keyName,
-        publicKey: publicKey.secret.secretValue,
-        secretKey: secretKey.secret.secretValue,
+        publicKeyPrefix: publicKey.secret.secretValue.slice(0, 9),
+        secretKeyPrefix: secretKey.secret.secretValue.slice(0, 9),
       },
       { token },
     );
