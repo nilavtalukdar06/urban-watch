@@ -9,8 +9,30 @@ import {
   TableRow,
 } from "@workspace/ui/components/table";
 import { Button } from "@workspace/ui/components/button";
+import { useQuery } from "convex/react";
+import { api } from "@workspace/backend/convex/_generated/api";
+import { format } from "date-fns";
 
 export function TableView() {
+  const keys = useQuery(api.functions.payments.retriveKeys);
+  if (keys === undefined) {
+    return (
+      <div className="my-4">
+        <p className="text-muted-foreground font-light animate-ping">
+          Loading Keys...
+        </p>
+      </div>
+    );
+  }
+  if (keys.length === 0) {
+    return (
+      <div className="my-4">
+        <p className="text-red-500 font-light">
+          You have not enabled payments yet
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="my-4">
       <Table className="border">
@@ -26,11 +48,13 @@ export function TableView() {
         </TableHeader>
         <TableBody>
           <TableRow className="text-muted-foreground font-light">
-            <TableCell>Stripe</TableCell>
-            <TableCell>Pawcare Key</TableCell>
-            <TableCell>sk_public*****</TableCell>
-            <TableCell>sk_secret*****</TableCell>
-            <TableCell>29 January 2026</TableCell>
+            <TableCell>{keys[0]?.provider}</TableCell>
+            <TableCell>{keys[0]?.keyName}</TableCell>
+            <TableCell>{keys[0]?.publicKeyPrefix}*****</TableCell>
+            <TableCell>{keys[0]?.secretKeyPrefix}*****</TableCell>
+            <TableCell>
+              {format(new Date(keys[0]?._creationTime!), "d MMMM yyyy")}
+            </TableCell>
             <TableCell>
               <Button
                 size="sm"
