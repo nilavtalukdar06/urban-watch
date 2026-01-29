@@ -20,9 +20,10 @@ import { toast } from "sonner";
 interface Props {
   count: number;
   userIds: Id<"citizens">[];
+  onDeleted: () => void;
 }
 
-export function DeleteUser({ count, userIds }: Props) {
+export function DeleteUser({ count, userIds, onDeleted }: Props) {
   const mutation = useMutation(api.functions.users.deleteUsers);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -32,6 +33,7 @@ export function DeleteUser({ count, userIds }: Props) {
       setIsLoading(true);
       await mutation({ userIds });
       toast.success("Users Deleted Successfully");
+      onDeleted();
       setIsOpen(false);
     } catch (error) {
       console.error(error);

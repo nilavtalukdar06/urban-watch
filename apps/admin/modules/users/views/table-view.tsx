@@ -206,6 +206,7 @@ export function TableView(props: {
     const table = useReactTable({
       data: users,
       columns,
+      getRowId: (row) => row._id,
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
       onSortingChange: setSorting,
@@ -278,6 +279,7 @@ export function TableView(props: {
               userIds={table
                 .getFilteredSelectedRowModel()
                 .rows.map((row) => row.original._id)}
+              onDeleted={() => table.resetRowSelection()}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
