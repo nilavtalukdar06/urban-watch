@@ -21,6 +21,7 @@ import { api } from "@workspace/backend/convex/_generated/api";
 import { updateMetadata } from "../functions/update-metadata";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@workspace/ui/components/spinner";
+import { upsertVector } from "../functions/upsert-vector";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name is too short" }),
@@ -45,6 +46,7 @@ export function OnboardingForm() {
     try {
       setIsLoading(true);
       await mutation({ ...values });
+      await upsertVector({ goal: values.goal, purpose: values.purpose });
       await updateMetadata();
       toast.success("Profile Created Successfully");
       form.reset();
