@@ -80,6 +80,7 @@ export function OrganizationTrigger(props: Props) {
         body: JSON.stringify({
           amount,
           organizationId: props.organizationId,
+          organizationName: props.name,
         }),
       });
       if (!response.ok) {

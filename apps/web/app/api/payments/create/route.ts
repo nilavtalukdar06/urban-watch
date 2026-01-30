@@ -11,6 +11,9 @@ const client = new InfisicalSDK({
 });
 
 export const requestSchema = z.object({
+  organizationName: z
+    .string()
+    .min(1, { message: "organization name is required" }),
   amount: z
     .number()
     .min(100, { message: "minimum donation amount is 100 rupees" }),
@@ -59,8 +62,8 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency: "inr",
             product_data: {
-              name: "Donation",
-              description: `Donation to organization`,
+              name: `Donation to ${parsedBody.data.organizationName}`,
+              description: `Support ${parsedBody.data.organizationName}`,
             },
             unit_amount: parsedBody.data.amount * 100,
           },
