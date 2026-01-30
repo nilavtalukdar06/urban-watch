@@ -5,7 +5,7 @@ export const createReport = mutation({
   args: {
     imageUrl: v.string(),
     location: v.string(),
-    notes: v.optional(v.string()),
+    notes: v.string(),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
     instructions: v.optional(v.array(v.string())),
@@ -23,6 +23,7 @@ export const createReport = mutation({
     }
     const reportId = await ctx.db.insert("reports", {
       ...args,
+      isSpam: false,
       assigned: false,
       createdAt: Date.now(),
     });

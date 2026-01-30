@@ -25,7 +25,7 @@ import { useForm } from "react-hook-form";
 
 const formSchema = z.object({
   location: z.string().min(3, { message: "Location is required" }),
-  notes: z.string().optional(),
+  notes: z.string().min(3, { message: "Notes are too short" }),
 });
 
 export function SubmitReportForm() {
@@ -112,9 +112,7 @@ export function SubmitReportForm() {
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-normal">
-                    Notes (Optional)
-                  </FormLabel>
+                  <FormLabel className="font-normal">Notes</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Add any additional notes about the report"

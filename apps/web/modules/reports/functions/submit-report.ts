@@ -7,7 +7,7 @@ import { fetchMutation, fetchQuery } from "convex/nextjs";
 interface ReportData {
   imageUrl: string;
   location: string;
-  notes?: string;
+  notes: string;
 }
 
 export const submitReport = async (data: ReportData) => {

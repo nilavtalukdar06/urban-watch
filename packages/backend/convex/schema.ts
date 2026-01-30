@@ -72,7 +72,7 @@ export default defineSchema({
   reports: defineTable({
     imageUrl: v.string(),
     location: v.string(),
-    notes: v.optional(v.string()),
+    notes: v.string(),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
     instructions: v.optional(v.array(v.string())),
@@ -80,6 +80,7 @@ export default defineSchema({
     priority: v.optional(
       v.union(v.literal("low"), v.literal("medium"), v.literal("high")),
     ),
+    isSpam: v.boolean(),
     inferredGoal: v.optional(v.string()),
     inferredPurpose: v.optional(v.string()),
     assigned: v.boolean(),
