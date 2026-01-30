@@ -113,3 +113,24 @@ export const deleteKeys = mutation({
     return result;
   },
 });
+
+export const createCheckout = mutation({
+  args: {
+    amount: v.number(),
+    stripePaymentId: v.string(),
+    stripePaymentIntentId: v.string(),
+    donatedTo: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const result = await ctx.db.insert("donations", {
+      ...args,
+      status: "pending",
+      donatedBy: auth.subject,
+    });
+    return result;
+  },
+});
