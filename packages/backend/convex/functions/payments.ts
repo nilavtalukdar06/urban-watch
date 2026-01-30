@@ -133,3 +133,30 @@ export const createCheckout = mutation({
     return result;
   },
 });
+
+export const updateDonationStatus = mutation({
+  args: {
+    stripePaymentIntentId: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("paid"),
+      v.literal("failed"),
+    ),
+  },
+  handler: async (ctx, args) => {
+    const donation = await ctx.db
+      .query("donations")
+      .filter((q) =>
+        q.eq(q.field("stripePaymentIntentId"), args.stripePaymentIntentId),
+      )
+      .first();
+    if (!donation) {
+      throw new Error("Donation not found");
+    }
+    await ctx.db.patch(donation._id, {
+      status: args.status,
+    });
+    console.log(`Updated donation ${donation._id} to status: ${args.status}`);
+    return { success: true, donationId: donation._id };
+  },
+});
