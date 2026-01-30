@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/shared/navbar";
+import { SubmitReportForm } from "@/modules/reports/components/submit-report";
 
 export default function SubmitReport() {
   return (
@@ -13,6 +14,7 @@ export default function SubmitReport() {
             Enter the basic details about the report and let ai do the job
           </p>
         </div>
+        <SubmitReportForm />
       </div>
     </div>
   );
