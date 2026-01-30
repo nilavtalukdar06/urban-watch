@@ -99,25 +99,39 @@ export function GridView({
         </InputGroup>
 
         <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-          <SelectTrigger className="w-full sm:w-40 rounded-none">
+          <SelectTrigger className="w-full sm:w-40 rounded-none shadow-none font-normal">
             <SelectValue placeholder="Filter by priority" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Priorities</SelectItem>
-            <SelectItem value="low">Low</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="high">High</SelectItem>
+          <SelectContent className="rounded-none">
+            <SelectItem value="all" className="rounded-none">
+              All Priorities
+            </SelectItem>
+            <SelectItem value="low" className="rounded-none">
+              Low
+            </SelectItem>
+            <SelectItem value="medium" className="rounded-none">
+              Medium
+            </SelectItem>
+            <SelectItem value="high" className="rounded-none">
+              High
+            </SelectItem>
           </SelectContent>
         </Select>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-40 rounded-none">
+          <SelectTrigger className="w-full sm:w-40 rounded-none shadow-none font-normal">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="resolved">Resolved</SelectItem>
+          <SelectContent className="rounded-none">
+            <SelectItem value="all" className="rounded-none">
+              All Status
+            </SelectItem>
+            <SelectItem value="pending" className="rounded-none">
+              Pending
+            </SelectItem>
+            <SelectItem value="resolved" className="rounded-none">
+              Resolved
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
