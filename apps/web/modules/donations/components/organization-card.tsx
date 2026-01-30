@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -17,7 +18,7 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { Id } from "@workspace/backend/convex/_generated/dataModel";
-import { LinkIcon } from "lucide-react";
+import { LinkIcon, Loader2 } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +33,8 @@ import {
   FormMessage,
 } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { toast } from "sonner";
 
 interface Props {
   goal: string;
@@ -58,16 +61,42 @@ const formSchema = z.object({
 });
 
 export function OrganizationTrigger(props: Props) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: "",
     },
   });
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const amount = Number(values.amount);
-    console.log(amount);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsProcessing(true);
+    try {
+      const amount = Number(values.amount);
+      const response = await fetch("/api/payments/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount,
+          organizationId: props.organizationId,
+        }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create checkout session");
+      }
+      const data = await response.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (error) {
+      console.error("Payment initiation error:", error);
+      toast.error("Failed to initiate payment");
+      setIsProcessing(false);
+    }
   };
   return (
     <Dialog>
@@ -117,6 +146,7 @@ export function OrganizationTrigger(props: Props) {
                         placeholder="Enter the donation amount"
                         inputMode="numeric"
                         className="shadow-none rounded-none placeholder:font-light font-light"
+                        disabled={isProcessing}
                         {...field}
                         onChange={(e) => {
                           const value = e.target.value.replace(/\D/g, "");
@@ -140,6 +170,7 @@ export function OrganizationTrigger(props: Props) {
               type="button"
               variant="outline"
               className="bg-sidebar rounded-none font-normal shadow-none"
+              disabled={isProcessing}
             >
               Cancel
             </Button>
@@ -149,8 +180,16 @@ export function OrganizationTrigger(props: Props) {
             variant="destructive"
             form="donation-form"
             className="rounded-none shadow-none font-normal"
+            disabled={isProcessing}
           >
-            Donate
+            {isProcessing ? (
+              <>
+                <Spinner />
+                Processing...
+              </>
+            ) : (
+              "Donate"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
