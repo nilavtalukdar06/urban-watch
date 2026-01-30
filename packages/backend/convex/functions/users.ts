@@ -158,3 +158,28 @@ export const deleteUsers = action({
     return { deletedCount: args.userIds.length };
   },
 });
+
+export const updateUserPoints = mutation({
+  args: {
+    userId: v.string(),
+    points: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const citizen = await ctx.db
+      .query("citizens")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .first();
+    if (!citizen) {
+      throw new Error("citizen not found");
+    }
+    const newPoints = Math.max(0, citizen.points + args.points);
+    await ctx.db.patch(citizen._id, {
+      points: newPoints,
+    });
+    return {
+      previousPoints: citizen.points,
+      newPoints,
+      pointsAdded: args.points,
+    };
+  },
+});

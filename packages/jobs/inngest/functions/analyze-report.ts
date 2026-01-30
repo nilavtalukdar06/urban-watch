@@ -59,6 +59,13 @@ export const analyzeReportFunction = inngest.createFunction(
       };
       await index.upsertRecords([record]);
     });
+    await step.run("update-user-points", async () => {
+      const pointsToAdd = analysis.isSpam ? -5 : 10;
+      return await fetchMutation(api.functions.users.updateUserPoints, {
+        userId: event.data.userId,
+        points: pointsToAdd,
+      });
+    });
     const emailResult = await step.run("send-email", async () => {
       return await reportAnalysisEmail(
         user.email,
