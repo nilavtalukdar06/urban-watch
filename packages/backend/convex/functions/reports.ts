@@ -87,3 +87,15 @@ export const getProcessedReportsByUser = query({
     return reports;
   },
 });
+
+export const getReportDetails = query({
+  args: { reportId: v.id("reports") },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const result = await ctx.db.get(args.reportId);
+    return result;
+  },
+});
