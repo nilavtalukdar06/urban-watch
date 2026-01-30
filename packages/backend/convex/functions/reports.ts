@@ -23,6 +23,7 @@ export const createReport = mutation({
     }
     const reportId = await ctx.db.insert("reports", {
       ...args,
+      status: "pending",
       process: false,
       isSpam: false,
       userId: auth.subject,

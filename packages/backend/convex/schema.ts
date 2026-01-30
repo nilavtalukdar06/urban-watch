@@ -80,6 +80,7 @@ export default defineSchema({
     priority: v.optional(
       v.union(v.literal("low"), v.literal("medium"), v.literal("high")),
     ),
+    status: v.optional(v.union(v.literal("pending"), v.literal("resolved"))),
     process: v.boolean(),
     isSpam: v.boolean(),
     inferredGoal: v.optional(v.string()),
