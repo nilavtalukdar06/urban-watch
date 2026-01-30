@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { Id } from "@workspace/backend/convex/_generated/dataModel";
-import { LinkIcon, Loader2 } from "lucide-react";
+import { LinkIcon } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
