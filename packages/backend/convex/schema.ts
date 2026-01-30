@@ -80,11 +80,11 @@ export default defineSchema({
     priority: v.optional(
       v.union(v.literal("low"), v.literal("medium"), v.literal("high")),
     ),
+    process: v.boolean(),
     isSpam: v.boolean(),
     inferredGoal: v.optional(v.string()),
     inferredPurpose: v.optional(v.string()),
-    assigned: v.boolean(),
-    createdAt: v.number(),
+    userId: v.string(),
   }),
   reportAssignments: defineTable({
     reportId: v.id("reports"),
@@ -95,6 +95,5 @@ export default defineSchema({
       v.literal("accepted"),
       v.literal("rejected"),
     ),
-    createdAt: v.number(),
   }),
 });

@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { fetchMutation, fetchQuery } from "convex/nextjs";
+import { inngest } from "@workspace/jobs/inngest/client";
 
 interface ReportData {
   imageUrl: string;
@@ -27,6 +28,16 @@ export const submitReport = async (data: ReportData) => {
       },
       { token },
     );
+    await inngest.send({
+      name: "report/analyze",
+      data: {
+        reportId,
+        userId: user.userId,
+        imageUrl: data.imageUrl,
+        location: data.location,
+        notes: data.notes,
+      },
+    });
     return {
       success: true,
       reportId,

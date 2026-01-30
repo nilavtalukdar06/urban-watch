@@ -90,6 +90,19 @@ export const getUser = query({
   },
 });
 
+export const getUserById = query({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db
+      .query("citizens")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .first();
+    return result;
+  },
+});
+
 export const deleteUsersFromDB = mutation({
   args: {
     userIds: v.array(v.id("citizens")),
