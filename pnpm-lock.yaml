@@ -138,6 +138,9 @@ importers:
       "@hookform/resolvers":
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.1(react@19.2.1))
+      "@infisical/sdk":
+        specifier: ^4.0.6
+        version: 4.0.6(@aws-sdk/client-sso-oidc@3.600.0)
       "@radix-ui/react-label":
         specifier: ^2.1.8
         version: 2.1.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)

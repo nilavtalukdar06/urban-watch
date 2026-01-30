@@ -65,7 +65,6 @@ export default defineSchema({
       v.literal("paid"),
       v.literal("failed"),
     ),
-    stripePaymentId: v.string(),
     stripePaymentIntentId: v.string(),
     donatedBy: v.string(),
   }),

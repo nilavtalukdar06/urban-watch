@@ -117,7 +117,6 @@ export const deleteKeys = mutation({
 export const createCheckout = mutation({
   args: {
     amount: v.number(),
-    stripePaymentId: v.string(),
     stripePaymentIntentId: v.string(),
     donatedTo: v.string(),
   },
