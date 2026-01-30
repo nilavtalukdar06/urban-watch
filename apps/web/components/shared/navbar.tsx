@@ -4,7 +4,7 @@ import { DeleteMessages } from "@/modules/chatbot/components/delete-messages";
 import { Verification } from "@/modules/profile/components/verification";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@workspace/ui/components/button";
-import { SendIcon } from "lucide-react";
+import { CoinsIcon, SendIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -34,7 +34,15 @@ export function Navbar() {
             </Link>
           </Button>
           {pathname === "/chatbot" && <DeleteMessages />}
-          <UserButton />
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Link
+                label="Donate Organizations"
+                href="/donate"
+                labelIcon={<CoinsIcon size={14} />}
+              />
+            </UserButton.MenuItems>
+          </UserButton>
         </nav>
       </header>
     </div>
