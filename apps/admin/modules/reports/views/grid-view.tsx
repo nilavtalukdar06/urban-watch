@@ -10,6 +10,13 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@workspace/ui/components/input-group";
+import { SearchIcon } from "lucide-react";
+import { useState } from "react";
 
 export function GridView({
   preloadedReports,
@@ -17,7 +24,7 @@ export function GridView({
   preloadedReports: Preloaded<typeof api.functions.reports.getAllReports>;
 }) {
   const reports = usePreloadedQuery(preloadedReports);
-  console.log(reports);
+  const [searchQuery, setSearchQuery] = useState("");
   if (reports === undefined) {
     return (
       <div className="w-full my-3">
@@ -36,10 +43,24 @@ export function GridView({
       </div>
     );
   }
+  const filteredReports = reports.filter((report) =>
+    report.title?.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
   return (
-    <div className="w-full my-3">
+    <div className="w-full my-3 space-y-4">
+      <InputGroup className="max-w-sm w-full shadow-none rounded-none">
+        <InputGroupInput
+          placeholder="Search reports by title"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="placeholder:text-muted-foreground text-muted-foreground font-light placeholder:font-light rounded-none"
+        />
+        <InputGroupAddon>
+          <SearchIcon className="text-muted-foreground" />
+        </InputGroupAddon>
+      </InputGroup>
       <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 place-items-center">
-        {reports.map((report) => (
+        {filteredReports.map((report) => (
           <Card
             className="w-full rounded-none shadow-none bg-sidebar py-3 h-full flex flex-col justify-between items-start"
             key={report._id}
@@ -63,6 +84,11 @@ export function GridView({
           </Card>
         ))}
       </div>
+      {filteredReports.length === 0 && (
+        <p className="text-muted-foreground font-light">
+          No reports found matching your search.
+        </p>
+      )}
     </div>
   );
 }
