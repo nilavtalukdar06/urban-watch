@@ -40,7 +40,11 @@ export function GridView({ preloadedReports }: Props) {
     <div className="my-4 w-full h-full">
       <div className="w-full grid grid-cols-2 max-[500px]:grid-cols-1 place-items-center gap-4">
         {result.map((report) => (
-          <Link href={`/reports/${report._id}`} className="w-full h-full">
+          <Link
+            href={`/reports/${report._id}`}
+            className="w-full h-full"
+            key={report._id}
+          >
             <Card className="w-full rounded-none shadow-none bg-sidebar py-3 h-full">
               <CardHeader className="px-4">
                 <CardTitle className="text-start text-neutral-700 text-lg font-light">
