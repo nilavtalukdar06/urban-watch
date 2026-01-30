@@ -72,11 +72,11 @@ export function ReportStatusUpdater({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-none font-light">
+        <Button variant="outline" size="sm" className="rounded-none font-light shadow-none">
           Update Status
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-none">
+      <DialogContent className="rounded-none w-[425px] p-5">
         <DialogHeader>
           <DialogTitle className="font-light">Update Report Status</DialogTitle>
           <DialogDescription className="font-light">

@@ -44,9 +44,9 @@ export default async function MyReportPage({
         />
 
         <div className="space-y-1">
-          <p className="text-sm text-muted-foreground font-light">Status</p>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col justify-center items-start gap-2">
             <p className="text-sm font-light text-neutral-700">
+              #{" "}
               {result?.status?.charAt(0).toUpperCase()! +
                 result?.status?.slice(1)!}
             </p>
