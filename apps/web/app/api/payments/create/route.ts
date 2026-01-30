@@ -45,6 +45,12 @@ export async function POST(request: NextRequest) {
       clientId: process.env.MACHINE_ID!,
       clientSecret: process.env.MACHINE_SECRET!,
     });
+    const publicKey = await client.secrets().getSecret({
+      environment: "dev",
+      projectId: process.env.PROJECT_ID!,
+      secretName: `tenant_public_${parsedBody.data.organizationId}`,
+      viewSecretValue: true,
+    });
     const secretKey = await client.secrets().getSecret({
       environment: "dev",
       projectId: process.env.PROJECT_ID!,
@@ -73,6 +79,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         checkoutId: result,
+        publicKey: publicKey.secretValue,
         clientSecret: paymentIntent.client_secret,
       },
       { status: 201 },
