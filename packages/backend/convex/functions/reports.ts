@@ -135,7 +135,11 @@ export const getAllReports = query({
     if (!orgId) {
       throw new Error("organization id not found");
     }
-    const result = await ctx.db.query("reports").order("desc").collect();
+    const result = await ctx.db
+      .query("reports")
+      .filter((q) => q.eq(q.field("isSpam"), false))
+      .order("desc")
+      .collect();
     return result;
   },
 });
