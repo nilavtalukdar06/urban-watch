@@ -135,11 +135,135 @@ export const getAllReports = query({
     if (!orgId) {
       throw new Error("organization id not found");
     }
+    // Get all report IDs that are already assigned to any organization
+    const assignedReportIds = new Set(
+      (await ctx.db.query("reportAssignments").collect()).map((a) =>
+        a.reportId.toString(),
+      ),
+    );
+
     const result = await ctx.db
       .query("reports")
       .filter((q) => q.eq(q.field("isSpam"), false))
       .order("desc")
       .collect();
-    return result;
+
+    // Filter out reports that are already assigned
+    return result.filter((r) => !assignedReportIds.has(r._id.toString()));
+  },
+});
+
+export const takeReport = mutation({
+  args: {
+    reportId: v.id("reports"),
+  },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const orgId = auth?.orgId as string;
+    if (!orgId) {
+      throw new Error("organization id not found");
+    }
+
+    // Check if report exists
+    const report = await ctx.db.get(args.reportId);
+    if (!report) {
+      throw new Error("report not found");
+    }
+
+    // Check if report is already assigned
+    const existingAssignment = await ctx.db
+      .query("reportAssignments")
+      .filter((q) => q.eq(q.field("reportId"), args.reportId))
+      .first();
+    if (existingAssignment) {
+      throw new Error("report is already assigned");
+    }
+
+    // Create assignment
+    const assignmentId = await ctx.db.insert("reportAssignments", {
+      reportId: args.reportId,
+      organizationId: orgId,
+      similarityScore: 0,
+      status: "accepted",
+    });
+
+    return assignmentId;
+  },
+});
+
+export const getReportsByOrganization = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const orgId = auth?.orgId as string;
+    if (!orgId) {
+      throw new Error("organization id not found");
+    }
+
+    // Get all assignments for this organization
+    const assignments = await ctx.db
+      .query("reportAssignments")
+      .filter((q) => q.eq(q.field("organizationId"), orgId))
+      .collect();
+
+    // Get all reports for these assignments
+    const reportsWithAssignments = await Promise.all(
+      assignments.map(async (assignment) => {
+        const report = await ctx.db.get(assignment.reportId);
+        return {
+          ...report,
+          assignmentStatus: assignment.status,
+          similarityScore: assignment.similarityScore,
+        };
+      }),
+    );
+
+    return reportsWithAssignments.filter((r) => r !== null && r !== undefined);
+  },
+});
+
+export const updateReportStatus = mutation({
+  args: {
+    reportId: v.id("reports"),
+    status: v.union(v.literal("pending"), v.literal("resolved")),
+  },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const orgId = auth?.orgId as string;
+    if (!orgId) {
+      throw new Error("organization id not found");
+    }
+
+    // Check if report exists
+    const report = await ctx.db.get(args.reportId);
+    if (!report) {
+      throw new Error("report not found");
+    }
+
+    // Check if this organization has this report assigned
+    const assignment = await ctx.db
+      .query("reportAssignments")
+      .filter((q) => q.eq(q.field("reportId"), args.reportId))
+      .filter((q) => q.eq(q.field("organizationId"), orgId))
+      .first();
+    if (!assignment) {
+      throw new Error("report not assigned to your organization");
+    }
+
+    // Update report status
+    await ctx.db.patch(args.reportId, {
+      status: args.status,
+    });
+
+    return args.reportId;
   },
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@workspace/backend/convex/_generated/api";
-import { Preloaded, usePreloadedQuery } from "convex/react";
+import { Preloaded, usePreloadedQuery, useMutation } from "convex/react";
 import {
   Card,
   CardDescription,
@@ -14,11 +14,12 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { ExternalLink, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { formatDistanceToNow, format } from "date-fns";
 import { Button } from "@workspace/ui/components/button";
+import { toast } from "sonner";
 
 export function GridView({
   preloadedReports,
@@ -26,7 +27,25 @@ export function GridView({
   preloadedReports: Preloaded<typeof api.functions.reports.getAllReports>;
 }) {
   const reports = usePreloadedQuery(preloadedReports);
+  const takeReportMutation = useMutation(api.functions.reports.takeReport);
   const [searchQuery, setSearchQuery] = useState("");
+  const [takingReport, setTakingReport] = useState<string | null>(null);
+
+  const handleTakeReport = async (reportId: string) => {
+    try {
+      setTakingReport(reportId);
+      await takeReportMutation({
+        reportId: reportId as any,
+      });
+      toast.success("Report taken successfully!");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to take report",
+      );
+    } finally {
+      setTakingReport(null);
+    }
+  };
   if (reports === undefined) {
     return (
       <div className="w-full my-3">
@@ -68,7 +87,10 @@ export function GridView({
             : null;
 
           return (
-            <Card className="w-full rounded-none shadow-none bg-sidebar py-3 h-full flex flex-col justify-between items-start hover:bg-sidebar/80 transition-colors cursor-pointer">
+            <Card
+              className="w-full rounded-none shadow-none bg-sidebar py-3 h-full flex flex-col justify-between items-start hover:bg-sidebar/80 transition-colors cursor-pointer"
+              key={report._id}
+            >
               <CardHeader className="px-4 w-full">
                 <CardTitle className="text-start text-neutral-700 text-lg font-light">
                   {report.title}
@@ -93,13 +115,16 @@ export function GridView({
                   className="w-fit shadow-none rounded-none font-normal"
                   variant="destructive"
                   size="sm"
+                  onClick={() => handleTakeReport(report._id)}
+                  disabled={takingReport === report._id}
                 >
-                  Take Report
+                  {takingReport === report._id ? "Taking..." : "Take Report"}
                 </Button>
                 <Button
                   className="w-fit shadow-none rounded-none font-normal"
                   variant="outline"
                   size="sm"
+                  asChild
                 >
                   <Link href={`/reports/${report._id}`}>See Report</Link>
                 </Button>
