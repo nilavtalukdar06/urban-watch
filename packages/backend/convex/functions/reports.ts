@@ -100,3 +100,26 @@ export const getReportDetails = query({
     return result;
   },
 });
+
+export const deleteReport = mutation({
+  args: {
+    reportId: v.id("reports"),
+  },
+  handler: async (ctx, args) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const report = await ctx.db.get(args.reportId);
+    if (!report) {
+      throw new Error("report not found");
+    }
+    if (report.userId !== auth.subject) {
+      throw new Error("unauthorized to delete this report");
+    }
+    await ctx.db.delete(args.reportId);
+    return {
+      message: "report deleted",
+    };
+  },
+});

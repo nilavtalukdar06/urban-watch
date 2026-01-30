@@ -1,8 +1,8 @@
 import { Navbar } from "@/components/shared/navbar";
+import { DeleteReport } from "@/modules/reports/components/delete-report";
 import { auth } from "@clerk/nextjs/server";
 import { api } from "@workspace/backend/convex/_generated/api";
 import type { Id } from "@workspace/backend/convex/_generated/dataModel";
-import { Button } from "@workspace/ui/components/button";
 import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -72,12 +72,7 @@ export default async function ReportPage({
             </p>
           ))}
         </div>
-        <Button
-          className="shadow-none rounded-none font-normal"
-          variant="destructive"
-        >
-          Delete Report
-        </Button>
+        <DeleteReport reportId={reportId} />
       </div>
     </div>
   );
