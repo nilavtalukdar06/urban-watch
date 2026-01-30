@@ -4,8 +4,13 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuild: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.ucarecd.net",
+      },
+    ],
   },
 };
 
