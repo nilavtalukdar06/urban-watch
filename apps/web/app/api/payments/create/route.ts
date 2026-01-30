@@ -45,12 +45,6 @@ export async function POST(request: NextRequest) {
       clientId: process.env.MACHINE_ID!,
       clientSecret: process.env.MACHINE_SECRET!,
     });
-    const publicKey = await client.secrets().getSecret({
-      environment: "dev",
-      projectId: process.env.PROJECT_ID!,
-      secretName: `tenant_public_${parsedBody.data.organizationId}`,
-      viewSecretValue: true,
-    });
     const secretKey = await client.secrets().getSecret({
       environment: "dev",
       projectId: process.env.PROJECT_ID!,
@@ -58,36 +52,52 @@ export async function POST(request: NextRequest) {
       viewSecretValue: true,
     });
     const stripe = new Stripe(secretKey.secretValue);
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: parsedBody.data.amount * 100,
-      currency: "INR",
-      automatic_payment_methods: {
-        enabled: true,
-      },
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            product_data: {
+              name: "Donation",
+              description: `Donation to organization`,
+            },
+            unit_amount: parsedBody.data.amount * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${request.headers.get("origin")}/?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${request.headers.get("origin")}`,
       metadata: {
         type: "donation",
         organizationId: parsedBody.data.organizationId,
         userId,
       },
     });
-    const result = await fetchMutation(api.functions.payments.createCheckout, {
-      stripePaymentIntentId: paymentIntent.id,
-      amount: paymentIntent.amount,
-      donatedTo: parsedBody.data.organizationId,
-    });
+    const result = await fetchMutation(
+      api.functions.payments.createCheckout,
+      {
+        stripePaymentIntentId: session.id,
+        amount: parsedBody.data.amount * 100,
+        donatedTo: parsedBody.data.organizationId,
+      },
+      { token },
+    );
     return NextResponse.json(
       {
         success: true,
         checkoutId: result,
-        publicKey: publicKey.secretValue,
-        clientSecret: paymentIntent.client_secret,
+        sessionId: session.id,
+        checkoutUrl: session.url,
       },
       { status: 201 },
     );
   } catch (error) {
-    console.error(error);
+    console.error("Stripe checkout error:", error);
     return NextResponse.json(
-      { error: "failed to create stripe session" },
+      { error: "failed to create stripe checkout session" },
       { status: 500 },
     );
   }
