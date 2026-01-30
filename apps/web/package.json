@@ -28,6 +28,7 @@
     "@workspace/jobs": "workspace:*",
     "@workspace/ui": "workspace:*",
     "ai": "^6.0.39",
+    "axios": "^1.13.4",
     "convex": "^1.31.5",
     "inngest": "^3.49.3",
     "lucide-react": "^0.475.0",

@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useState } from "react";
 import {
   Dialog,
@@ -72,22 +73,11 @@ export function OrganizationTrigger(props: Props) {
     setIsProcessing(true);
     try {
       const amount = Number(values.amount);
-      const response = await fetch("/api/payments/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount,
-          organizationId: props.organizationId,
-          organizationName: props.name,
-        }),
+      const { data } = await axios.post("/api/payments/create", {
+        amount,
+        organizationId: props.organizationId,
+        organizationName: props.name,
       });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create checkout session");
-      }
-      const data = await response.json();
       if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl;
       } else {
