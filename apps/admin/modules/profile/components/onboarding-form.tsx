@@ -45,8 +45,12 @@ export function OnboardingForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
-      await mutation({ ...values });
-      await upsertVector({ goal: values.goal, purpose: values.purpose });
+      const result = await mutation({ ...values });
+      await upsertVector({
+        _id: result,
+        goal: values.goal,
+        purpose: values.purpose,
+      });
       await updateMetadata();
       toast.success("Profile Created Successfully");
       form.reset();
