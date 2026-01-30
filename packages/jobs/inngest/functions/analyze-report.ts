@@ -3,6 +3,7 @@ import { inngest } from "../client";
 import { analyzeReport } from "../vercel/agents/analyze-report";
 import { reportAnalysisEmail } from "@workspace/emails/src/report-analysis";
 import { api } from "@workspace/backend/convex/_generated/api";
+import { index } from "inngest/vectors/pinecone";
 
 export const analyzeReportFunction = inngest.createFunction(
   { id: "analyze-report" },
@@ -43,6 +44,20 @@ export const analyzeReportFunction = inngest.createFunction(
         inferredGoal: analysis.inferredGoal ?? undefined,
         inferredPurpose: analysis.inferredPurpose ?? undefined,
       });
+    });
+    const updatedReport = await step.run("fetch-report", async () => {
+      return await fetchQuery(api.functions.reports.getReportById, {
+        reportId: event.data.reportId,
+      });
+    });
+    await step.run("upsert-vectors", async () => {
+      const record = {
+        id: updatedReport?._id!,
+        text: `Inferred Goal: ${updatedReport?.inferredGoal}, Inferred Purpose: ${updatedReport?.inferredPurpose}`,
+        inferredGoal: updatedReport?.inferredGoal!,
+        inferredPurpose: updatedReport?.inferredPurpose!,
+      };
+      await index.upsertRecords([record]);
     });
     const emailResult = await step.run("send-email", async () => {
       return await reportAnalysisEmail(
