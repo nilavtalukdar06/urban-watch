@@ -61,7 +61,7 @@ export function DeleteKeys({ keyId }: { keyId: Id<"apiKeys"> | undefined }) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <DialogClose>
+          <DialogClose asChild>
             <Button
               disabled={isLoading}
               variant="outline"
