@@ -51,9 +51,9 @@ const formSchema = z.object({
     .refine(
       (val) => {
         const amount = Number(val);
-        return !Number.isNaN(amount) && amount >= 1;
+        return !Number.isNaN(amount) && amount >= 20;
       },
-      { message: "Minimum donation amount is 1 USD" },
+      { message: "Minimum donation amount is 20 INR" },
     ),
 });
 
@@ -125,7 +125,7 @@ export function OrganizationTrigger(props: Props) {
                       />
                     </FormControl>
                     <FormDescription className="font-light">
-                      All the amounts are in US dollars
+                      All the amounts are in indian rupees
                     </FormDescription>
                     <FormMessage className="font-light" />
                   </FormItem>
