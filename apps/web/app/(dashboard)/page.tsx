@@ -8,6 +8,7 @@ import { api } from "@workspace/backend/convex/_generated/api";
 import { Leaderboard } from "@/modules/dashboard/components/leaderboard";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function Home() {
   const user = await currentUser();
@@ -32,14 +33,16 @@ export default async function Home() {
           Welcome to Urban Watch
         </p>
         <div className="my-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="rounded-none border bg-sidebar font-normal shadow-none"
-          >
-            <span>Submit Report</span>
-            <TriangleAlertIcon />
-          </Button>
+          <Link href="/submit-report">
+            <Button
+              variant="secondary"
+              size="sm"
+              className="rounded-none border bg-sidebar font-normal shadow-none"
+            >
+              <span>Submit Report</span>
+              <TriangleAlertIcon />
+            </Button>
+          </Link>
         </div>
         <div className="mt-4 mb-2">
           <Links />
