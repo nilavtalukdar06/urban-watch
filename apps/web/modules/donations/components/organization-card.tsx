@@ -19,6 +19,19 @@ import {
 import { Id } from "@workspace/backend/convex/_generated/dataModel";
 import { LinkIcon } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@workspace/ui/components/form";
+import { Input } from "@workspace/ui/components/input";
 
 interface Props {
   goal: string;
@@ -31,7 +44,31 @@ interface Props {
   _id: Id<"organization">;
 }
 
+const formSchema = z.object({
+  amount: z
+    .string()
+    .min(1, { message: "Amount is required" })
+    .refine(
+      (val) => {
+        const amount = Number(val);
+        return !Number.isNaN(amount) && amount >= 1;
+      },
+      { message: "Minimum donation amount is 1 USD" },
+    ),
+});
+
 export function OrganizationTrigger(props: Props) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      amount: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const amount = Number(values.amount);
+    console.log(amount);
+  };
   return (
     <Dialog>
       <DialogTrigger className="w-full">
@@ -64,23 +101,57 @@ export function OrganizationTrigger(props: Props) {
             {props.purpose}
           </p>
         </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} id="donation-form">
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel className="font-normal text-neutral-700">
+                      Enter amount
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter the donation amount"
+                        inputMode="numeric"
+                        className="shadow-none rounded-none placeholder:font-light font-light"
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "");
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription className="font-light">
+                      All the amounts are in US dollars
+                    </FormDescription>
+                    <FormMessage className="font-light" />
+                  </FormItem>
+                );
+              }}
+            />
+          </form>
+        </Form>
         <DialogFooter>
           <DialogClose asChild>
             <Button
+              type="button"
               variant="outline"
               className="bg-sidebar rounded-none font-normal shadow-none"
             >
               Cancel
             </Button>
           </DialogClose>
-          <DialogClose asChild>
-            <Button
-              variant="destructive"
-              className="rounded-none shadow-none font-normal"
-            >
-              Donate
-            </Button>
-          </DialogClose>
+          <Button
+            type="submit"
+            variant="destructive"
+            form="donation-form"
+            className="rounded-none shadow-none font-normal"
+          >
+            Donate
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
