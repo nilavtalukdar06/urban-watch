@@ -70,3 +70,19 @@ export const getReportById = query({
     return report;
   },
 });
+
+export const getProcessedReportsByUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const reports = await ctx.db
+      .query("reports")
+      .filter((q) => q.eq(q.field("userId"), auth.subject))
+      .filter((q) => q.eq(q.field("process"), true))
+      .collect();
+    return reports;
+  },
+});
