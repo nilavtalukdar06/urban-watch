@@ -1,6 +1,21 @@
 import { Navbar } from "@/components/shared/navbar";
+import { GridView } from "@/modules/donations/views/grid-view";
+import { auth } from "@clerk/nextjs/server";
+import { api } from "@workspace/backend/convex/_generated/api";
+import { preloadQuery } from "convex/nextjs";
+import { redirect } from "next/navigation";
 
-export default function DonationPage() {
+export default async function DonationPage() {
+  const { getToken } = await auth();
+  const token = await getToken({ template: "convex" });
+  if (!token) {
+    redirect("/");
+  }
+  const preloadedOrganizations = await preloadQuery(
+    api.functions.organizations.getOrganizations,
+    {},
+    { token },
+  );
   return (
     <div className="w-full">
       <Navbar />
@@ -11,6 +26,7 @@ export default function DonationPage() {
         <p className="text-sm text-muted-foreground font-light">
           View all the Organizations and NGOs accepting donations
         </p>
+        <GridView preloadedOrganizations={preloadedOrganizations} />
       </div>
     </div>
   );
