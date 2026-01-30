@@ -26,6 +26,7 @@ export const saveKeys = mutation({
     keyName: v.string(),
     publicKeyPrefix: v.string(),
     secretKeyPrefix: v.string(),
+    webhookSecretPreix: v.string(),
   },
   handler: async (ctx, args) => {
     const auth = await ctx.auth.getUserIdentity();
@@ -57,6 +58,7 @@ export const saveKeys = mutation({
       provider: "stripe",
       publicKeyPrefix: args.publicKeyPrefix,
       secretKeyPrefix: args.secretKeyPrefix,
+      webhookSecretPrefix: args.webhookSecretPreix,
       organizationId,
       userId: auth.subject,
     });

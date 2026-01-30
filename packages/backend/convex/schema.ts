@@ -55,6 +55,7 @@ export default defineSchema({
     keyName: v.string(),
     publicKeyPrefix: v.string(),
     secretKeyPrefix: v.string(),
+    webhookSecretPrefix: v.string(),
     userId: v.string(),
   }),
   donations: defineTable({

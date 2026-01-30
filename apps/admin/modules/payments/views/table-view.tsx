@@ -42,6 +42,7 @@ export function TableView() {
             <TableHead className="font-normal">Key Name</TableHead>
             <TableHead className="font-normal">Public Key</TableHead>
             <TableHead className="font-normal">Secret Key</TableHead>
+            <TableHead className="font-normal">Webhook Secret</TableHead>
             <TableHead className="font-normal">Submitted At</TableHead>
             <TableHead className="font-normal">Actions</TableHead>
           </TableRow>
@@ -52,6 +53,7 @@ export function TableView() {
             <TableCell>{keys[0]?.keyName}</TableCell>
             <TableCell>{keys[0]?.publicKeyPrefix}*****</TableCell>
             <TableCell>{keys[0]?.secretKeyPrefix}*****</TableCell>
+            <TableCell>{keys[0]?.webhookSecretPrefix}*****</TableCell>
             <TableCell>
               {format(new Date(keys[0]?._creationTime!), "d MMMM yyyy")}
             </TableCell>

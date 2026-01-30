@@ -9,6 +9,7 @@ const requestSchema = z.object({
   keyName: z.string().min(2),
   publicKey: z.string().min(5),
   secretKey: z.string().min(5),
+  webhookSecret: z.string().min(5),
 });
 
 export async function POST(request: NextRequest) {
@@ -56,12 +57,20 @@ export async function POST(request: NextRequest) {
         projectId: process.env.PROJECT_ID!,
         secretValue: parsedSchema.data.secretKey,
       });
+    const webhookSecret = await client
+      .secrets()
+      .createSecret(`tenant_webhook_${orgId}`, {
+        environment: "dev",
+        projectId: process.env.PROJECT_ID!,
+        secretValue: parsedSchema.data.webhookSecret,
+      });
     const result = await fetchMutation(
       api.functions.payments.saveKeys,
       {
         keyName: parsedSchema.data.keyName,
         publicKeyPrefix: publicKey.secret.secretValue.slice(0, 9),
         secretKeyPrefix: secretKey.secret.secretValue.slice(0, 9),
+        webhookSecretPreix: webhookSecret.secret.secretValue.slice(0, 9),
       },
       { token },
     );

@@ -36,6 +36,7 @@ const formSchema = z.object({
   keyName: z.string().min(2, { message: "Key name is too short" }),
   publicKey: z.string().min(5, { message: "Public Key is too short" }),
   secretKey: z.string().min(5, { message: "Secret Key is too short" }),
+  webhookSecret: z.string().min(5, { message: "Webhook Secret is too short" }),
 });
 
 export function EnablePayments() {
@@ -48,6 +49,7 @@ export function EnablePayments() {
       keyName: "",
       publicKey: "",
       secretKey: "",
+      webhookSecret: "",
     },
   });
 
@@ -154,6 +156,28 @@ export function EnablePayments() {
                   <FormDescription className="font-light">
                     Go to your stripe dashboard and paste your secret api key
                     here
+                  </FormDescription>
+                  <FormMessage className="font-light" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="webhookSecret"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-light">Webhook Secret</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the stripe webhook secret"
+                      className="shadow-none rounded-none font-light placeholder:font-light"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="font-light">
+                    Copy the webhook url from the dashboard and generate a
+                    webhook secret from stripe and paste it here, make sure to
+                    enable the webhook for all events
                   </FormDescription>
                   <FormMessage className="font-light" />
                 </FormItem>

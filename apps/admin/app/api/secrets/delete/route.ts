@@ -42,6 +42,10 @@ export async function DELETE(request: NextRequest) {
       environment: "dev",
       projectId: process.env.PROJECT_ID!,
     });
+    await client.secrets().deleteSecret(`tenant_webhook_${orgId}`, {
+      environment: "dev",
+      projectId: process.env.PROJECT_ID!,
+    });
     const token = (await getToken({ template: "convex" })) ?? undefined;
     const result = await fetchMutation(
       api.functions.payments.deleteKeys,
