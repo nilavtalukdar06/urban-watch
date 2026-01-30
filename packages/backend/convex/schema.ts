@@ -57,4 +57,16 @@ export default defineSchema({
     secretKeyPrefix: v.string(),
     userId: v.string(),
   }),
+  donations: defineTable({
+    amount: v.number(),
+    donatedTo: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("paid"),
+      v.literal("failed"),
+    ),
+    stripePaymentId: v.string(),
+    stripePaymentIntentId: v.string(),
+    donatedBy: v.string(),
+  }),
 });
