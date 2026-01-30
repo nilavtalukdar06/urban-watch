@@ -123,3 +123,19 @@ export const deleteReport = mutation({
     };
   },
 });
+
+export const getAllReports = query({
+  args: {},
+  handler: async (ctx) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) {
+      throw new Error("the user is not authenticated");
+    }
+    const orgId = auth?.orgId as string;
+    if (!orgId) {
+      throw new Error("organization id not found");
+    }
+    const result = await ctx.db.query("reports").order("desc").collect();
+    return result;
+  },
+});
