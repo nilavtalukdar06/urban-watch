@@ -69,4 +69,31 @@ export default defineSchema({
     stripePaymentIntentId: v.string(),
     donatedBy: v.string(),
   }),
+  reports: defineTable({
+    imageUrl: v.string(),
+    location: v.string(),
+    notes: v.optional(v.string()),
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    instructions: v.optional(v.array(v.string())),
+    whatNotToDo: v.optional(v.array(v.string())),
+    priority: v.optional(
+      v.union(v.literal("low"), v.literal("medium"), v.literal("high")),
+    ),
+    inferredGoal: v.optional(v.string()),
+    inferredPurpose: v.optional(v.string()),
+    assigned: v.boolean(),
+    createdAt: v.number(),
+  }),
+  reportAssignments: defineTable({
+    reportId: v.id("reports"),
+    organizationId: v.string(),
+    similarityScore: v.number(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("accepted"),
+      v.literal("rejected"),
+    ),
+    createdAt: v.number(),
+  }),
 });
