@@ -20,11 +20,16 @@ export async function POST(request: NextRequest) {
 
     let organizationId: string | undefined;
     let sessionId: string | undefined;
+
     if (rawEvent.type.startsWith("checkout.session")) {
       const session = rawEvent.data.object as Stripe.Checkout.Session;
       organizationId = session.metadata?.organizationId;
       sessionId = session.id;
+    } else if (rawEvent.type.startsWith("payment_intent")) {
+      const paymentIntent = rawEvent.data.object as Stripe.PaymentIntent;
+      organizationId = paymentIntent.metadata?.organizationId;
     }
+
     if (!organizationId) {
       return NextResponse.json(
         { error: "Organization ID not found in metadata" },
