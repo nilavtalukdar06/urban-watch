@@ -3,7 +3,7 @@ import { inngest } from "../client";
 import { analyzeReport } from "../vercel/agents/analyze-report";
 import { reportAnalysisEmail } from "@workspace/emails/src/report-analysis";
 import { api } from "@workspace/backend/convex/_generated/api";
-import { index } from "inngest/vectors/pinecone";
+import { index } from "../vectors/pinecone";
 
 export const analyzeReportFunction = inngest.createFunction(
   { id: "analyze-report" },
