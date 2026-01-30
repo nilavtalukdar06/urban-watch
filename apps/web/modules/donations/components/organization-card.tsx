@@ -91,8 +91,8 @@ export function OrganizationTrigger(props: Props) {
   };
   return (
     <Dialog>
-      <DialogTrigger className="w-full">
-        <Card className="w-full rounded-none shadow-none bg-sidebar py-3">
+      <DialogTrigger className="w-full h-full">
+        <Card className="w-full rounded-none shadow-none bg-sidebar py-3 h-full">
           <CardHeader className="px-4">
             <div className="w-full flex justify-between items-center">
               <CardTitle className="text-start text-neutral-700 text-lg font-light">
