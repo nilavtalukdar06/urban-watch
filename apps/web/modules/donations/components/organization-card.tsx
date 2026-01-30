@@ -54,9 +54,9 @@ const formSchema = z.object({
     .refine(
       (val) => {
         const amount = Number(val);
-        return !Number.isNaN(amount) && amount >= 20;
+        return !Number.isNaN(amount) && amount >= 100;
       },
-      { message: "Minimum donation amount is 20 INR" },
+      { message: "Minimum donation amount is 100 INR" },
     ),
 });
 

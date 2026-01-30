@@ -13,7 +13,7 @@ const client = new InfisicalSDK({
 export const requestSchema = z.object({
   amount: z
     .number()
-    .min(20, { message: "minimum donation amount is 20 rupees" }),
+    .min(100, { message: "minimum donation amount is 100 rupees" }),
   organizationId: z.string().min(1, { message: "organization id is required" }),
 });
 
