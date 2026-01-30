@@ -50,15 +50,17 @@ export const analyzeReportFunction = inngest.createFunction(
         reportId: event.data.reportId,
       });
     });
-    await step.run("upsert-vectors", async () => {
-      const record = {
-        id: updatedReport?._id!,
-        text: `Inferred Goal: ${updatedReport?.inferredGoal}, Inferred Purpose: ${updatedReport?.inferredPurpose}`,
-        inferredGoal: updatedReport?.inferredGoal!,
-        inferredPurpose: updatedReport?.inferredPurpose!,
-      };
-      await index.upsertRecords([record]);
-    });
+    if (!analysis.isSpam) {
+      await step.run("upsert-vectors", async () => {
+        const record = {
+          id: updatedReport?._id!,
+          text: `Inferred Goal: ${updatedReport?.inferredGoal}, Inferred Purpose: ${updatedReport?.inferredPurpose}`,
+          inferredGoal: updatedReport?.inferredGoal!,
+          inferredPurpose: updatedReport?.inferredPurpose!,
+        };
+        await index.upsertRecords([record]);
+      });
+    }
     await step.run("update-user-points", async () => {
       const pointsToAdd = analysis.isSpam ? -5 : 10;
       return await fetchMutation(api.functions.users.updateUserPoints, {
