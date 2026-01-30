@@ -16,6 +16,7 @@ import { Preloaded, usePreloadedQuery } from "convex/react";
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { formatDistanceToNow, format } from "date-fns";
 
 interface Props {
   preloadedReports: Preloaded<
@@ -64,24 +65,41 @@ export function GridView({ preloadedReports }: Props) {
         </InputGroupAddon>
       </InputGroup>
       <div className="w-full grid grid-cols-2 max-[500px]:grid-cols-1 place-items-center gap-4">
-        {filteredReports.map((report) => (
-          <Link
-            href={`/reports/${report._id}`}
-            className="w-full h-full"
-            key={report._id}
-          >
-            <Card className="w-full rounded-none shadow-none bg-sidebar py-3 h-full">
-              <CardHeader className="px-4">
-                <CardTitle className="text-start text-neutral-700 text-lg font-light">
-                  {report.title}
-                </CardTitle>
-                <CardDescription className="text-start text-muted-foreground font-light">
-                  {report.description}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-        ))}
+        {filteredReports.map((report) => {
+          const createdAt = report?._creationTime
+            ? new Date(report._creationTime)
+            : null;
+
+          return (
+            <Link
+              href={`/reports/${report._id}`}
+              className="w-full h-full"
+              key={report._id}
+            >
+              <Card className="w-full rounded-none shadow-none bg-sidebar py-3 h-full hover:bg-sidebar/80 transition-colors cursor-pointer">
+                <CardHeader className="px-4">
+                  <CardTitle className="text-start text-neutral-700 text-lg font-light">
+                    {report.title}
+                  </CardTitle>
+                  <CardDescription className="text-start text-muted-foreground font-light">
+                    {report.description}
+                  </CardDescription>
+                  {createdAt && (
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-muted-foreground font-light">
+                        Submitted{" "}
+                        {formatDistanceToNow(createdAt, { addSuffix: true })}
+                      </p>
+                      <p className="text-xs text-muted-foreground font-light">
+                        {format(createdAt, "PPp")}
+                      </p>
+                    </div>
+                  )}
+                </CardHeader>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
       {filteredReports.length === 0 && (
         <p className="text-muted-foreground font-light">

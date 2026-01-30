@@ -1,5 +1,3 @@
-import { Navbar } from "@/components/shared/navbar";
-import { DeleteReport } from "@/modules/reports/components/delete-report";
 import { auth } from "@clerk/nextjs/server";
 import { api } from "@workspace/backend/convex/_generated/api";
 import type { Id } from "@workspace/backend/convex/_generated/dataModel";
@@ -24,7 +22,6 @@ export default async function ReportPage({
     { reportId },
     { token },
   );
-  console.log(result);
 
   const createdAt = result?._creationTime
     ? new Date(result._creationTime)
@@ -32,7 +29,6 @@ export default async function ReportPage({
 
   return (
     <div className="w-full">
-      <Navbar />
       <div className="w-full p-4 space-y-4">
         <Image
           src={result?.imageUrl!}
@@ -91,7 +87,6 @@ export default async function ReportPage({
             </p>
           ))}
         </div>
-        <DeleteReport reportId={reportId} />
       </div>
     </div>
   );

@@ -9,14 +9,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card";
-import { Button } from "@workspace/ui/components/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { SearchIcon } from "lucide-react";
+import { ExternalLink, SearchIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
+import { formatDistanceToNow, format } from "date-fns";
+import { Button } from "@workspace/ui/components/button";
 
 export function GridView({
   preloadedReports,
@@ -60,29 +62,51 @@ export function GridView({
         </InputGroupAddon>
       </InputGroup>
       <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 place-items-center">
-        {filteredReports.map((report) => (
-          <Card
-            className="w-full rounded-none shadow-none bg-sidebar py-3 h-full flex flex-col justify-between items-start"
-            key={report._id}
-          >
-            <CardHeader className="px-4 w-full">
-              <CardTitle className="text-start text-neutral-700 text-lg font-light">
-                {report.title}
-              </CardTitle>
-              <CardDescription className="text-start text-muted-foreground font-light">
-                {report.description}
-              </CardDescription>
-            </CardHeader>
-            <CardFooter className="px-4">
-              <Button
-                className="w-fit shadow-none rounded-none font-normal"
-                variant="destructive"
-              >
-                Take Report
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+        {filteredReports.map((report) => {
+          const createdAt = report?._creationTime
+            ? new Date(report._creationTime)
+            : null;
+
+          return (
+            <Card className="w-full rounded-none shadow-none bg-sidebar py-3 h-full flex flex-col justify-between items-start hover:bg-sidebar/80 transition-colors cursor-pointer">
+              <CardHeader className="px-4 w-full">
+                <CardTitle className="text-start text-neutral-700 text-lg font-light">
+                  {report.title}
+                </CardTitle>
+                <CardDescription className="text-start text-muted-foreground font-light">
+                  {report.description}
+                </CardDescription>
+              </CardHeader>
+              {createdAt && (
+                <div className="px-4 w-full space-y-1">
+                  <p className="text-xs text-muted-foreground font-light">
+                    Submitted{" "}
+                    {formatDistanceToNow(createdAt, { addSuffix: true })}
+                  </p>
+                  <p className="text-xs text-muted-foreground font-light">
+                    {format(createdAt, "PPp")}
+                  </p>
+                </div>
+              )}
+              <CardFooter className="px-4 flex justify-start items-center gap-x-2">
+                <Button
+                  className="w-fit shadow-none rounded-none font-normal"
+                  variant="destructive"
+                  size="sm"
+                >
+                  Take Report
+                </Button>
+                <Button
+                  className="w-fit shadow-none rounded-none font-normal"
+                  variant="outline"
+                  size="sm"
+                >
+                  <Link href={`/reports/${report._id}`}>See Report</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
       {filteredReports.length === 0 && (
         <p className="text-muted-foreground font-light">
