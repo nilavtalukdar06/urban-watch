@@ -13,7 +13,6 @@ import {
 } from "@workspace/ui/components/dialog";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { useMutation } from "convex/react";
-import { TriangleAlertIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -43,33 +42,48 @@ export function DeleteMessages() {
           size="icon-sm"
           className="rounded-none shadow-none"
         >
-          <TriangleAlertIcon className="text-muted-foreground" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-muted-foreground"
+          >
+            <path d="M12 2v20M2 12h20" />
+          </svg>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[425px] p-5 rounded-none">
         <DialogHeader>
-          <DialogTitle className="font-normal text-neutral-700">
+          <DialogTitle className="font-light text-xl text-neutral-600">
             Are you absolutely sure?
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground font-light">
+          <DialogDescription className="text-sm font-light text-muted-foreground">
             This action cannot be undone. This will permanently delete your
             messages.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button
+            className="rounded-none bg-sidebar! shadow-none border font-normal"
             variant="outline"
             onClick={() => setIsOpen(false)}
-            disabled={isLoading}
           >
             Cancel
           </Button>
           <Button
+            className="rounded-none shadow-none font-normal"
             variant="destructive"
-            onClick={handleDelete}
             disabled={isLoading}
+            onClick={handleDelete}
           >
-            {isLoading ? <Spinner /> : "Delete"}
+            {isLoading && <Spinner />}
+            <span>{isLoading ? "Loading" : "Delete"}</span>
           </Button>
         </DialogFooter>
       </DialogContent>

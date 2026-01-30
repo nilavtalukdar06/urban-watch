@@ -48,23 +48,24 @@ export function DeleteReport({ reportId }: DeleteReportProps) {
       <DialogTrigger asChild>
         <Button
           variant="destructive"
-          className="shadow-none rounded-none font-normal"
+          className="rounded-none! shadow-none font-normal"
         >
           Delete Report
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[425px] p-5 rounded-none">
         <DialogHeader>
-          <DialogTitle className="font-normal text-neutral-700">
+          <DialogTitle className="font-light text-xl text-neutral-600">
             Are you absolutely sure?
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground font-light">
+          <DialogDescription className="text-sm font-light text-muted-foreground">
             This action cannot be undone. This will permanently delete your
             report.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button
+            className="rounded-none bg-sidebar! shadow-none border font-normal"
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isLoading}
@@ -72,11 +73,13 @@ export function DeleteReport({ reportId }: DeleteReportProps) {
             Cancel
           </Button>
           <Button
+            className="rounded-none shadow-none font-normal"
             variant="destructive"
-            onClick={handleDelete}
             disabled={isLoading}
+            onClick={handleDelete}
           >
-            {isLoading ? <Spinner /> : "Delete"}
+            {isLoading && <Spinner />}
+            <span>{isLoading ? "Loading" : "Delete"}</span>
           </Button>
         </DialogFooter>
       </DialogContent>
