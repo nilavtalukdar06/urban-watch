@@ -21,6 +21,20 @@ export const createReport = mutation({
     if (!auth) {
       throw new Error("the user is not authenticated");
     }
+    const citizen = await ctx.db
+      .query("citizens")
+      .withIndex("by_userId", (q) => q.eq("userId", auth.subject))
+      .first();
+    if (!citizen) {
+      throw new Error("citizen record not found");
+    }
+    const userIdentity = await ctx.db
+      .query("userIdentity")
+      .withIndex("by_citizenId", (q) => q.eq("citizenId", citizen._id))
+      .first();
+    if (!userIdentity || !userIdentity.isAuthorized) {
+      throw new Error("user is not authorized to submit reports");
+    }
     const reportId = await ctx.db.insert("reports", {
       ...args,
       status: "pending",

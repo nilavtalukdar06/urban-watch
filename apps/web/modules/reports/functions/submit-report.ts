@@ -19,6 +19,14 @@ export const submitReport = async (data: ReportData) => {
     if (!user) {
       throw new Error("User is not authenticated");
     }
+    const verificationStatus = await fetchQuery(
+      api.functions.users.checkVerificationStatus,
+      {},
+      { token },
+    );
+    if (!verificationStatus || !verificationStatus.isAuthorized) {
+      throw new Error("You are not authorized to submit reports. Please complete verification first.");
+    }
     const reportId = await fetchMutation(
       api.functions.reports.createReport,
       {
