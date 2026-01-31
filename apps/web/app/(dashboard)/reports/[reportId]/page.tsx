@@ -24,7 +24,6 @@ export default async function ReportPage({
     { reportId },
     { token },
   );
-  console.log(result);
 
   const createdAt = result?._creationTime
     ? new Date(result._creationTime)
