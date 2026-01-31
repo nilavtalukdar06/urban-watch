@@ -26,8 +26,12 @@ export function RelevantReports({
     try {
       setIsLoading(true);
       const result = await searchRelevantReports();
-      onFiltersApply(result);
-      toast.success("Found relevant reports!");
+      if (result.length === 0) {
+        toast.info("No relevant reports found.");
+      } else {
+        onFiltersApply(result);
+        toast.success(`Found relevant reports!`);
+      }
     } catch (error) {
       console.error(error);
       toast.error("Failed to fetch reports");
@@ -39,9 +43,11 @@ export function RelevantReports({
   return (
     <div className="my-3 flex flex-col items-start justify-center gap-y-2">
       <HoverBorderGradient
-        onClick={fetchReports}
+        onClick={isLoading ? undefined : fetchReports}
         containerClassName="rounded-none border-none"
-        className="bg-white text-neutral-600 flex items-center justify-center gap-x-2"
+        className={cn(
+          "bg-white text-neutral-600 flex items-center justify-center gap-x-2",
+        )}
       >
         <Gemini.Color size={18} className={cn(isLoading && "animate-spin")} />
         <span>Search with AI</span>

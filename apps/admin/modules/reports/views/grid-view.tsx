@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@workspace/backend/convex/_generated/api";
+import { Id } from "@workspace/backend/convex/_generated/dataModel";
 import { Preloaded, usePreloadedQuery, useMutation } from "convex/react";
 import {
   Card,
@@ -30,16 +31,16 @@ export function GridView({
   const reports = usePreloadedQuery(preloadedReports);
   const takeReportMutation = useMutation(api.functions.reports.takeReport);
   const [searchQuery, setSearchQuery] = useState("");
-  const [takingReport, setTakingReport] = useState<string | null>(null);
+  const [takingReport, setTakingReport] = useState<Id<"reports"> | null>(null);
   const [filteredReportIds, setFilteredReportIds] = useState<string[] | null>(
     null,
   );
 
-  const handleTakeReport = async (reportId: string) => {
+  const handleTakeReport = async (reportId: Id<"reports">) => {
     try {
       setTakingReport(reportId);
       await takeReportMutation({
-        reportId: reportId as any,
+        reportId,
       });
       toast.success("Report taken successfully!");
     } catch (error) {
@@ -72,8 +73,9 @@ export function GridView({
 
   // If AI filters are active, filter by report IDs and maintain order
   if (filteredReportIds && filteredReportIds.length > 0) {
+    const reportMap = new Map(reports.map((report) => [report._id.toString(), report]));
     displayReports = filteredReportIds
-      .map((id) => reports.find((report) => report._id === id))
+      .map((id) => reportMap.get(id))
       .filter((report): report is (typeof reports)[0] => report !== undefined);
   }
 
@@ -154,7 +156,9 @@ export function GridView({
       </div>
       {filteredReports.length === 0 && (
         <p className="text-muted-foreground font-light">
-          No reports found matching your search.
+          {filteredReportIds && filteredReportIds.length > 0
+            ? "No reports found matching your search and filters."
+            : "No reports found matching your search."}
         </p>
       )}
     </div>
