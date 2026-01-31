@@ -15,6 +15,7 @@ import {
 } from "@workspace/ui/components/dialog";
 import { useState } from "react";
 import { toast } from "sonner";
+import { sendReportResolutionEmail } from "../functions/send-resolution-email";
 
 interface ReportStatusUpdaterProps {
   reportId: Id<"reports">;
@@ -40,25 +41,13 @@ export function ReportStatusUpdater({
         reportId,
         status: newStatus,
       });
-
-      // If status is resolved, trigger the email event
       if (newStatus === "resolved") {
-        await fetch("/api/reports/send-resolution-email", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            reportId,
-          }),
-        });
+        await sendReportResolutionEmail(reportId);
       }
-
       toast.success(
         `Report marked as ${newStatus === "resolved" ? "resolved" : "pending"}`,
       );
       setOpen(false);
-      // Refresh the page to see updated status
       window.location.reload();
     } catch (error) {
       toast.error(
@@ -72,7 +61,11 @@ export function ReportStatusUpdater({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-none font-light shadow-none">
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-none font-light shadow-none bg-sidebar"
+        >
           Update Status
         </Button>
       </DialogTrigger>

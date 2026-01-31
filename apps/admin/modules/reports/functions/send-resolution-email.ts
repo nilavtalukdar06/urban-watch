@@ -1,29 +1,29 @@
+"use server";
+
 import { inngest } from "@workspace/jobs/inngest/client";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { auth } from "@clerk/nextjs/server";
 
-export async function POST(request: Request) {
+export async function sendReportResolutionEmail(reportId: string) {
   try {
     const { getToken } = await auth();
     const token = await getToken({ template: "convex" });
     if (!token) {
-      return new Response("Unauthorized", { status: 401 });
+      throw new Error("Unauthorized");
     }
-    const { reportId } = await request.json();
-
     if (!reportId) {
-      return new Response("Report ID is required", { status: 400 });
+      throw new Error("Report ID is required");
     }
     const report = await fetchQuery(
       api.functions.reports.getReportById,
       {
-        reportId,
+        reportId: reportId as any,
       },
       { token },
     );
     if (!report) {
-      return new Response("Report not found", { status: 404 });
+      throw new Error("Report not found");
     }
     await inngest.send({
       name: "report/resolved",
@@ -32,9 +32,10 @@ export async function POST(request: Request) {
         userId: report.userId,
       },
     });
-    return new Response("Event triggered successfully", { status: 200 });
+
+    return { success: true };
   } catch (error) {
     console.error("Error triggering resolution email:", error);
-    return new Response("Internal server error", { status: 500 });
+    throw error;
   }
 }
