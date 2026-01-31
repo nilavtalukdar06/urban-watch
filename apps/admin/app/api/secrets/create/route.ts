@@ -46,21 +46,21 @@ export async function POST(request: NextRequest) {
     const publicKey = await client
       .secrets()
       .createSecret(`tenant_public_${orgId}`, {
-        environment: "dev",
+        environment: process.env.ENV!,
         projectId: process.env.PROJECT_ID!,
         secretValue: parsedSchema.data.publicKey,
       });
     const secretKey = await client
       .secrets()
       .createSecret(`tenant_secret_${orgId}`, {
-        environment: "dev",
+        environment: process.env.ENV!,
         projectId: process.env.PROJECT_ID!,
         secretValue: parsedSchema.data.secretKey,
       });
     const webhookSecret = await client
       .secrets()
       .createSecret(`tenant_webhook_${orgId}`, {
-        environment: "dev",
+        environment: process.env.ENV!,
         projectId: process.env.PROJECT_ID!,
         secretValue: parsedSchema.data.webhookSecret,
       });

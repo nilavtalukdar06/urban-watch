@@ -35,15 +35,15 @@ export async function DELETE(request: NextRequest) {
       clientSecret: process.env.MACHINE_SECRET!,
     });
     await client.secrets().deleteSecret(`tenant_public_${orgId}`, {
-      environment: "dev",
+      environment: process.env.ENV!,
       projectId: process.env.PROJECT_ID!,
     });
     await client.secrets().deleteSecret(`tenant_secret_${orgId}`, {
-      environment: "dev",
+      environment: process.env.ENV!,
       projectId: process.env.PROJECT_ID!,
     });
     await client.secrets().deleteSecret(`tenant_webhook_${orgId}`, {
-      environment: "dev",
+      environment: process.env.ENV!,
       projectId: process.env.PROJECT_ID!,
     });
     const token = (await getToken({ template: "convex" })) ?? undefined;

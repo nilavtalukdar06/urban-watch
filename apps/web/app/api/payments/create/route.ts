@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       clientSecret: process.env.MACHINE_SECRET!,
     });
     const secretKey = await client.secrets().getSecret({
-      environment: "dev",
+      environment: process.env.ENV!,
       projectId: process.env.PROJECT_ID!,
       secretName: `tenant_secret_${parsedBody.data.organizationId}`,
       viewSecretValue: true,

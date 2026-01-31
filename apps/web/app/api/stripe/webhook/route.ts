@@ -41,13 +41,13 @@ export async function POST(request: NextRequest) {
       clientSecret: process.env.MACHINE_SECRET!,
     });
     const webhookSecret = await client.secrets().getSecret({
-      environment: "dev",
+      environment: process.env.ENV!,
       projectId: process.env.PROJECT_ID!,
       secretName: `tenant_webhook_${organizationId}`,
       viewSecretValue: true,
     });
     const secretKey = await client.secrets().getSecret({
-      environment: "dev",
+      environment: process.env.ENV!,
       projectId: process.env.PROJECT_ID!,
       secretName: `tenant_secret_${organizationId}`,
       viewSecretValue: true,
