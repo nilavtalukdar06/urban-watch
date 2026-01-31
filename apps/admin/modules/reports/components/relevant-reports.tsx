@@ -27,7 +27,7 @@ export function RelevantReports({
       setIsLoading(true);
       const result = await searchRelevantReports();
       onFiltersApply(result);
-      toast.success("Found 5 relevant reports!");
+      toast.success("Found relevant reports!");
     } catch (error) {
       console.error(error);
       toast.error("Failed to fetch reports");
@@ -37,7 +37,7 @@ export function RelevantReports({
   };
 
   return (
-    <div className="my-3 flex items-center gap-x-2">
+    <div className="my-3 flex flex-col items-start justify-center gap-y-2">
       <HoverBorderGradient
         onClick={fetchReports}
         containerClassName="rounded-none border-none"
@@ -46,17 +46,18 @@ export function RelevantReports({
         <Gemini.Color size={18} className={cn(isLoading && "animate-spin")} />
         <span>Search with AI</span>
       </HoverBorderGradient>
-      {hasActiveFilters && (
-        <Button
-          onClick={onFiltersClear}
-          variant="outline"
-          size="sm"
-          className="rounded-none"
-        >
-          <X size={16} className="mr-1" />
-          Clear Filters
-        </Button>
-      )}
+      <div>
+        {hasActiveFilters && (
+          <Button
+            onClick={onFiltersClear}
+            variant="outline"
+            className="rounded-none shadow-none bg-sidebar font-normal"
+          >
+            <X size={16} className="mr-1" />
+            Clear Filters
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
