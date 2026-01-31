@@ -1,11 +1,11 @@
 import { fetchMutation, fetchQuery } from "convex/nextjs";
-import { inngest } from "../client";
+import { inngestWeb } from "../client";
 import { analyzeReport } from "../vercel/agents/analyze-report";
 import { reportAnalysisEmail } from "@workspace/emails/src/report-analysis";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { index } from "../vectors/pinecone";
 
-export const analyzeReportFunction = inngest.createFunction(
+export const analyzeReportFunction = inngestWeb.createFunction(
   { id: "analyze-report" },
   { event: "report/analyze" },
   async ({ event, step }) => {

@@ -1,7 +1,7 @@
-import { inngest } from "../client";
+import { inngestAdmin } from "../client";
 import { sendEmail } from "@workspace/emails/src/send-email";
 
-export const sendEmailFunction = inngest.createFunction(
+export const sendEmailFunction = inngestAdmin.createFunction(
   { id: "send-email-to-user" },
   { event: "user/send-email" },
   async ({ event, step }) => {

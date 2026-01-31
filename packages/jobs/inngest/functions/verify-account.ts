@@ -1,10 +1,10 @@
 import { fetchMutation } from "convex/nextjs";
-import { inngest } from "../client";
+import { inngestWeb } from "../client";
 import { verifyAccount } from "../vercel/agents/verify-account";
 import { verificationEmail } from "@workspace/emails/src/verify-account";
 import { api } from "@workspace/backend/convex/_generated/api";
 
-export const verifyAccountFunction = inngest.createFunction(
+export const verifyAccountFunction = inngestWeb.createFunction(
   { id: "verify-account" },
   { event: "test/verify-account" },
   async ({ event, step }) => {

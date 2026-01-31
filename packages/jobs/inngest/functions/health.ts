@@ -1,6 +1,6 @@
-import { inngest } from "../client";
+import { inngestWeb } from "../client";
 
-export const healthCheck = inngest.createFunction(
+export const healthCheck = inngestWeb.createFunction(
   { id: "health-check" },
   { event: "test/health-check" },
   async ({ step }) => {

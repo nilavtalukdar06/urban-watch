@@ -1,7 +1,7 @@
 "use server";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { inngest } from "@workspace/jobs/inngest/client";
+import { inngestAdmin } from "@workspace/jobs/inngest/client";
 
 export const triggerEmail = async (
   email: string,
@@ -20,7 +20,7 @@ export const triggerEmail = async (
     const organization = await client.organizations.getOrganization({
       organizationId: orgId,
     });
-    await inngest.send({
+    await inngestAdmin.send({
       name: "user/send-email",
       data: {
         orgName: organization.name,

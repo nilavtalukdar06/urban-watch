@@ -1,6 +1,6 @@
 "use server";
 
-import { inngest } from "@workspace/jobs/inngest/client";
+import { inngestAdmin } from "@workspace/jobs/inngest/client";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { auth } from "@clerk/nextjs/server";
@@ -25,7 +25,7 @@ export async function sendReportResolutionEmail(reportId: string) {
     if (!report) {
       throw new Error("Report not found");
     }
-    await inngest.send({
+    await inngestAdmin.send({
       name: "report/resolved",
       data: {
         reportId,

@@ -1,10 +1,10 @@
 import { fetchQuery } from "convex/nextjs";
-import { inngest } from "../client";
+import { inngestAdmin } from "../client";
 import { generateResolutionEmail } from "../vercel/agents/generate-resolution-email";
 import { reportAnalysisEmail } from "@workspace/emails/src/report-analysis";
 import { api } from "@workspace/backend/convex/_generated/api";
 
-export const reportResolutionFunction = inngest.createFunction(
+export const reportResolutionFunction = inngestAdmin.createFunction(
   { id: "report-resolution" },
   { event: "report/resolved" },
   async ({ event, step }) => {
