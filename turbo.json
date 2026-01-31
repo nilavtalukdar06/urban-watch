@@ -5,7 +5,19 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": [
+        "CLERK_SECRET_KEY",
+        "XAI_API_KEY",
+        "STREAM_API_KEY",
+        "STREAM_API_SECRET",
+        "OPENAI_API_KEY",
+        "RESEND_API_KEY",
+        "MACHINE_ID",
+        "MACHINE_SECRET",
+        "PROJECT_ID",
+        "PINECONE_API_KEY"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
