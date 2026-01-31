@@ -43,6 +43,13 @@ export default async function ReportPage({
         </p>
         <h2 className="text-lg font-light text-neutral-700">{result?.title}</h2>
 
+        <div className="space-y-1">
+          <p className="text-neutral-600 font-normal text-sm">Submitted By</p>
+          <p className="text-muted-foreground font-light text-sm">
+            {result?.submittedByName || "Unknown"}
+          </p>
+        </div>
+
         {createdAt && (
           <div className="space-y-1">
             <p className="text-neutral-600 font-normal text-sm">

@@ -97,7 +97,17 @@ export const getReportDetails = query({
       throw new Error("the user is not authenticated");
     }
     const result = await ctx.db.get(args.reportId);
-    return result;
+    if (!result) {
+      return null;
+    }
+    const citizen = await ctx.db
+      .query("citizens")
+      .filter((q) => q.eq(q.field("userId"), result.userId))
+      .first();
+    return {
+      ...result,
+      submittedByName: citizen?.fullName,
+    };
   },
 });
 
