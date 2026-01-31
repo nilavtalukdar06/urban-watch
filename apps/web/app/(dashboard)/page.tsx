@@ -50,7 +50,7 @@ export default async function Home() {
         <Leaderboard preloadedUsers={preloadedUsers} authUserId={user.id} />
       </div>
       <p className="text-center text-muted-foreground font-light mb-4 text-xs">
-        Made with love ❤️ by Nilav Talukdar
+        Made with love ❤️ by Team CodeX
       </p>
     </div>
   );
