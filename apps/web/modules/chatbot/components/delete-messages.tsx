@@ -13,6 +13,7 @@ import {
 } from "@workspace/ui/components/dialog";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { useMutation } from "convex/react";
+import { TriangleAlertIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -42,20 +43,7 @@ export function DeleteMessages() {
           size="icon-sm"
           className="rounded-none shadow-none"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-muted-foreground"
-          >
-            <path d="M12 2v20M2 12h20" />
-          </svg>
+          <TriangleAlertIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="w-[425px] p-5 rounded-none">
