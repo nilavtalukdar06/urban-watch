@@ -20,6 +20,7 @@ import { useState } from "react";
 import { formatDistanceToNow, format } from "date-fns";
 import { Button } from "@workspace/ui/components/button";
 import { toast } from "sonner";
+import { RelevantReports } from "../components/relevant-reports";
 
 export function GridView({
   preloadedReports,
@@ -80,6 +81,7 @@ export function GridView({
           <SearchIcon className="text-muted-foreground" />
         </InputGroupAddon>
       </InputGroup>
+      <RelevantReports />
       <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 place-items-center">
         {filteredReports.map((report) => {
           const createdAt = report?._creationTime
