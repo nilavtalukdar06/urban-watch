@@ -98,6 +98,7 @@ export const getProcessedReportsByUser = query({
       .filter((q) => q.eq(q.field("userId"), auth.subject))
       .filter((q) => q.eq(q.field("process"), true))
       .filter((q) => q.eq(q.field("isSpam"), false))
+      .order("desc")
       .collect();
     return reports;
   },
