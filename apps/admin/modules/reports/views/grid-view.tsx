@@ -31,6 +31,9 @@ export function GridView({
   const takeReportMutation = useMutation(api.functions.reports.takeReport);
   const [searchQuery, setSearchQuery] = useState("");
   const [takingReport, setTakingReport] = useState<string | null>(null);
+  const [filteredReportIds, setFilteredReportIds] = useState<string[] | null>(
+    null,
+  );
 
   const handleTakeReport = async (reportId: string) => {
     try {
@@ -65,7 +68,17 @@ export function GridView({
       </div>
     );
   }
-  const filteredReports = reports.filter((report) =>
+  let displayReports = reports;
+
+  // If AI filters are active, filter by report IDs and maintain order
+  if (filteredReportIds && filteredReportIds.length > 0) {
+    displayReports = filteredReportIds
+      .map((id) => reports.find((report) => report._id === id))
+      .filter((report): report is (typeof reports)[0] => report !== undefined);
+  }
+
+  // Apply search query on top of any active filters
+  const filteredReports = displayReports.filter((report) =>
     report.title?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
   return (
@@ -81,7 +94,11 @@ export function GridView({
           <SearchIcon className="text-muted-foreground" />
         </InputGroupAddon>
       </InputGroup>
-      <RelevantReports />
+      <RelevantReports
+        onFiltersApply={setFilteredReportIds}
+        onFiltersClear={() => setFilteredReportIds(null)}
+        hasActiveFilters={filteredReportIds !== null}
+      />
       <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 place-items-center">
         {filteredReports.map((report) => {
           const createdAt = report?._creationTime

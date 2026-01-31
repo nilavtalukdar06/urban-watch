@@ -30,9 +30,10 @@ export const searchRelevantReports = async () => {
       },
       fields: ["inferredGoal", "inferredPurpose"],
     });
-    results.result.hits.forEach((hit) => {
-      console.log(hit);
-    });
+    const reportIds = results.result.hits
+      .map((hit: any) => hit._id)
+      .filter(Boolean);
+    return reportIds;
   } catch (error) {
     console.error(error);
     throw error;
