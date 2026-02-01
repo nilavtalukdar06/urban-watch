@@ -830,18 +830,6 @@ pnpm build
 - **Data Isolation**: Organization-scoped data access
 - **Input Validation**: Zod schema validation throughout
 
-## 📄 License
-
-[Your License Here]
-
-## 🤝 Contributing
-
-[Contributing Guidelines]
-
-## 📧 Contact
-
-[Contact Information]
-
 ---
 
 **Built with ❤️ for smarter cities**
