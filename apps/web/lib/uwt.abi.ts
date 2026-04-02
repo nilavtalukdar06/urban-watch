@@ -1,4 +1,4 @@
-[
+export const UWT_ABI = [
   {
     inputs: [],
     stateMutability: "nonpayable",

@@ -4,6 +4,10 @@ import "@workspace/ui/globals.css";
 import { Providers } from "@/components/providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@workspace/ui/components/sonner";
+import { Web3Provider } from "@/components/web3-provider";
+import { cookieToInitialState } from "wagmi";
+import { getWagmiConfig } from "@/lib/wagmi.config";
+import { headers } from "next/headers";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -15,11 +19,15 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialState = cookieToInitialState(
+    getWagmiConfig(),
+    (await headers()).get("cookie"),
+  );
   return (
     <ClerkProvider
       appearance={{
@@ -33,7 +41,11 @@ export default function RootLayout({
           className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
         >
           <ConvexClientProvider>
-            <Providers>{children}</Providers>
+            <Providers>
+              <Web3Provider initialState={initialState}>
+                {children}
+              </Web3Provider>
+            </Providers>
           </ConvexClientProvider>
           <Toaster />
         </body>

@@ -7,6 +7,7 @@ import {
 } from "@workspace/ui/components/sidebar";
 import { AppSidebar } from "@/components/shared/app-sidebar";
 import { cookies } from "next/headers";
+import { ConnectWallet } from "@/components/connect-wallet";
 
 interface Props {
   children: React.ReactNode;
@@ -31,8 +32,10 @@ export default async function Layout({ children }: Props) {
       <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar />
         <main className="flex-1 min-w-0">
-          <div className="p-2">
+          <div className="p-2 flex items-center gap-2">
             <SidebarTrigger />
+            <div className="flex-1" />
+            <ConnectWallet />
           </div>
           {children}
         </main>

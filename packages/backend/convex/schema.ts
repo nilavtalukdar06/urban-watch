@@ -11,6 +11,7 @@ export default defineSchema({
     points: v.number(),
     clerkUserId: v.string(),
     userId: v.string(),
+    walletAddress: v.optional(v.string()),
   })
     .index("by_userId", ["userId"])
     .index("by_points", ["points"]),
@@ -33,6 +34,7 @@ export default defineSchema({
     organizationId: v.string(),
     payments_enabled: v.boolean(),
     userId: v.string(),
+    walletAddress: v.optional(v.string()),
   }),
   tasks: defineTable({
     organizationId: v.string(),

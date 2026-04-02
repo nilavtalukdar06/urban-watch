@@ -59,3 +59,35 @@ export const getOrganization = query({
     return result;
   },
 });
+
+export const updateWalletAddress = mutation({
+  args: {
+    walletAddress: v.string(),
+  },
+  handler: async (ctx, { walletAddress }) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) throw new Error("Unauthenticated");
+    if (!auth.orgId) throw new Error("No organisation context");
+
+    const org = await ctx.db
+      .query("organization")
+      .filter((q) => q.eq(q.field("organizationId"), auth.orgId))
+      .first();
+
+    if (!org) throw new Error("Organisation not found");
+
+    await ctx.db.patch(org._id, { walletAddress });
+    return { success: true };
+  },
+});
+
+export const getOrgWalletAddress = query({
+  args: { organizationId: v.string() },
+  handler: async (ctx, { organizationId }) => {
+    const org = await ctx.db
+      .query("organization")
+      .filter((q) => q.eq(q.field("organizationId"), organizationId))
+      .first();
+    return org?.walletAddress ?? null;
+  },
+});

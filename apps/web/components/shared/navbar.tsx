@@ -7,6 +7,7 @@ import { Button } from "@workspace/ui/components/button";
 import { CoinsIcon, SendIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ConnectWallet } from "@/modules/profile/components/connect-wallet";
 import { usePathname } from "next/navigation";
 
 export function Navbar() {
@@ -23,6 +24,7 @@ export function Navbar() {
           <Image src="/logo.svg" height={36} width={160} alt="logo" />
         </Link>
         <nav className="flex justify-end gap-x-3 items-center">
+          <ConnectWallet />
           <Button
             variant="outline"
             size="icon-sm"

@@ -1,4 +1,5 @@
 import { CopyWebhookUrl } from "@/modules/payments/components/copy-webhook-url";
+import { CryptoWalletSetup } from "@/modules/payments/components/crypto-wallet-setup";
 import { EnablePayments } from "@/modules/payments/components/enable-payments";
 import { TableView } from "@/modules/payments/views/table-view";
 
@@ -10,6 +11,9 @@ export default function Payments() {
         Configure the settings to start collecting payments
       </p>
       <CopyWebhookUrl />
+      <div className="my-4">
+        <CryptoWalletSetup />
+      </div>
       <div className="my-4">
         <EnablePayments />
       </div>

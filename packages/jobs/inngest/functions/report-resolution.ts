@@ -3,6 +3,7 @@ import { inngestAdmin } from "../client";
 import { generateResolutionEmail } from "../vercel/agents/generate-resolution-email";
 import { reportAnalysisEmail } from "@workspace/emails/src/report-analysis";
 import { api } from "@workspace/backend/convex/_generated/api";
+import { rewardReportResolution } from "../token-service";
 
 export const reportResolutionFunction = inngestAdmin.createFunction(
   { id: "report-resolution" },
@@ -24,11 +25,12 @@ export const reportResolutionFunction = inngestAdmin.createFunction(
     if (!user) {
       throw new Error("User not found");
     }
+    
     const emailContent = await step.run("generate-email", async () => {
       return await generateResolutionEmail({
         title: report.title || "Your Report",
         description: report.description || "",
-        location: report.location,
+        location: report.location ?? "",
       });
     });
     const emailResult = await step.run("send-email", async () => {
@@ -38,6 +40,20 @@ export const reportResolutionFunction = inngestAdmin.createFunction(
         emailContent.body,
       );
     });
+    await step.run("reward-resolution-uwt", async () => {
+      const walletAddress: string | undefined = user?.walletAddress;
+
+      if (!walletAddress) {
+        console.log(
+          `[UWT] Citizen ${event.data.userId} has no wallet linked. Skipping resolution reward.`,
+        );
+        return { skipped: true };
+      }
+
+      const txHash = await rewardReportResolution(walletAddress);
+      return { txHash };
+    });
+
     return emailResult;
   },
 );

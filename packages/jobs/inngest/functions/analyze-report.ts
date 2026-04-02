@@ -4,6 +4,10 @@ import { analyzeReport } from "../vercel/agents/analyze-report";
 import { reportAnalysisEmail } from "@workspace/emails/src/report-analysis";
 import { api } from "@workspace/backend/convex/_generated/api";
 import { index } from "../vectors/pinecone";
+import {
+  rewardReportSubmission,
+  penalizeSpamReport,
+} from "../token-service";
 
 export const analyzeReportFunction = inngestWeb.createFunction(
   { id: "analyze-report" },
@@ -28,7 +32,7 @@ export const analyzeReportFunction = inngestWeb.createFunction(
     const analysis = await step.run("analyze-report", async () => {
       return await analyzeReport({
         imageUrl: report.imageUrl,
-        location: report.location,
+        location: report.location || "",
         notes: report.notes,
       });
     });
@@ -67,6 +71,24 @@ export const analyzeReportFunction = inngestWeb.createFunction(
         userId: event.data.userId,
         points: pointsToAdd,
       });
+    });
+    await step.run("mint-or-burn-uwt-tokens", async () => {
+      const walletAddress: string | undefined = user?.walletAddress;
+
+      if (!walletAddress) {
+        console.log(
+          `[UWT] Citizen ${event.data.userId} has no wallet address linked. Skipping token reward.`,
+        );
+        return { skipped: true };
+      }
+
+      if (analysis.isSpam) {
+        const txHash = await penalizeSpamReport(walletAddress);
+        return { action: "penalized", txHash };
+      } else {
+        const txHash = await rewardReportSubmission(walletAddress);
+        return { action: "rewarded", txHash };
+      }
     });
     const emailResult = await step.run("send-email", async () => {
       return await reportAnalysisEmail(

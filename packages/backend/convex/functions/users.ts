@@ -183,3 +183,23 @@ export const updateUserPoints = mutation({
     };
   },
 });
+
+export const updateWalletAddress = mutation({
+  args: {
+    walletAddress: v.string(),
+  },
+  handler: async (ctx, { walletAddress }) => {
+    const auth = await ctx.auth.getUserIdentity();
+    if (!auth) throw new Error("Unauthenticated");
+
+    const citizen = await ctx.db
+      .query("citizens")
+      .withIndex("by_userId", (q) => q.eq("userId", auth.subject))
+      .first();
+
+    if (!citizen) throw new Error("Citizen not found");
+
+    await ctx.db.patch(citizen._id, { walletAddress });
+    return { success: true };
+  },
+});
