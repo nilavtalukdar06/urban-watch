@@ -1,6 +1,6 @@
 # Urban Watch
 
-A comprehensive smart city civic engagement platform that enables citizens to report urban issues, organizations to manage and resolve them, and AI-powered analysis to streamline the entire process.
+A comprehensive smart city civic engagement platform that enables citizens to report urban issues, organizations to manage and resolve them, AI-powered analysis to streamline the entire process, and a Web3 token reward system to incentivize civic participation.
 
 ## 📋 Table of Contents
 
@@ -11,6 +11,7 @@ A comprehensive smart city civic engagement platform that enables citizens to re
 - [Application Flow](#application-flow)
 - [Database Schema (ER Diagram)](#database-schema-er-diagram)
 - [AI Agent Architecture](#ai-agent-architecture)
+- [Web3 Token System (UWT)](#web3-token-system-uwt)
 - [Bring Your Own Stripe (BYOS) Implementation](#bring-your-own-stripe-byos-implementation)
 - [Vector Database & Embeddings](#vector-database--embeddings)
 - [Getting Started](#getting-started)
@@ -21,10 +22,11 @@ A comprehensive smart city civic engagement platform that enables citizens to re
 
 Urban Watch is a full-stack civic engagement platform that bridges the gap between citizens and organizations working to improve urban infrastructure. The platform features:
 
-- **Citizen Portal**: Submit reports, track status, earn points, view leaderboard, and chat with other citizens
-- **Admin Portal**: Organizations can manage reports, assign tasks, enable payments, and track progress
+- **Citizen Portal**: Submit reports, track status, earn points and UWT tokens, view leaderboard, and chat with other citizens
+- **Admin Portal**: Organizations can manage reports, assign tasks, enable payments (Stripe + crypto), and track progress
 - **AI-Powered Analysis**: Automatic report analysis, spam detection, and intelligent report-to-organization matching
-- **Payment Integration**: Bring Your Own Stripe (BYOS) implementation for organizations to accept donations
+- **Web3 Token Rewards**: ERC-20 token (UWT) on Sepolia — citizens earn tokens for valid reports and lose tokens for spam
+- **Payment Integration**: Bring Your Own Stripe (BYOS) + direct ETH crypto donations via MetaMask
 - **Vector Search**: Semantic search using Pinecone to match reports with relevant organizations
 
 ## 🛠 Tech Stack
@@ -39,6 +41,7 @@ Urban Watch is a full-stack civic engagement platform that bridges the gap betwe
 - **Forms**: React Hook Form + Zod
 - **Chat**: Stream Chat
 - **Payments**: Stripe.js
+- **Web3**: Wagmi v2 + Viem (wallet connection, token balance, crypto donations)
 
 ### Backend
 - **Database**: Convex (serverless backend)
@@ -47,6 +50,8 @@ Urban Watch is a full-stack civic engagement platform that bridges the gap betwe
 - **Vector Database**: Pinecone
 - **Embedding Model**: NVIDIA Llama-text-embedd-v2
 - **Reranking**: BGE Reranker v2-m3
+- **Blockchain**: Ethereum Sepolia Testnet (ERC-20)
+- **Web3 Library**: ethers.js v6 (server-side token minting)
 
 ### AI/ML
 - **LLM Provider**: OpenAI (GPT-4o-mini) for report analysis
@@ -77,7 +82,7 @@ urban-watch/
 │   │   │   │   ├── submit-report/
 │   │   │   │   ├── chatbot/    # AI assistant
 │   │   │   │   ├── chat/       # User-to-user chat
-│   │   │   │   ├── donate/     # Donation flow
+│   │   │   │   ├── donate/     # Donation flow (Stripe + ETH)
 │   │   │   │   └── verify-account/
 │   │   │   └── api/            # API routes
 │   │   │       ├── chat/       # Chatbot API
@@ -85,7 +90,7 @@ urban-watch/
 │   │   │       └── stripe/     # Stripe webhooks
 │   │   ├── components/         # Shared components
 │   │   ├── modules/            # Feature modules
-│   │   └── lib/                # Utilities
+│   │   └── lib/                # Utilities (wagmi config, UWT ABI)
 │   │
 │   └── admin/                  # Organization-facing application
 │       ├── app/
@@ -95,7 +100,7 @@ urban-watch/
 │       │   │   ├── my-reports/ # Organization's reports
 │       │   │   ├── users/      # User management
 │       │   │   ├── my-tasks/   # Task management
-│       │   │   └── payments/   # Stripe configuration
+│       │   │   └── payments/   # Stripe + crypto wallet configuration
 │       │   └── api/
 │       │       └── secrets/    # Secret management
 │       └── modules/             # Feature modules
@@ -117,8 +122,8 @@ urban-watch/
 │   ├── jobs/                   # Inngest job functions
 │   │   └── inngest/
 │   │       ├── functions/      # Job definitions
-│   │       │   ├── analyze-report.ts
-│   │       │   ├── report-resolution.ts
+│   │       │   ├── analyze-report.ts    # Includes UWT minting
+│   │       │   ├── report-resolution.ts # Includes UWT reward
 │   │       │   ├── send-email.ts
 │   │       │   └── verify-account.ts
 │   │       ├── vercel/
@@ -127,8 +132,9 @@ urban-watch/
 │   │       │   │   ├── generate-resolution-email.ts
 │   │       │   │   └── verify-account.ts
 │   │       │   └── prompts/    # AI prompts
-│   │       └── vectors/
-│   │           └── pinecone.ts  # Pinecone client
+│   │       ├── vectors/
+│   │       │   └── pinecone.ts  # Pinecone client
+│   │       └── token-service.ts # ethers.js UWT mint/burn service
 │   │
 │   ├── emails/                 # Email templates
 │   │   └── src/
@@ -154,8 +160,8 @@ urban-watch/
 ```mermaid
 graph TB
     subgraph ClientLayer["CLIENT LAYER"]
-        WebApp["Citizen App (Web)<br/>- Report Submission<br/>- Dashboard<br/>- Chatbot<br/>- Leaderboard<br/>- Donations"]
-        AdminApp["Admin App (Admin)<br/>- Report Management<br/>- Task Management<br/>- User Management<br/>- Payment Configuration<br/>- Analytics"]
+        WebApp["Citizen App (Web)<br/>- Report Submission<br/>- Dashboard<br/>- Chatbot<br/>- Leaderboard<br/>- Donations (Stripe + ETH)<br/>- UWT Token Balance"]
+        AdminApp["Admin App (Admin)<br/>- Report Management<br/>- Task Management<br/>- User Management<br/>- Payment Configuration<br/>- Crypto Wallet Setup"]
     end
     
     subgraph APILayer["API LAYER (Next.js)"]
@@ -165,12 +171,12 @@ graph TB
     end
     
     subgraph BackendLayer["BACKEND LAYER (Convex)"]
-        ConvexDB["Real-time Database & Functions<br/>- Reports<br/>- Users<br/>- Organizations<br/>- Tasks<br/>- Payments"]
+        ConvexDB["Real-time Database & Functions<br/>- Reports<br/>- Users (walletAddress)<br/>- Organizations (walletAddress)<br/>- Tasks<br/>- Payments"]
     end
     
     subgraph JobLayer["JOB PROCESSING (Inngest)"]
-        AnalyzeReport["Analyze Report"]
-        ResolutionEmail["Resolution Email"]
+        AnalyzeReport["Analyze Report<br/>+ Mint/Burn UWT"]
+        ResolutionEmail["Resolution Email<br/>+ Reward UWT"]
         EmailSending["Email Sending"]
     end
     
@@ -178,6 +184,12 @@ graph TB
         OpenAI["OpenAI<br/>(GPT-4o-mini)"]
         XAI["xAI<br/>(Grok-3-mini)"]
         Embeddings["Embeddings<br/>(NVIDIA Llama)"]
+    end
+    
+    subgraph Web3Layer["WEB3 LAYER"]
+        UWTContract["UrbanWatchToken (UWT)<br/>ERC-20 on Sepolia"]
+        MetaMask["MetaMask<br/>(Wagmi v2)"]
+        EthersJS["ethers.js v6<br/>(Server-side Signer)"]
     end
     
     subgraph ExternalServices["EXTERNAL SERVICES"]
@@ -188,16 +200,22 @@ graph TB
     
     WebApp --> ChatAPI
     WebApp --> PaymentAPI
+    WebApp --> MetaMask
     AdminApp --> StripeWebhook
+    AdminApp --> MetaMask
     ChatAPI --> ConvexDB
     PaymentAPI --> ConvexDB
     StripeWebhook --> ConvexDB
+    MetaMask --> UWTContract
     ConvexDB --> AnalyzeReport
     ConvexDB --> ResolutionEmail
     ConvexDB --> EmailSending
     AnalyzeReport --> OpenAI
     AnalyzeReport --> Embeddings
+    AnalyzeReport --> EthersJS
     ResolutionEmail --> OpenAI
+    ResolutionEmail --> EthersJS
+    EthersJS --> UWTContract
     EmailSending --> Resend
     WebApp --> XAI
     AnalyzeReport --> Pinecone
@@ -217,6 +235,7 @@ sequenceDiagram
     participant I as Inngest
     participant AI as AI Agent
     participant P as Pinecone
+    participant BC as Blockchain (Sepolia)
     participant E as Email
 
     C->>W: Submit Report (image, location, notes)
@@ -230,9 +249,12 @@ sequenceDiagram
     I->>Cx: updateReportWithAnalysis()
     alt Report is not spam
         I->>P: Upsert report embeddings
-        Note over P: Store inferredGoal & inferredPurpose
+        I->>BC: mint(walletAddress, 10) → +10 UWT
+        I->>Cx: Update user points (+10)
+    else Report is spam
+        I->>BC: burn(walletAddress, 5) → -5 UWT
+        I->>Cx: Update user points (-5)
     end
-    I->>Cx: Update user points (+10 or -5)
     I->>E: Send analysis email to citizen
     E-->>C: Email notification
 ```
@@ -246,6 +268,7 @@ sequenceDiagram
     participant Cx as Convex
     participant I as Inngest
     participant AI as AI Agent
+    participant BC as Blockchain (Sepolia)
     participant E as Email
 
     A->>Ad: Mark report as "resolved"
@@ -255,9 +278,30 @@ sequenceDiagram
     I->>AI: Generate resolution email
     AI->>AI: GPT-4o-mini generates email
     AI-->>I: Email content (subject + body)
+    I->>BC: mint(walletAddress, 20) → +20 UWT
     I->>E: Send resolution email
     E-->>A: Email sent confirmation
-    I->>Cx: Update user points (+20)
+```
+
+### Crypto Donation Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Citizen
+    participant W as Web App
+    participant MM as MetaMask
+    participant SC as Smart Contract (Sepolia)
+    participant O as Org Wallet
+
+    C->>W: Click "Pay in ETH" on org card
+    W->>MM: Connect wallet (wagmi)
+    MM-->>W: address connected
+    C->>W: Enter ETH amount
+    W->>MM: Sign donateTo(orgWallet) + ETH value
+    MM->>SC: Transaction broadcast
+    SC->>O: Forward ETH directly
+    SC-->>W: CryptoDonation event emitted
+    W-->>C: Confirmation + Etherscan link
 ```
 
 ### Organization Report Matching Flow
@@ -268,7 +312,6 @@ sequenceDiagram
     participant Ad as Admin App
     participant Cx as Convex
     participant P as Pinecone
-    participant Ad2 as Admin App
 
     O->>Ad: View relevant reports
     Ad->>Cx: Get organization (goal, purpose)
@@ -285,7 +328,7 @@ sequenceDiagram
     Cx-->>Ad: Assignment created
 ```
 
-### Payment Flow (BYOS)
+### Payment Flow (BYOS Stripe)
 
 ```mermaid
 sequenceDiagram
@@ -295,7 +338,7 @@ sequenceDiagram
     participant I as Infisical
     participant Cx as Convex
 
-    C->>W: Initiate donation
+    C->>W: Initiate donation (INR)
     W->>I: Fetch org's Stripe secret key
     I-->>W: Secret key
     W->>S: Create checkout session
@@ -333,6 +376,7 @@ erDiagram
         number points
         string clerkUserId
         string userId
+        string walletAddress "optional - MetaMask address"
     }
     
     userIdentity {
@@ -378,6 +422,7 @@ erDiagram
         string organizationId
         boolean payments_enabled
         string userId
+        string walletAddress "optional - ETH address for crypto donations"
     }
     
     apiKeys {
@@ -457,7 +502,8 @@ Processing Pipeline:
   └─► [Post-Processing]
       ├─► Update Convex database
       ├─► Upsert to Pinecone (if not spam)
-      ├─► Update user points
+      ├─► Update user points (+10 or -5)
+      ├─► Mint or burn UWT tokens
       └─► Send email notification
 
 Output:
@@ -477,7 +523,7 @@ System Prompt: Urban Watch assistant guidelines
 Capabilities:
   ├── Feature explanations
   ├── Report workflow guidance
-  ├── Points system information
+  ├── Points & UWT token system information
   ├── Leaderboard queries
   └── Civic engagement best practices
 
@@ -512,6 +558,59 @@ Indexed Fields:
   ├── inferredPurpose
   └── text (concatenated goal + purpose)
 ```
+
+## 🪙 Web3 Token System (UWT)
+
+### Overview
+
+Urban Watch Token (UWT) is an ERC-20 token on the Ethereum Sepolia Testnet that rewards citizens for civic participation. Token operations are triggered automatically by Inngest workflows using a server-side ethers.js signer — citizens never need to sign minting transactions themselves.
+
+### Smart Contract
+
+```solidity
+// UrbanWatchToken.sol — deployed on Sepolia via Remix IDE
+contract UrbanWatchToken is ERC20, Ownable {
+    constructor() ERC20("UrbanWatchToken", "UWT") Ownable(msg.sender) {}
+
+    function mint(address to, uint256 amount) external onlyOwner {}
+    function burn(address from, uint256 amount) external onlyOwner {}
+    function donateTo(address payable orgWallet) external payable {}
+}
+```
+
+### Token Reward Rules
+
+| Action | UWT Change |
+|--------|-----------|
+| Valid report submitted | +10 UWT |
+| Report resolved by org | +20 UWT |
+| Report flagged as spam | −5 UWT |
+
+### Architecture
+
+```
+Server-side (Inngest + ethers.js v6)
+  ├── Admin wallet (owner) signs all mint/burn transactions
+  ├── packages/jobs/inngest/token-service.ts
+  └── Called from analyze-report.ts and report-resolution.ts
+
+Client-side (Wagmi v2 + MetaMask)
+  ├── Citizens connect wallet once during onboarding
+  ├── Wallet address saved to citizens.walletAddress in Convex
+  ├── UWT balance displayed in citizen dashboard
+  └── ETH donations sent via donateTo() on the contract
+```
+
+### Crypto Donations
+
+Organizations register an Ethereum wallet address in the admin payments page (`CryptoWalletSetup`). Citizens can then donate ETH directly on the donations page alongside the existing Stripe (INR) option — the contract forwards ETH instantly to the org's wallet with no intermediary.
+
+### Deployment
+
+1. Open [Remix IDE](https://remix.ethereum.org)
+2. Paste `UrbanWatchToken.sol`, compile with Solidity `^0.8.20`
+3. Deploy via **Injected Provider (MetaMask)** on **Sepolia Testnet**
+4. Copy deployed address → set as `NEXT_PUBLIC_UWT_CONTRACT_ADDRESS`
 
 ## 💳 Bring Your Own Stripe (BYOS) Implementation
 
@@ -590,6 +689,7 @@ Organizations can:
 - View key prefixes (for verification)
 - Delete keys (removes from both Convex and Infisical)
 - Enable/disable payments
+- Register an Ethereum wallet for crypto donations
 
 ## 🔍 Vector Database & Embeddings
 
@@ -651,6 +751,8 @@ Organizations can:
 - OpenAI API key
 - xAI API key
 - Resend API key
+- MetaMask wallet + Sepolia ETH (from [sepoliafaucet.com](https://sepoliafaucet.com))
+- Alchemy or Infura account (for Sepolia RPC)
 
 ### Installation
 
@@ -666,6 +768,14 @@ pnpm install
 cd packages/backend
 pnpm dev  # Follow prompts to set up Convex
 ```
+
+### Smart Contract Deployment
+
+1. Go to [remix.ethereum.org](https://remix.ethereum.org)
+2. Create `UrbanWatchToken.sol` and paste the contract code
+3. Compile with Solidity `^0.8.20`, optimisation enabled
+4. Deploy via **Injected Provider (MetaMask)** on **Sepolia Testnet**
+5. Copy the deployed contract address to your `.env.local`
 
 ### Development
 
@@ -711,6 +821,10 @@ STREAM_SECRET=
 
 # xAI (Chatbot)
 XAI_API_KEY=
+
+# Web3 (UWT Token)
+NEXT_PUBLIC_UWT_CONTRACT_ADDRESS=
+NEXT_PUBLIC_SEPOLIA_RPC_URL=
 ```
 
 ### Admin App (`apps/admin/.env.local`)
@@ -733,6 +847,10 @@ PROJECT_ID=
 # Inngest
 INNGEST_EVENT_KEY=
 INNGEST_SIGNING_KEY=
+
+# Web3 (UWT Token)
+NEXT_PUBLIC_UWT_CONTRACT_ADDRESS=
+NEXT_PUBLIC_SEPOLIA_RPC_URL=
 ```
 
 ### Backend (`packages/backend/.env`)
@@ -762,6 +880,11 @@ CONVEX_DEPLOYMENT_KEY=
 
 # Resend
 RESEND_API_KEY=
+
+# Web3 — server-side token minting (NEVER expose client-side)
+UWT_ADMIN_PRIVATE_KEY=
+NEXT_PUBLIC_UWT_CONTRACT_ADDRESS=
+NEXT_PUBLIC_SEPOLIA_RPC_URL=
 ```
 
 ## 📦 Deployment
@@ -793,16 +916,23 @@ pnpm build
    - Index name: `urban-watch-admin`
    - Configure embedding model: NVIDIA Llama-text-embedd-v2
 
+5. **Smart Contract**: Deploy via Remix IDE
+   - Network: Sepolia Testnet
+   - Set `NEXT_PUBLIC_UWT_CONTRACT_ADDRESS` in all env files
+   - Fund admin wallet with Sepolia ETH for gas
+
 ## 📝 Key Features
 
 ### For Citizens
 - ✅ Submit urban issue reports with images
 - ✅ Track report status in real-time
-- ✅ Earn points for quality reports
+- ✅ Earn points and UWT tokens for quality reports
+- ✅ Lose tokens for spam reports (anti-abuse)
+- ✅ View UWT token balance via MetaMask
 - ✅ View leaderboard rankings
 - ✅ Chat with other citizens
 - ✅ AI-powered assistant for guidance
-- ✅ Donate to organizations
+- ✅ Donate to organizations (INR via Stripe or ETH via MetaMask)
 
 ### For Organizations
 - ✅ View and manage reports
@@ -810,6 +940,7 @@ pnpm build
 - ✅ Task management (Kanban & Calendar views)
 - ✅ User management
 - ✅ Bring Your Own Stripe integration
+- ✅ Register Ethereum wallet for crypto donations
 - ✅ Analytics and reporting
 - ✅ Email notifications
 
@@ -821,6 +952,14 @@ pnpm build
 - ✅ Resolution email generation
 - ✅ Account verification assistance
 
+### Web3 Features
+- ✅ ERC-20 token rewards (UWT) on Sepolia
+- ✅ Automatic server-side minting via Inngest
+- ✅ Anti-spam token burning
+- ✅ MetaMask wallet connection (wagmi v2)
+- ✅ ETH crypto donations to organizations
+- ✅ Direct wallet-to-wallet ETH transfers (no intermediary)
+
 ## 🔒 Security
 
 - **Authentication**: Clerk-based authentication with JWT
@@ -829,6 +968,8 @@ pnpm build
 - **Webhook Verification**: Stripe webhook signature validation
 - **Data Isolation**: Organization-scoped data access
 - **Input Validation**: Zod schema validation throughout
+- **Token Security**: `UWT_ADMIN_PRIVATE_KEY` is server-only, never exposed client-side
+- **Contract Security**: `onlyOwner` modifier prevents unauthorized minting
 
 ---
 
