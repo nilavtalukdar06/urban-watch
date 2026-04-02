@@ -1,7 +1,8 @@
 {
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
-    "rootDir": "convex"
+    "rootDir": "convex",
+    "types": ["node"]
   },
   "include": ["convex"],
   "exclude": ["node_modules"]

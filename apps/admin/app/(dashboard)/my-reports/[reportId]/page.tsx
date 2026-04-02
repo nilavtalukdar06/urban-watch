@@ -6,6 +6,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { formatDistanceToNow, format } from "date-fns";
 import { ReportStatusUpdater } from "@/modules/reports/components/report-status-updater";
+import { ReportMap } from "@/modules/reports/components/report-map";
 
 export default async function MyReportPage({
   params,
@@ -84,11 +85,12 @@ export default async function MyReportPage({
           </p>
         </div>
 
-        <div className="space-y-1">
+        <div className="space-y-1 flex flex-col items-start justify-center">
           <p className="text-neutral-600 font-normal text-sm">Location</p>
           <p className="text-muted-foreground font-light text-sm">
             {result?.location}
           </p>
+          <ReportMap location={result?.location} latStr={result?.lat} lngStr={result?.long} />
         </div>
 
         {result?.priority && (

@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/shared/navbar";
 import { DeleteReport } from "@/modules/reports/components/delete-report";
+import { ReportMap } from "@/modules/reports/components/report-map";
 import { auth } from "@clerk/nextjs/server";
 import { api } from "@workspace/backend/convex/_generated/api";
 import type { Id } from "@workspace/backend/convex/_generated/dataModel";
@@ -66,11 +67,12 @@ export default async function ReportPage({
             {result?.description}
           </p>
         </div>
-        <div className="space-y-1">
+        <div className="space-y-1 flex flex-col items-start justify-center">
           <p className="text-neutral-600 font-normal text-sm">Location</p>
           <p className="text-muted-foreground font-light text-sm">
             {result?.location}
           </p>
+          <ReportMap location={result?.location} latStr={result?.lat} lngStr={result?.long} />
         </div>
         <div className="space-y-1">
           <p className="text-neutral-600 font-normal text-sm">Instructions</p>

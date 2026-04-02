@@ -7,7 +7,9 @@ import { inngestWeb } from "@workspace/jobs/inngest/client";
 
 interface ReportData {
   imageUrl: string;
-  location: string;
+  location?: string;
+  lat?: string;
+  long?: string;
   notes: string;
 }
 
@@ -32,6 +34,8 @@ export const submitReport = async (data: ReportData) => {
       {
         imageUrl: data.imageUrl,
         location: data.location,
+        lat: data.lat,
+        long: data.long,
         notes: data.notes,
       },
       { token },
@@ -43,6 +47,8 @@ export const submitReport = async (data: ReportData) => {
         userId: user.userId,
         imageUrl: data.imageUrl,
         location: data.location,
+        lat: data.lat,
+        long: data.long,
         notes: data.notes,
       },
     });
