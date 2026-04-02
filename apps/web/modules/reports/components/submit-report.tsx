@@ -2,7 +2,7 @@
 
 import { FileUploaderMinimal } from "@uploadcare/react-uploader/next";
 import "@uploadcare/react-uploader/core.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@workspace/ui/components/button";
 import { toast } from "sonner";
 import { submitReport } from "../functions/submit-report";
@@ -24,7 +24,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 const formSchema = z.object({
-  location: z.string().min(3, { message: "Location is required" }),
+  location: z.string().optional(),
+  lat: z.string().optional(),
+  long: z.string().optional(),
   notes: z.string().min(3, { message: "Notes are too short" }),
 });
 
@@ -37,9 +39,26 @@ export function SubmitReportForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       location: "",
+      lat: "",
+      long: "",
       notes: "",
     },
   });
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          form.setValue("location", `${position.coords.latitude}, ${position.coords.longitude}`);
+          form.setValue("lat", position.coords.latitude.toString());
+          form.setValue("long", position.coords.longitude.toString());
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        }
+      );
+    }
+  }, [form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -47,6 +66,8 @@ export function SubmitReportForm() {
       await submitReport({
         imageUrl,
         location: values.location,
+        lat: values.lat,
+        long: values.long,
         notes: values.notes,
       });
       toast.success("Report submitted successfully");

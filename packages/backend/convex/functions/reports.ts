@@ -4,7 +4,9 @@ import { v } from "convex/values";
 export const createReport = mutation({
   args: {
     imageUrl: v.string(),
-    location: v.string(),
+    location: v.optional(v.string()),
+    lat: v.optional(v.string()),
+    long: v.optional(v.string()),
     notes: v.string(),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
