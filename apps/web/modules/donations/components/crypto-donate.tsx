@@ -9,14 +9,14 @@ import { parseEther, formatEther } from "viem";
 import { UWT_ABI } from "@/lib/uwt.abi";
 import { UWT_CONTRACT_ADDRESS } from "@/lib/wagmi.config";
 import { ConnectWallet } from "../../profile/components/connect-wallet";
+import { Button } from "@workspace/ui/components/button";
 
 interface Props {
-  orgId: string;
   orgWallet: `0x${string}`;
   orgName: string;
 }
 
-export function CryptoDonate({ orgId, orgWallet, orgName }: Props) {
+export function CryptoDonate({ orgWallet, orgName }: Props) {
   const { address, isConnected } = useAccount();
   const [ethAmount, setEthAmount] = useState("");
   const [donateError, setDonateError] = useState<string | null>(null);
@@ -53,14 +53,14 @@ export function CryptoDonate({ orgId, orgWallet, orgName }: Props) {
       address: UWT_CONTRACT_ADDRESS,
       abi: UWT_ABI,
       functionName: "donateTo",
-      args: [orgId, orgWallet],
+      args: [orgWallet],
       value: parseEther(ethAmount),
     });
   }
 
   if (!isConnected) {
     return (
-      <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+      <div className="rounded-none border border-neutral-200 bg-white p-5">
         <p className="mb-3 text-sm text-neutral-600">
           Connect your MetaMask wallet to donate ETH directly to{" "}
           <strong>{orgName}</strong>.
@@ -72,7 +72,7 @@ export function CryptoDonate({ orgId, orgWallet, orgName }: Props) {
 
   if (isConfirmed) {
     return (
-      <div className="rounded-xl border border-green-200 bg-green-50 p-5">
+      <div className="rounded-none border border-green-200 bg-green-50 p-5">
         <p className="font-semibold text-green-700">🎉 Donation confirmed!</p>
         <p className="mt-1 text-sm text-green-600">
           {ethAmount} ETH sent to {orgName}.
@@ -98,7 +98,7 @@ export function CryptoDonate({ orgId, orgWallet, orgName }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm space-y-4">
+    <div className="rounded-none border border-neutral-200 bg-white p-5 space-y-4">
       <div>
         <h3 className="font-semibold text-neutral-800">
           Donate ETH to {orgName}
@@ -119,7 +119,7 @@ export function CryptoDonate({ orgId, orgWallet, orgName }: Props) {
           placeholder="0.01"
           value={ethAmount}
           onChange={(e) => setEthAmount(e.target.value)}
-          className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+          className="flex-1 rounded-none border border-neutral-300 px-3 py-2 text-sm"
         />
         <span className="flex items-center text-sm text-neutral-500">ETH</span>
       </div>
@@ -130,17 +130,17 @@ export function CryptoDonate({ orgId, orgWallet, orgName }: Props) {
         </p>
       )}
 
-      <button
+      <Button
         onClick={handleDonate}
         disabled={isSubmitting || isConfirming || !ethAmount}
-        className="w-full rounded-xl bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-50 transition-colors"
+        className="rounded-none font-normal shadow-none"
       >
         {isSubmitting
           ? "Confirm in MetaMask…"
           : isConfirming
             ? "Waiting for confirmation…"
             : "Donate ETH"}
-      </button>
+      </Button>
 
       <p className="text-xs text-neutral-400">
         Transactions are on Sepolia testnet. ETH goes directly to the

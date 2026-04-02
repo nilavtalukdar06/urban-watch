@@ -36,6 +36,7 @@ import {
 import { Input } from "@workspace/ui/components/input";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { toast } from "sonner";
+import { CryptoDonate } from "./crypto-donate";
 
 interface Props {
   goal: string;
@@ -44,6 +45,7 @@ interface Props {
   payments_enabled: boolean;
   purpose: string;
   userId: string;
+  walletAddress?: string; // ← add this after schema change
   _creationTime: number;
   _id: Id<"organization">;
 }
@@ -63,12 +65,15 @@ const formSchema = z.object({
 
 export function OrganizationTrigger(props: Props) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [tab, setTab] = useState<"fiat" | "crypto">("fiat"); // ← new
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: "",
     },
   });
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsProcessing(true);
     try {
@@ -89,6 +94,7 @@ export function OrganizationTrigger(props: Props) {
       setIsProcessing(false);
     }
   };
+
   return (
     <Dialog>
       <DialogTrigger className="w-full h-full">
@@ -106,6 +112,7 @@ export function OrganizationTrigger(props: Props) {
           </CardHeader>
         </Card>
       </DialogTrigger>
+
       <DialogContent className="w-[400px] rounded-none p-5">
         <DialogHeader>
           <DialogTitle className="text-neutral-600 font-light text-start">
@@ -115,74 +122,111 @@ export function OrganizationTrigger(props: Props) {
             {props.goal}
           </DialogDescription>
         </DialogHeader>
+
         <div className="flex flex-col items-start justify-center gap-y-1.5">
           <p className="text-neutral-700 text-sm">Our Purpose</p>
           <p className="text-muted-foreground font-light text-sm">
             {props.purpose}
           </p>
         </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} id="donation-form">
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel className="font-normal text-neutral-700">
-                      Enter amount
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter the donation amount"
-                        inputMode="numeric"
-                        className="shadow-none rounded-none placeholder:font-light font-light"
-                        disabled={isProcessing}
-                        {...field}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, "");
-                          field.onChange(value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription className="font-light">
-                      All the amounts are in indian rupees
-                    </FormDescription>
-                    <FormMessage className="font-light" />
-                  </FormItem>
-                );
-              }}
-            />
-          </form>
-        </Form>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant="outline"
-              className="bg-sidebar rounded-none font-normal shadow-none"
-              disabled={isProcessing}
-            >
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button
-            type="submit"
-            variant="destructive"
-            form="donation-form"
-            className="rounded-none shadow-none font-normal"
-            disabled={isProcessing}
+
+        {/* Tab toggle */}
+        <div className="flex border-b border-neutral-200">
+          <button
+            onClick={() => setTab("fiat")}
+            className={`px-4 py-2 text-sm font-normal transition-colors ${
+              tab === "fiat"
+                ? "border-b-2 border-neutral-700 text-neutral-700"
+                : "text-muted-foreground"
+            }`}
           >
-            {isProcessing ? (
-              <>
-                <Spinner />
-                Processing...
-              </>
-            ) : (
-              "Donate"
-            )}
-          </Button>
-        </DialogFooter>
+            Pay in INR
+          </button>
+          <button
+            onClick={() => setTab("crypto")}
+            className={`px-4 py-2 text-sm font-normal transition-colors ${
+              tab === "crypto"
+                ? "border-b-2 border-neutral-700 text-neutral-700"
+                : "text-muted-foreground"
+            }`}
+          >
+            Pay in ETH
+          </button>
+        </div>
+
+        {/* Fiat (Stripe) */}
+        {tab === "fiat" && (
+          <>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} id="donation-form">
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-normal text-neutral-700">
+                        Enter amount
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter the donation amount"
+                          inputMode="numeric"
+                          className="shadow-none rounded-none placeholder:font-light font-light"
+                          disabled={isProcessing}
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "");
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
+                      <FormDescription className="font-light">
+                        All the amounts are in indian rupees
+                      </FormDescription>
+                      <FormMessage className="font-light" />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-sidebar rounded-none font-normal shadow-none"
+                  disabled={isProcessing}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                variant="destructive"
+                form="donation-form"
+                className="rounded-none shadow-none font-normal"
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <Spinner />
+                    Processing...
+                  </>
+                ) : (
+                  "Donate"
+                )}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
+
+        {/* Crypto (ETH) */}
+        {tab === "crypto" && (
+          <CryptoDonate
+            orgWallet={props.walletAddress as `0x${string}`}
+            orgName={props.name}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
