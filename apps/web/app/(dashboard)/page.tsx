@@ -23,7 +23,7 @@ export default async function Home() {
     { token },
   );
   return (
-    <div>
+    <div className="w-full">
       <Navbar />
       <div className="p-4">
         <p className="text-neutral-700 font-normal text-xl">
